@@ -17,7 +17,6 @@ function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: str
 
 function Layout(props: any)
 {
-    console.log(props)
     return <div className="flex">
         <div id="menu" className="bg-menu p-0 w-64 h-screen">
             <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
@@ -31,7 +30,7 @@ function Layout(props: any)
             <div className="header w-full">
                 <div className="bg-blue-500 w-full h-14 px-24"></div>
             </div>
-            <div className="w-full h-full mx-24 my-8">
+            <div className="w-full h-full lg:px-24 lg:py-8 px-4 py-12 ">
                 {props.children}
             </div>
         </div>

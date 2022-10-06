@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { AuthProvider } from './context/AuthContext';
-import Routes from './routes/Routes';
+import App from './App';
 import './assets/style.css';
+import { AuthProvider } from './context/AuthContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
-root.render(
-  <AuthProvider>
-  <Routes />
-  </AuthProvider>
-)
+root.render(<AuthProvider>
+  <App />
+</AuthProvider>)

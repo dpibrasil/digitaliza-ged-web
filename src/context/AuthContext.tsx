@@ -5,7 +5,7 @@ type AuthContextType = {
      authenticated: boolean,
      userData?: object,
      token?: string,
-     signIn: (userData: object, password: string) => void,
+     signIn: (userData: object, token: string) => void,
      signOut: () => void,
 }
 
@@ -26,7 +26,7 @@ export function AuthProvider(props: any) {
         window.location.href = '/'
     }
 
-    const authenticated = !!token
+    const authenticated = Boolean(token)
 
     return <AuthContext.Provider value={{token, userData, authenticated, signIn, signOut}}>
         {props.children}

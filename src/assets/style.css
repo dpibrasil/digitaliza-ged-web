@@ -6,3 +6,7 @@
     font-family: Inter, system-ui, -apple-system, sans-serif;
     box-sizing: border-box;
 }
+
+select {
+    -webkit-appearance: none;
+}
