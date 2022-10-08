@@ -30,61 +30,48 @@ export function AuthInput({label, name, width, ...rest}: InputType & React.Input
     </div>
 }
 
-export function Input({label, width, ...rest}: InputType & React.InputHTMLAttributes<HTMLInputElement>)
+export function Input({label, width, name, ...rest}: InputType & React.InputHTMLAttributes<HTMLInputElement>)
 {
+    const inputRef = useRef(null)
+    const { fieldName, defaultValue, registerField, error } = useField(name)
+
+    useEffect(() => {
+        registerField({
+            name: fieldName,
+            ref: inputRef.current,
+            path: 'value'
+        })
+    }, [fieldName, registerField])
+
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <input {...rest} className="rounded bg-white py-1 px-3 min-h-16 text-sm" />
+        <input defaultValue={defaultValue} {...rest} ref={inputRef} className="rounded bg-white py-1 px-3 min-h-[35px] text-sm" />
+        {!!error && <Error>{error}</Error>}
     </div>
 }
 
-export function SelectInput({label, placeholder, children, width, ...rest}: InputType & React.InputHTMLAttributes<HTMLSelectElement>)
+export function SelectInput({label, placeholder, children, width, name, ...rest}: InputType & React.InputHTMLAttributes<HTMLSelectElement>)
 {
+    const inputRef = useRef(null)
+    const { fieldName, defaultValue, registerField, error } = useField(name)
+
+    useEffect(() => {
+        registerField({
+            name: fieldName,
+            ref: inputRef.current,
+            path: 'value'
+        })
+    }, [fieldName, registerField])
+
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <select {...rest} className="rounded bg-white py-1 px-3 min-h-16 text-sm">
+        <select defaultValue={defaultValue} {...rest} ref={inputRef} className="rounded bg-white py-1 px-3 min-h-[35px] text-[12px]">
             {!!placeholder && <option>{placeholder}</option>}
             {children}
         </select>
+        {!!error && <Error>{error}</Error>}
     </div>
 }
-
-const displayAsAlias: any = {
-    integer: 'Número inteiro',
-    float: 'Número decimal',
-    'brl-money': 'Valor em reais',
-    datetime: 'Data e hora',
-    date: 'Data'
-}
-
-// function IndexInputInput({index}: {index: DirectoryIndexType}) {
-    
-//     return <div className="flex">
-//         <SelectInput
-//             label="Operador"
-//             name={'indexes.index' + index.id + '.operator'}
-//             onChange={(event: any) => {
-//                 const v = event.target.value === 'interval'
-//                 if (v !== isInterval) setIsInterval(v)
-//             }}
-//         >
-//             <option value="===">=</option>
-//             <option>!=</option>
-//             {['datetime', 'number'].includes(index.type) && <>
-//                 <option>{'>'}</option>
-//                 <option>{'>='}</option>
-//                 <option>{'<'}</option>
-//                 <option>{'<='}</option>
-//                 <option value="interval">Intervalo</option>
-//             </>}
-//         </SelectInput>
-//         <IndexInput indexName={indexName + (isInterval ? '[0]' : '')} />
-//         {isInterval && <IndexInput indexName={indexName + '[1]'} />}
-//         {index.displayAs && <h1 className="text-sm text-neutral-200">{displayAsAlias[index.displayAs] ?? index.displayAs}</h1>}
-//     </div>
-// }
-
-
 
 function IndexInputInput({indexName, index}: {indexName: string, index: DirectoryIndexType})
 {
@@ -95,7 +82,6 @@ function IndexInputInput({indexName, index}: {indexName: string, index: Director
         return <Input
             type="number"
             name={indexName}
-        
             step={index.displayAs && ['float', 'brl-money'].includes(index.displayAs) ? '.01' : 'any'}
         />
     }
@@ -119,24 +105,32 @@ function IndexInputInput({indexName, index}: {indexName: string, index: Director
     }
 }
 
-export function IndexInput({index, ...rest}: {index: DirectoryIndexType})
+export function IndexInput({index}: {index: DirectoryIndexType})
 {
-    const indexName = 'indexes.index' + index.id + '.value'
+    const [isInterval, setIsInterval] = useState(false)
+    const indexName = 'indexes.index' + index.id
+
+    console.log(isInterval)
+
+    const changeOperator = (event: any) => event.target.value == 'interval' !== isInterval ? setIsInterval(!isInterval) : undefined
 
     return <div className="flex flex-col w-full">
         <label className="text-xs font-semibold mb-1 text-primary-text">{index.name}</label>
         <div className="flex flex-row">
-            <SelectInput width='0' name="">
-                <option>=</option>
+            <SelectInput onChange={changeOperator} width='0' name={indexName + '.operator'}>
+                <option value="==">=</option>
                 <option>!=</option>
-                <option>{'<>'}</option>
+                <option value="interval">{'<>'}</option>
                 <option>{'>'}</option>
                 <option>{'<'}</option>
                 <option>{'>='}</option>
                 <option>{'<='}</option>
             </SelectInput>
             <div className="ml-1">
-                <IndexInputInput indexName={indexName} index={index} />
+                {isInterval ? <div className="grid auto-col-max grid-flow-col gap-x-1">
+                    <IndexInputInput indexName={indexName + '.value[0]'} index={index} />
+                    <IndexInputInput indexName={indexName + '.value[1]'} index={index} />
+                </div>: <IndexInputInput indexName={indexName + '.value'} index={index} />}
             </div>
         </div>
     </div>

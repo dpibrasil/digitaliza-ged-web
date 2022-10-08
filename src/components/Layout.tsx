@@ -17,7 +17,7 @@ function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: str
 
 function Layout(props: any)
 {
-    return <div className="flex">
+    return <div className="flex h-screen">
         <div id="menu" className="bg-menu p-0 w-64 h-screen">
             <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
             <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
@@ -26,11 +26,11 @@ function Layout(props: any)
             <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
             <MenuItem name="Usuários" to="/users" icon={IoPeople} />
         </div>
-        <div className="w-full h-screen">
+        <div className="w-full h-full h-max-screen overflow-auto">
             <div className="header w-full">
                 <div className="bg-blue-500 w-full h-14 px-24"></div>
             </div>
-            <div className="w-full h-full lg:px-24 lg:py-8 px-4 py-12 ">
+            <div className="w-full h-full lg:px-24 lg:py-8 px-4 py-12">
                 {props.children}
             </div>
         </div>

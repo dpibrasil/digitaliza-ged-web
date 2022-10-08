@@ -21,7 +21,7 @@ class Database extends Dexie {
 
     async sync()
     {
-        console.log('SINCRONIZANDO COM SERVIDOR')
+        console.log('Sincronizando com servidor')
         await this.organizations.clear()
         const {data: organizations} = await api.get('/organizations')
         for (const organization of organizations) await this.organizations.put(organization, organization.id)
