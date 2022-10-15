@@ -55,11 +55,21 @@ function Search()
         <Form onSubmit={handleSubmit}>
             <h1 className="text-lg font-semibold mb-4">Pesquisa de documentos</h1>
             <div className="bg-neutral-100 rounded-lg p-4 w-full grid grid-flow-col gap-4">
-                <Input name="createdAt" type="datetime-local" label="Intervalo de data de criação" />
-                <SelectInput name="userId" label="Usuário">
+                <Input
+                    background="white"
+                    name="createdAt"
+                    type="datetime-local"
+                    label="Intervalo de data de criação"
+                />
+                <SelectInput
+                    background="white"
+                    name="userId"
+                    label="Usuário"
+                >
                     <option>Teste</option>
                 </SelectInput>
                 <SelectInput
+                    background="white"
                     placeholder="Selecione uma empresa"
                     name="organizationId"
                     label="Empresa"
@@ -68,6 +78,7 @@ function Search()
                     {organizations?.map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
                 </SelectInput>
                 <SelectInput
+                    background="white"
                     placeholder="Selecione um diretório"
                     name="directoryId"
                     label="Diretório"

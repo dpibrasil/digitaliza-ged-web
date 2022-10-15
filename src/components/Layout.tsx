@@ -22,7 +22,7 @@ function Layout(props: any)
             <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
             <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
             <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
-            <MenuItem name="Empresas" to="/clients" icon={IoBusiness} />
+            <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
             <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
             <MenuItem name="Usuários" to="/users" icon={IoPeople} />
         </div>

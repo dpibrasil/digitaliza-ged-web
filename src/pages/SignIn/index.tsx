@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import  { useRef } from "react";
 import { AuthInput as Input } from "../../components/Input";
 import { Form } from '@unform/web';
 import * as Yup from 'yup';

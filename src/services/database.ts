@@ -26,9 +26,11 @@ class Database extends Dexie {
         const {data: organizations} = await api.get('/organizations')
         for (const organization of organizations) await this.organizations.put(organization, organization.id)
 
+        await this.directories.clear()
         const {data: directories} = await api.get('/directories')
         for (const directory of directories) await this.directories.put(directory, directory.id)
 
+        await this.directoryIndexes.clear()
         const {data: indexes} = await api.get('/directory-indexes')
         for (const index of indexes) await this.directoryIndexes.put(index, index.id)
     }

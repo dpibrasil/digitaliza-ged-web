@@ -11,22 +11,27 @@ select {
     -webkit-appearance: none;
 }
 
-#search-results thead th {
-    color: #aaa;
-    font-weight: 500;
+table * {
+    font-size: 13px;
 }
 
-#search-results td, #search-results th {
+table thead th {
+    color: #aaa;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+table td, table th {
     border-bottom: 1px solid #e6e6e6;
     text-align: left;
     font-weight: 400;
     padding: 8px 0;
 }
 
-#search-results td {
-    color: #aaa;
+table td {
+    color: #000;
 }
 
-#search-results th {
-    color: #000;
+table th {
+    font-weight: 600;
 }
