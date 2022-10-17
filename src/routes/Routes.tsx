@@ -1,6 +1,7 @@
 import React from "react";
 import {BrowserRouter, Navigate, Route, Routes as RouterRoutes} from 'react-router-dom'
 import { useAuth } from "../context/AuthContext";
+import DocumentEdit from "../pages/DocumentEdit";
 import Organization from "../pages/Organization";
 import Organizations from "../pages/Organizations";
 import Search from "../pages/Search";
@@ -21,6 +22,7 @@ function Routes()
                 <Route index element={<Search />} />
                 <Route path="organizations" element={<Organizations />} />
                 <Route path="organizations/:organizationId" element={<Organization />} />
+                <Route path="/documents/create" element={<DocumentEdit />} />
             </> : <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />}
         </RouterRoutes>
     </BrowserRouter>

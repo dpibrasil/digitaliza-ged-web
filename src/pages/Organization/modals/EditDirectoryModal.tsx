@@ -66,38 +66,11 @@ function CreateDirectoryModal({organization, directory, ...rest}: ModalType & {o
         <ModalTitle title="Criar diretório" subtitle="Preencha os campos corretamente abaixo" />
         <div className="mt-10">
             <StepByStep.Container elementClassName="min-w-[400px] min-h-[300px]">
-                <StepByStep.Step name="Criação de diretório" subtitle="Configurações do diretório">
-                    <Form onSubmit={() => {}}>
-                        <Input
-                            label="Nome do diretório"
-                            placeholder="Ex.: Licitações"
-                            name="name"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                        />
-                    </Form>
-                    <h1 className="text-neutral-600 text-[12px]">Criando o diretório em: {organization.name}</h1>
-                    <div className="flex items-center justify-center">
-                        <img className="w-[250px]" src={process.env.PUBLIC_URL + '/static/add.png'} />
-                    </div>
+                <StepByStep.Step name="Teste">
+                    1
                 </StepByStep.Step>
-                <StepByStep.Step name="Índices" subtitle="Crie os índices">
-                    <DirectoryIndexEdit setIndex={setIndex} />
-                </StepByStep.Step>
-                <StepByStep.Step name="Revisão" subtitle="Revise o diretório">
-                    {editingIndex === -1 ? <>
-                        <h1 className="font-semibold">Relatórios</h1>
-                        <div className="grid grid-flow-row mt-3 gap-y-2">
-                            {Object.values(indexes).map((index: any) => <IndexPreview key={index.key} index={index} setEditingIndex={setEditingIndex} />)}
-                        </div>
-                    </> : <DirectoryIndexEdit index={indexes[editingIndex]} setIndex={setIndex} />}
-                </StepByStep.Step>
-                <StepByStep.Step name="Diretório criado" subtitle="Diretório criado">
-                    <div className="flex flex-col items-center justify-center">
-                        <button onClick={handleSubmit}>Enviar formulário</button>
-                        <h1 className="font-semibold text-lg mb-4">O diretório foi criado</h1>
-                        <img className="h-64" src={process.env.PUBLIC_URL + '/static/job-done.png'} />
-                    </div>
+                <StepByStep.Step name="Teste 2">
+                    2
                 </StepByStep.Step>
             </StepByStep.Container>
         </div>
