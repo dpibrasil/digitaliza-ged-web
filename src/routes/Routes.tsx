@@ -1,6 +1,10 @@
-import React from "react";
 import {BrowserRouter, Navigate, Route, Routes as RouterRoutes} from 'react-router-dom'
 import { useAuth } from "../context/AuthContext";
+<<<<<<< HEAD
+=======
+import DocumentEdit from "../pages/DocumentEdit";
+import DocumentView from "../pages/DocumentView";
+>>>>>>> e483933 (Document e search view)
 import Organization from "../pages/Organization";
 import Organizations from "../pages/Organizations";
 import Search from "../pages/Search";
@@ -20,6 +24,7 @@ function Routes()
             </Route>
             {auth.authenticated ? <>
                 <Route index element={<Search />} />
+                <Route path="documents/:documentId" element={<DocumentView />} />
                 <Route path="organizations" element={<Organizations />} />
                 <Route path="organizations/:organizationId" element={<Organization />} />
                 <Route path="Users" element={<Users />} />

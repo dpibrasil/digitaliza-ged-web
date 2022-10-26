@@ -15,12 +15,16 @@
     "axios": "^0.27.2",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
+    "rc-dropdown": "^4.0.1",
     "react": "^18.2.0",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
+<<<<<<< HEAD
     "react-icons": "^4.6.0",
+=======
+    "react-icons": "^4.4.0",
+    "react-pdf": "^5.7.2",
+>>>>>>> e483933 (Document e search view)
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
     "react-use": "^17.4.0",
@@ -56,6 +60,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/react-pdf": "^5.7.2",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.17",
     "tailwindcss": "^3.1.8"

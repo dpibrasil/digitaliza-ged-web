@@ -1,12 +1,16 @@
 import React from "react";
 import { IoChevronBack, IoChevronForward, IoCreateOutline, IoDownloadOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import { displayIndex } from "../services/helpers";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
 import { SelectInput } from "./Input";
 
 export function ResultsTable({searchResult}: {searchResult: any})
 {
+    const navigate = useNavigate()
     if (searchResult.total === 0) return <h1 className="text-base text-center">Nenhum resultado encontrado.</h1>
+
+    console.log(searchResult.results)
 
     return <table id="search-results" className="w-full text-sm">
         <thead>
@@ -28,7 +32,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                     <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
                         <IoDownloadOutline />
                     </div>
-                    <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                    <div onClick={() => navigate('/documents/' + result.documentId)} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
                         <IoCreateOutline />
                     </div>
                 </td>

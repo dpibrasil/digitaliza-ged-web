@@ -35,3 +35,22 @@ table td {
 table th {
     font-weight: 600;
 }
+
+table.indexes-table {
+    width: 100%;
+}
+
+table.indexes-table th, table.indexes-table td {
+    border: 0;
+    font-size: 14px;
+}
+
+table.indexes-table th {
+    color: #FFF;
+    text-align: start;
+}
+
+table.indexes-table td {
+    color: #50CD89;
+    text-align: right;
+}
