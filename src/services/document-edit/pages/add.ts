@@ -8,6 +8,7 @@ type AddType = 'file'|'scanner'|'url'
 async function add(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: number) {
     const db = new Database()
     var sequence = position ?? Math.max(1, ...((await db.workingDocumentPages.toArray()).map(p => p.sequence)))
+    const x = Math.pow(10, -documents.length.toString().length - 1)
 
     for (const document of documents) {
         const pdf = await PDFDocument.load(document)
@@ -18,7 +19,7 @@ async function add(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: nu
             const [page] = await pagePdf.copyPages(pdf, [i])
             pagePdf.addPage(page)
             const pageb64 = await pagePdf.saveAsBase64()
-            sequence++
+            sequence = sequence + x
             pages.push({
                 type: 'base64',
                 data: pageb64,
