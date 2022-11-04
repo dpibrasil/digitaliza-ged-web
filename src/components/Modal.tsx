@@ -19,7 +19,7 @@ export interface ModalType {
 
 function Modal(props: ModalType)
 {
-    return <div className="fixed top-0 left-0 bg-black/25 w-screen h-screen flex items-center justify-center">
+    return <div className="fixed top-0 left-0 bg-black/25 w-screen h-screen flex items-center justify-center z-50">
         <div className="drop-shadow-xl bg-white p-4 rounded-lg">
             <button onClick={() => props.setShow(false)} className="bg-neutral-200 hover:bg-neutral-300 text-neutral-500 cursor-pointer p-1 rounded float-right">
                 <IoClose />

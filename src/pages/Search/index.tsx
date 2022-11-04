@@ -2,7 +2,7 @@ import { Form } from "@unform/web";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useState } from "react";
 import {  IoSearch } from "react-icons/io5";
-import { IndexInput, Input, SelectInput } from "../../components/Input";
+import { SearchIndexInput, Input, SelectInput } from "../../components/Input";
 import Layout from "../../components/Layout";
 import { Pagination, ResultsTable } from "../../components/SearchComponents";
 import api from "../../services/api";
@@ -90,7 +90,7 @@ function Search()
             {directory && <>
                 <h1 className="text-lg font-semibold mt-6">Índices</h1>
                 <div className="bg-neutral-100 rounded-lg p-4 w-full mt-4 grid grid-flow-col justify-start gap-4">
-                    {directory.indexes.map((index: DirectoryIndexType) => <IndexInput key={index.id} index={index} />)}
+                    {directory.indexes.map((index: DirectoryIndexType) => <SearchIndexInput key={index.id} index={index} />)}
                 </div>
                 <div className="flex w-full justify-end">
                     <button className="bg-green-500 py-2 px-3 text-white rounded flex flex-row align-center justify-center mt-2">

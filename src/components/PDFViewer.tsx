@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IoArrowBack, IoArrowDown, IoArrowForward, IoArrowUp, IoCreate, IoDownload, IoReload, IoSearch } from 'react-icons/io5';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 import api from '../services/api';
+import { downloadData } from '../services/download';
 import { DocumentType } from '../types/DocumentTypes';
 
 type PDFViewer = {
@@ -23,15 +24,7 @@ function PDFViewer({url, document}: PDFViewer)
 
     async function handleDownload() {
         const response = await api.get(url, { responseType: 'blob' })
-        const blob = new File([response.data], 'document-' + document.id)
-        const objURL = window.URL.createObjectURL(new Blob([blob]),)
-        const link = window.document.createElement('a')
-        link.href = objURL
-        link.setAttribute('download', `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.pdf`)
-        window.document.body.appendChild(link)
-        link.click()
-
-        if (link.parentNode) link.parentNode.removeChild(link)
+        downloadData(response.data, `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.pdf`)
     }
 
     return <div className="col-span-5">

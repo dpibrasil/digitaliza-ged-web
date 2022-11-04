@@ -81,7 +81,9 @@ export function SelectInput({label, placeholder, children, width, name, backgrou
     </div>
 }
 
-function IndexInputInput({indexName, index}: {indexName: string, index: DirectoryIndexType})
+type IndexInputBase = {indexName: string, index: DirectoryIndexType}
+
+export function IndexInputBase({indexName, index}: IndexInputBase)
 {
     if (index.type === 'string') {
         return <Input background="white" type="text" name={indexName} />
@@ -113,7 +115,16 @@ function IndexInputInput({indexName, index}: {indexName: string, index: Director
     }
 }
 
-export function IndexInput({index}: {index: DirectoryIndexType})
+export function IndexInput({indexName, index}: IndexInputBase) {
+    return <div>
+        <label className="text-xs font-semibold mb-1 text-primary-text">{index.name}</label>
+        <div className="bg-neutral-200 rounded">
+            <IndexInputBase indexName={indexName} index={index} />
+        </div>
+    </div>
+}
+
+export function SearchIndexInput({index}: {index: DirectoryIndexType})
 {
     const [isInterval, setIsInterval] = useState(false)
     const indexName = 'indexes.index' + index.id
@@ -134,9 +145,9 @@ export function IndexInput({index}: {index: DirectoryIndexType})
             </SelectInput>
             <div className="ml-1">
                 {isInterval ? <div className="grid auto-col-max grid-flow-col gap-x-1">
-                    <IndexInputInput indexName={indexName + '.value[0]'} index={index} />
-                    <IndexInputInput indexName={indexName + '.value[1]'} index={index} />
-                </div>: <IndexInputInput indexName={indexName + '.value'} index={index} />}
+                    <IndexInputBase indexName={indexName + '.value[0]'} index={index} />
+                    <IndexInputBase indexName={indexName + '.value[1]'} index={index} />
+                </div>: <IndexInputBase indexName={indexName + '.value'} index={index} />}
             </div>
         </div>
     </div>

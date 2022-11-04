@@ -9,6 +9,19 @@ export interface WorkingDocumentPageType
     data: any
 }
 
+export interface DocumentQueueType
+{
+    id?: number,
+    documentId?: number,
+    directoryId: number,
+    data: any,
+	indexes: object,
+	synced: boolean,
+	fail?: string,
+	createdAt: Date,
+	lastSync?: Date
+}
+
 interface DocumentIndexType extends DirectoryIndexType {
 	value: any
 }

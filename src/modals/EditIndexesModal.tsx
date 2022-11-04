@@ -1,10 +1,11 @@
 import { Form } from "@unform/web";
 import { useEffect, useRef, useState } from "react";
-import { Input } from "../components/Input";
+import { IndexInput, SelectInput } from "../components/Input";
 import Modal, { ModalTitle, ModalType } from "../components/Modal";
 import api, { catchApiErrorMessage } from "../services/api";
 import { DirectoryType } from "../types/OrganizationTypes";
-import * as Yup from 'yup';
+import Database from "../services/database";
+import { useLiveQuery } from "dexie-react-hooks";
 
 type EditIndexesModalProps = {
     directoryId: number,
@@ -12,20 +13,37 @@ type EditIndexesModalProps = {
     handleSubmit: (data: any) => void
 }
 
-function EditIndexesModal({directoryId, values, handleSubmit, ...props}: ModalType & EditIndexesModalProps)
+function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit, ...props}: ModalType & EditIndexesModalProps)
 {   
+    const db = new Database()
     const formRef = useRef<any>(null)
     const [indexes, setIndexes] = useState<DirectoryType[]|undefined>()
 
+    const [organizationId, setOrganizationId] = useState(0)
+    const [directoryId, setDirectoryId] = useState<number>(defaultDirectoryId)
+    const organizations = useLiveQuery(() => db.organizations.toArray())
+    const directories = useLiveQuery(() => db.directories.where({organizationId}).toArray(), [organizationId])
+
+    // sempre desseleciona diretório quando atualiza empresa
+    useEffect(() => setDirectoryId(0), [organizationId])
+
+    // busca indíces quando atualiza diretório
     useEffect(() => {
-        api.get('/directories/' + directoryId)
-        .then(({data}) => setIndexes(data.indexes))
-        .catch(catchApiErrorMessage)
+        if (directoryId) {
+            api.get('/directories/' + directoryId)
+            .then(({data}) => setIndexes(data.indexes))
+            .catch(catchApiErrorMessage)
+        } else {
+            setIndexes([])
+        }
     }, [directoryId])
 
+    // coloca valor padrão nos índices
     useEffect(() => {
-        const defaultValue: any = Object.fromEntries(values.map(value => (['index-' + value.id, value.value])))
-        formRef.current.setData(defaultValue)
+        if (values) {
+            const defaultValue: any = Object.fromEntries(values.map(value => (['index-' + value.id, value.value])))
+            formRef.current.setData(defaultValue)
+        }
     }, [values, formRef.current])
 
     async function validate(data: any) {
@@ -36,7 +54,27 @@ function EditIndexesModal({directoryId, values, handleSubmit, ...props}: ModalTy
     return <Modal {...props}>
         <ModalTitle title="Editando índices" />
         <Form ref={formRef} onSubmit={validate}>
-            {indexes && indexes.map(index => <Input name={'index-' + index.id} label={index.name} type="text" />)}
+            {!defaultDirectoryId && <>
+                <SelectInput
+                    name="organizationId"
+                    value={organizationId}
+                    onChange={(event) => setOrganizationId(Number(event.target.value))}
+                    label="Empresa"
+                >
+                    <option value={0}>---</option>
+                    {organizations?.map(organization => <option value={organization.id}>{organization.name}</option>)}
+                </SelectInput>
+                <SelectInput
+                    name="directoryId"
+                    value={directoryId}
+                    onChange={(event) => setDirectoryId(Number(event.target.value))}
+                    label="Diretório"
+                >
+                    <option value={0}>---</option>
+                    {directories?.map(directory => <option value={directory.id}>{directory.name}</option>)}
+                </SelectInput>
+            </>}
+            {indexes && indexes.map((index: any) => <IndexInput index={index} indexName={'index-' + index.id} />)}
             <button className="bg-green-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
         </Form>
     </Modal>

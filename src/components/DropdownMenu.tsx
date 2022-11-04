@@ -1,6 +1,6 @@
 function Container(props: any)
 {
-    return <div className="absolute bg-white rounded">
+    return <div className="bg-white rounded">
         {props.children}
     </div>
 }

@@ -58,7 +58,7 @@ function DirectoryIndexEdit({setIndex, index}: DirectoryIndexEditProps)
                 <option value="string">Texto</option>
                 <option value="number">Númerico</option>
                 <option value="boolean">Boolean (Sim/Não)</option>
-                <option value="select">Selecionar (lista)</option>
+                <option value="list">Selecionar (lista)</option>
                 <option value="datetime">Data e hora</option>
             </SelectInput>
             <SelectInput

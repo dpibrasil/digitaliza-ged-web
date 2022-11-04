@@ -15,16 +15,13 @@
     "axios": "^0.27.2",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
+    "pdf-lib": "^1.17.1",
     "rc-dropdown": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
-<<<<<<< HEAD
     "react-icons": "^4.6.0",
-=======
-    "react-icons": "^4.4.0",
     "react-pdf": "^5.7.2",
->>>>>>> e483933 (Document e search view)
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
     "react-use": "^17.4.0",
