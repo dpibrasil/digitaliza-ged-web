@@ -40,14 +40,18 @@ const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsTe
 const getDataBy: any = {
     file: function()
     {
+        let lock = false
+
         const input = window.document.createElement('input')
         input.type = 'file'
         input.classList.add('hidden')
         input.multiple = true
         input.accept = '.pdf'
+
         return new Promise((resolve) => {
             // file changed
             input.addEventListener('change', async (event: any) => {
+                lock = true
                 const files = []
                 for (const file of event.target.files) {
                     files.push(await readFile(file))
@@ -57,10 +61,12 @@ const getDataBy: any = {
             input.click()
 
             // cancel event
-            window.document.body.onfocus = () => {
-                window.document.body.onfocus = null
-                resolve(false)
-            }
+            window.addEventListener('focus', () => {
+                setTimeout(() => {
+                    input.remove()
+                    if (!lock) resolve(false)
+                }, 300)
+            }, { once: true })
         })
     }
 }
@@ -69,7 +75,7 @@ export default async function (by: AddType, position?: number) {
     console.log('ADICIONANDO PÁGINA DE ' + by)
     toast.promise((async () => {
         const data = await getDataBy[by]()
-        if (!data || !data.length) return toast.error('Nenhum documento selecionado.')
+        if (!data || !data.length) throw Error('Nenhuma página selecionada.')
         console.log(data)
         await add(data, position)
         await syncSequence()
