@@ -6,51 +6,21 @@ import DropdownMenu from "../../components/DropdownMenu";
 import Layout from "../../components/Layout";
 import Database from "../../services/database";
 import documentEdit from "../../services/document-edit/pages";
-import b64toBlob from "../../services/document-edit/b64toBlob";
-import { DocumentType, WorkingDocumentPageType } from "../../types/DocumentTypes";
-import { Document, Page as DocumentPage } from 'react-pdf/dist/esm/entry.webpack';
+import { DocumentType } from "../../types/DocumentTypes";
 import { downloadBase64 } from "../../services/download";
 import { useParams } from "react-router-dom";
 import api from "../../services/api";
 import EditIndexesModal from "../../modals/EditIndexesModal";
 import { ModalSwitch } from "../../components/Modal";
-import p from "../../services/document-edit/pages";
-
-const db = new Database()
-
-function Page({id, sequence, data}: WorkingDocumentPageType)
-{
-    const blob = b64toBlob(data)
-    const url = URL.createObjectURL(blob)
-
-    function handleDelete() {
-        if (id) documentEdit.delete(id)
-    }
-
-    return <Dropdown
-        trigger={['click']}
-        overlay={<DropdownMenu.Container>
-            <DropdownMenu.Item onClick={handleDelete} name="Deletar" />
-            <DropdownMenu.Item name="Girar" />
-        </DropdownMenu.Container>}
-        animation="slide-up"
-    >
-        <div className="flex w-[200px] flex-col items-center justify-center">
-            <div className="bg-blue-500 w-[160px] h-[200px] flex rounded-lg items-center justify-center">
-                <Document file={{url}}>
-                    <DocumentPage height={190} pageNumber={1} />
-                </Document>
-            </div>
-            <h1 className="text-center">{sequence}</h1>
-        </div>
-    </Dropdown>
-}
+import Page from "./Page";
+import toast from "react-hot-toast";
 
 function DocumentEdit()
 {
+    const db = new Database()
     const [document, setDocument] = useState<DocumentType|null>(null)
     const params = useParams()
-    const db = new Database()
+    const pages = useLiveQuery(() => db.workingDocumentPages.toArray())
 
     useEffect(() => {
         if (params.documentId) {
@@ -59,12 +29,7 @@ function DocumentEdit()
         }
     }, [params])
 
-    const pages = useLiveQuery(() => db.workingDocumentPages.toArray())
-
-    async function exportPdf()
-    {
-        downloadBase64(await documentEdit.export('base64'), 'preview.pdf')
-    }
+    const exportPdf = async () => downloadBase64(await documentEdit.export('base64'), 'preview.pdf') 
 
     async function handleSave(data: any)
     {
@@ -76,13 +41,39 @@ function DocumentEdit()
         }
     }
 
+    function getSelectedPages()
+    {
+        const inputs = window.document.querySelectorAll('input[type="checkbox"][name="page"]')
+        const selectedPages = Array.from(inputs).filter((i: any) => i.checked).map((i: any) => Number(i.value))
+        if (!selectedPages.length) {
+            toast.error('Nenhuma página selecionada')
+            return false
+        }
+        return selectedPages
+    }
+
+    async function deletePages()
+    {
+        const selectedPages = getSelectedPages()
+        if (!selectedPages) return
+
+        if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length == 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
+
+        const promise = documentEdit.delete(selectedPages)
+        toast.promise(promise, {
+            error: (e) => e.message,
+            loading: 'Deletando páginas...',
+            success: 'Páginas deletadas com sucesso!'
+        })
+    }
+
     return <Layout>
         <h1 className="text-lg font-semibold mb-3">{document ? `Editando documento de ${document.organization.name} com ID ${document.id}` : 'Editando novo arquivo'}</h1>
         <div className="grid grid-flow-col gap-x-2 text-slate-500 text-sm items-center justify-start mb-3 border-slate-200 border-b pb-3">
             <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200">
                 <IoReload size={20} />
                 <IoReload size={20} />
-                <IoTrash size={20} />
+                <IoTrash onClick={deletePages} size={20} />
             </div>
             <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
                 Exportar
@@ -91,9 +82,9 @@ function DocumentEdit()
             <Dropdown
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
-                    <DropdownMenu.Item onClick={() => p.add('url')} name="A partir da URL" />
-                    <DropdownMenu.Item onClick={() => p.add('scanner')} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => p.add('file')} name="A partir do arquivo" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('url')} name="A partir da URL" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('scanner')} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('file')} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >
