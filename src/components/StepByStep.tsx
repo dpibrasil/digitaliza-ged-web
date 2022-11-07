@@ -29,7 +29,7 @@ function Container({elementClassName, ...props}: ContainerProps)
         <div className="border-r border-slate-200">
             <div className="grid grid-flow-row gap-y-8 pr-4 h-0">
                 {steps.map(step => <div onClick={() => setCurrentStep(step.index)} key={step.index} className="flex flex-row items-center justify-start cursor-pointer">
-                    <div className={`w-10 h-10 flex items-center justify-center bg-${step.index == currentStep ? 'blue-500 text-white' : 'neutral-200 text-blue-500'} rounded-lg`}>{step.index}</div>
+                    <div className={`w-10 h-10 flex items-center justify-center bg-${step.index === currentStep ? 'blue-500 text-white' : 'neutral-200 text-blue-500'} rounded-lg`}>{step.index}</div>
                     <div className="flex flex-col ml-3">
                         <h1 className="text-sm font-medium">{step.name}</h1>
                         {!!step.subtitle && <h2 className="text-[11px] font-normal">{step.subtitle}</h2>}

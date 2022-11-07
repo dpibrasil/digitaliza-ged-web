@@ -8,7 +8,7 @@ type PdfType<ExportType> =
     ExportType extends 'buffer' ? Uint8Array :
     never
 
-export default async function (exportType: ExportType = 'base64', deletePages: boolean = true): Promise<PdfType<ExportType>|any>
+export default async function _export(exportType: ExportType = 'base64', deletePages: boolean = true): Promise<PdfType<ExportType>|any>
 {
     const pdf = await PDFDocument.create()
     const db = new Database()

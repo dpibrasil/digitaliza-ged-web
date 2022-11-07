@@ -1,6 +1,6 @@
 function Container(props: any)
 {
-    return <div className="bg-white rounded">
+    return <div className="bg-white rounded-lg max-w-max">
         {props.children}
     </div>
 }
@@ -12,4 +12,6 @@ function Item({name, ...rest}: React.HTMLAttributes<HTMLDivElement> & {name: str
     </div>
 }
 
-export default {Container, Item}
+const DropdownMenu = { Container, Item }
+
+export default DropdownMenu

@@ -5,7 +5,7 @@ import { IoArrowForward, IoCloudUpload, IoDocumentAttach, IoPrint, IoReload, IoT
 import DropdownMenu from "../../components/DropdownMenu";
 import Layout from "../../components/Layout";
 import Database from "../../services/database";
-import documentEdit from "../../services/document-edit/pages";
+import * as documentEdit from "../../services/document-edit/pages";
 import { DocumentType } from "../../types/DocumentTypes";
 import { downloadBase64 } from "../../services/download";
 import { useParams } from "react-router-dom";

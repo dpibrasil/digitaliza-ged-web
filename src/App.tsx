@@ -1,5 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
 import Routes from "./routes/Routes";
@@ -19,7 +19,7 @@ function App()
         if (auth.authenticated) {
             db.sync()
         }
-    }, [auth.authenticated])
+    }, [auth.authenticated, db])
 
     return <>
         <Routes />

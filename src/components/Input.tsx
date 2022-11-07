@@ -42,11 +42,11 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
             name: fieldName,
             ref: inputRef.current,
             setValue: (target, value) => {
-                target[rest.type == 'checkbox' ? 'checked' : 'value'] = value
+                target[rest.type === 'checkbox' ? 'checked' : 'value'] = value
             },
             getValue: (target) => {
-                if (rest.type == 'number' && target.value == '') return null
-                return target[rest.type == 'checkbox' ? 'checked' : 'value']
+                if (rest.type === 'number' && target.value === '') return null
+                return target[rest.type === 'checkbox' ? 'checked' : 'value']
             }
         })
     }, [fieldName, registerField])

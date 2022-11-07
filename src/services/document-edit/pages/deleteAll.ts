@@ -1,6 +1,6 @@
 import Database from "../../database";
 
-export default async function () {
+export default async function deleteAll() {
     const db = new Database()
     const pages = await db.workingDocumentPages.toArray()
 

@@ -62,7 +62,7 @@ function Organization()
                 </div>
             </div>
             <div className="grid grid-flow-col mt-4 gap-6">
-                {organization.directories.length == 0 && <ModalSwitch modalProps={{organization}} modal={CreateDirectoryModal} button={(props: any) => <div {...props} className="bg-neutral-100 text-slate-400 hover:text-slate-700 cursor-pointer rounded-xl p-8 flex items-center justify-center flex-col">
+                {organization.directories.length === 0 && <ModalSwitch modalProps={{organization}} modal={CreateDirectoryModal} button={(props: any) => <div {...props} className="bg-neutral-100 text-slate-400 hover:text-slate-700 cursor-pointer rounded-xl p-8 flex items-center justify-center flex-col">
                     <IoAdd size={81} />
                     <h1 className="font-semibold mt-2">Criar diretório</h1>
                 </div>} />}

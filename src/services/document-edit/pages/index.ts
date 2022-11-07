@@ -1,7 +1,5 @@
-import add from "./add";
-import save from "./save";
-import deleteAll from "./deleteAll";
-import _delete from "./delete";
-import _export from "./export";
-
-export default { add, deleteAll, delete: _delete, export: _export, save }
+export {default as add} from "./add";
+export {default as save} from "./save";
+export {default as deleteAll} from "./deleteAll";
+export {default as delete} from "./delete";
+export {default as export} from "./export";

@@ -14,9 +14,15 @@ function Organizations()
     const [organizations, {push: addOrganization, set: setOrganizations}] = useList<OrganizationType>()
 
     useEffect(() => {
-        api.get('/organizations')
-        .then(({data}) => setOrganizations(data))
-        .catch(e => toast.error(catchApiErrorMessage(e)))
+        async function getOrganizations() {
+            try{
+                const {data} = await api.get('/organizations')
+                setOrganizations(data)
+            } catch (e) {
+                toast.error(catchApiErrorMessage(e))
+            }
+        }
+        getOrganizations()
     }, [])
 
     return <Layout>

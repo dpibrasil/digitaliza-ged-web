@@ -3,7 +3,7 @@ import { WorkingDocumentPageType } from "../../types/DocumentTypes";
 import { Document, Page as DocumentPage } from 'react-pdf/dist/esm/entry.webpack';
 import { IoAdd, IoReload, IoTrash } from "react-icons/io5"
 import { useState } from "react";
-import documentEdit from "../../services/document-edit/pages";
+import {delete as deletePage} from "../../services/document-edit/pages";
 
 export default function Page({id, sequence, data}: WorkingDocumentPageType)
 {
@@ -12,7 +12,7 @@ export default function Page({id, sequence, data}: WorkingDocumentPageType)
     const url = URL.createObjectURL(blob)
 
     function handleDelete() {
-        if (id) documentEdit.delete(id)
+        if (id) deletePage(id)
     }
 
     const handleClick = () => setShowOptions(!showOptions)

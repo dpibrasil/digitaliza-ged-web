@@ -1,6 +1,6 @@
 import Database from "../../database"
 
-export default async function()
+export default async function syncSequence()
 {
     const db = new Database()
     var i = 0

@@ -5,12 +5,12 @@ import api from '../services/api';
 import { downloadData } from '../services/download';
 import { DocumentType } from '../types/DocumentTypes';
 
-type PDFViewer = {
+type PDFViewerType = {
     url: string,
     document: DocumentType
 }
 
-function PDFViewer({url, document}: PDFViewer)
+function PDFViewer({url, document}: PDFViewerType)
 {
     const [numPages, setNumPages] = useState(0)
     const [pageNumber, setPageNumber] = useState(1)

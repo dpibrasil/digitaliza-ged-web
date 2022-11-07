@@ -5,7 +5,7 @@ import syncSequence from './syncSequence'
 
 type AddType = 'file'|'scanner'|'url'
 
-async function add(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: number) {
+async function processDocument(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: number) {
     const db = new Database()
     var sequence = position ?? Math.max(1, ...((await db.workingDocumentPages.toArray()).map(p => p.sequence)))
     const x = Math.pow(10, -documents.length.toString().length - 1)
@@ -71,13 +71,13 @@ const getDataBy: any = {
     }
 }
 
-export default async function (by: AddType, position?: number) {
+export default async function add(by: AddType, position?: number) {
     console.log('ADICIONANDO PÁGINA DE ' + by)
     toast.promise((async () => {
         const data = await getDataBy[by]()
         if (!data || !data.length) throw Error('Nenhuma página selecionada.')
         console.log(data)
-        await add(data, position)
+        await processDocument(data, position)
         await syncSequence()
     })(), {
         loading: 'Adicionando documento...',

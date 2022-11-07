@@ -1,7 +1,7 @@
 import Database from "../../database"
 import _export from "./export"
 
-export default async function(directoryId: number, indexes: any)
+export default async function save(directoryId: number, indexes: any)
 {
     const db = new Database()
     const fileData = await _export('buffer')
