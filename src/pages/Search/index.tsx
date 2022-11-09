@@ -1,13 +1,15 @@
 import { Form } from "@unform/web";
 import { useLiveQuery } from "dexie-react-hooks";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {  IoSearch } from "react-icons/io5";
 import { SearchIndexInput, Input, SelectInput } from "../../components/Input";
 import Layout from "../../components/Layout";
 import { Pagination, ResultsTable } from "../../components/SearchComponents";
-import api from "../../services/api";
+import api, { catchApiErrorMessage } from "../../services/api";
 import Database from "../../services/database";
 import { DirectoryIndexType, DirectoryType } from "../../types/OrganizationTypes";
+import { UserType } from "../../types/UserTypes";
 
 function Search()
 {
@@ -15,6 +17,13 @@ function Search()
     const [directoryId, setDirectoryId] = useState(0)
     const [searchResult, setSearchResult] = useState<any>()
     const [searchQuery, setSearchQuery] = useState<any>()
+    const [users, setUsers] = useState<UserType[]|null>(null)
+
+    useEffect(() => {
+        api.get('/users')
+        .then(({data}) => setUsers(data))
+        .catch(e => toast.error(catchApiErrorMessage(e)))
+    }, [])
 
     const db = new Database()
     const organizations = useLiveQuery(() => db.organizations.toArray())
@@ -46,6 +55,8 @@ function Search()
                 }
             }
         }
+        if (data.userId === '---') delete data.userId
+
         const {data: results} = await api.post('/documents/search', data)
         setSearchResult(results)
         setSearchQuery(data)
@@ -65,8 +76,9 @@ function Search()
                     background="white"
                     name="userId"
                     label="Usuário"
+                    placeholder="---"
                 >
-                    <option>Teste</option>
+                    {users?.map(user => <option key={user.id}>{user.name}</option>)}
                 </SelectInput>
                 <SelectInput
                     background="white"
