@@ -3,11 +3,19 @@ import { DirectoryIndexType } from "../types/OrganizationTypes";
 export function displayIndex(index: DirectoryIndexType, indexValue: any) {
 
     if ([null, '', undefined].includes(indexValue)) return null
+    if (index.displayAs === null) return indexValue
 
     // Boleano
     if (index.type === 'boolean') return Boolean(indexValue) ? 'Sim' : 'Não'
 
-    if (index.displayAs === null) return indexValue
+    // Date
+    if (index.type === 'datetime') {
+        if (index.displayAs !== 'date') {
+            return new Date(indexValue).toLocaleDateString()
+        } else {
+            return new Date(indexValue).toLocaleString()
+        }
+    }
 
     // Valor em reais
     if (index.displayAs === 'brl-money') return parseFloat(indexValue).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
