@@ -99,7 +99,7 @@ function Search()
                     {directories?.map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
                 </SelectInput>
             </div>
-            {directory && <>
+            {directory ? <>
                 <h1 className="text-lg font-semibold mt-6">Índices</h1>
                 <div className="bg-neutral-100 rounded-lg p-4 w-full mt-4 grid grid-flow-col justify-start gap-4">
                     {directory.indexes.map((index: DirectoryIndexType) => <SearchIndexInput key={index.id} index={index} />)}
@@ -110,7 +110,9 @@ function Search()
                         <h1 className="text-sm ml-1">Pesquisar</h1>
                     </button>
                 </div>
-            </>}
+            </> : <div className="flex items-center justify-center mt-8">
+                <img alt="Pesquisa" style={{height: '50vh'}} src={process.env.PUBLIC_URL + '/static/search.svg'} />
+            </div>}
             {searchResult && <div className="mt-4">
                 <h1 className="text-lg font-semibold my-6">Listagem de documentos</h1>
                 <ResultsTable searchResult={searchResult} />
