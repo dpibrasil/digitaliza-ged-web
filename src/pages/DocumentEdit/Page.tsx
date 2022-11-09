@@ -4,14 +4,13 @@ import { Document, Page as DocumentPage } from 'react-pdf/dist/esm/entry.webpack
 import { IoReload, IoTrash } from "react-icons/io5"
 import {FiFilePlus} from "react-icons/fi";
 import { useMemo, useState } from "react";
-import {delete as deletePage, add as addPage, rotate as rotatePage, rotate} from "../../services/document-edit/pages";
+import {delete as deletePage, add as addPage, rotate as rotatePage} from "../../services/document-edit/pages";
 import Dropdown from "rc-dropdown";
 import DropdownMenu from "../../components/DropdownMenu";
 
 export default function Page({id, sequence, data}: WorkingDocumentPageType)
 {
     const [showOptions, setShowOptions] = useState(false)
-    const blob = b64toBlob(data)
 
     const View = useMemo(() => {
         const blob = b64toBlob(data)

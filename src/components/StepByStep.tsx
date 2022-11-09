@@ -60,4 +60,6 @@ function Step(props: StepProps)
     return <>{props.children}</>
 }
 
-export default {Container, Step}
+const StepByStep = {Container, Step}
+
+export default StepByStep;

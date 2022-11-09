@@ -1,5 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
 import Routes from "./routes/Routes";
@@ -8,7 +8,7 @@ import { syncDocumentFromQueue } from "./services/synchronization";
 
 function App()
 {
-    const db = new Database()
+    const db = useMemo(() => new Database(), [])
     const auth = useAuth()
     const documentsQueue = useLiveQuery(() => db.documentsQueue.toArray())
 

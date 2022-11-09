@@ -64,7 +64,7 @@ function DocumentEdit()
         const selectedPages = getSelectedPages()
         if (!selectedPages) return
 
-        if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length == 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
+        if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length === 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
 
         const promise = documentEdit.delete(selectedPages)
         toast.promise(promise, {

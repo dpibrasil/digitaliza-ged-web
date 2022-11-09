@@ -14,16 +14,10 @@ function Organizations()
     const [organizations, {push: addOrganization, set: setOrganizations}] = useList<OrganizationType>()
 
     useEffect(() => {
-        async function getOrganizations() {
-            try{
-                const {data} = await api.get('/organizations')
-                setOrganizations(data)
-            } catch (e) {
-                toast.error(catchApiErrorMessage(e))
-            }
-        }
-        getOrganizations()
-    }, [])
+        api.get('/organizations')
+        .then(({data}) => setOrganizations(data))
+        .catch(e => toast.error(catchApiErrorMessage(e)))
+    }, [setOrganizations])
 
     return <Layout>
         {organizations == null ? <>Carregando...</> : <>

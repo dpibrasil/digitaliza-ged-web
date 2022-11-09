@@ -44,7 +44,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
             const defaultValue: any = Object.fromEntries(values.map(value => (['index-' + value.id, value.value])))
             formRef.current.setData(defaultValue)
         }
-    }, [values, formRef.current])
+    }, [values])
 
     async function validate(data: any) {
         // todo: validate

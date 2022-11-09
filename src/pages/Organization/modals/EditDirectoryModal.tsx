@@ -81,7 +81,7 @@ function CreateDirectoryModal({organization, directory, ...rest}: ModalType & {o
                     </Form>
                     <h1 className="text-neutral-600 text-[12px]">Criando o diretório em: {organization.name}</h1>
                     <div className="flex items-center justify-center">
-                        <img className="w-[250px]" src={process.env.PUBLIC_URL + '/static/add.png'} />
+                        <img alt="Adicionar" className="w-[250px]" src={process.env.PUBLIC_URL + '/static/add.png'} />
                     </div>
                 </StepByStep.Step>
                 <StepByStep.Step name="Índices" subtitle="Crie os índices">
@@ -99,7 +99,7 @@ function CreateDirectoryModal({organization, directory, ...rest}: ModalType & {o
                     <div className="flex flex-col items-center justify-center">
                         <h1 className="font-semibold text-lg">O diretório está pronto para ser criado</h1>
                         <button className="bg-blue-500 hover:bg-blue-600 rounded p-2 text-sm text-white mb-4 mt-2" onClick={handleSubmit}>Salvar diretório</button>
-                        <img className="h-64" src={process.env.PUBLIC_URL + '/static/job-done.png'} />
+                        <img alt="Concluído" className="h-64" src={process.env.PUBLIC_URL + '/static/job-done.png'} />
                     </div>
                 </StepByStep.Step>
             </StepByStep.Container>
