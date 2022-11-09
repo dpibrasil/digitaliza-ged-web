@@ -8,6 +8,7 @@ import { ModalSwitch } from "../../components/Modal";
 import api, { catchApiErrorMessage } from "../../services/api";
 import { DirectoryType, OrganizationType } from "../../types/OrganizationTypes";
 import CreateDirectoryModal from "./modals/EditDirectoryModal";
+import EditOrganizationModal from '../Organizations/modals/EditOrganizationModal';
 
 function Organization()
 {
@@ -15,14 +16,17 @@ function Organization()
     const {organizationId} = useParams()
     const navigate = useNavigate()
 
-    useEffect(() => {
+    function updateOrganization()
+    {
         api.get('/organizations/' + organizationId)
         .then(({data}) => setOrganization(data))
         .catch(e => {
             toast.error(catchApiErrorMessage(e))
             navigate('/error/' + e.response.status)
         })
-    }, [organizationId])
+    }
+
+    useEffect(updateOrganization, [organizationId])
 
     return <Layout>
         {organization ? <>
@@ -50,7 +54,11 @@ function Organization()
                     </div>
                 </div>
                 <div className="grid grid-flow-col gap-x-2">
-                    <button className="bg-neutral-100 hover:bg-neutral-200 text-neutral-500 text-sm rounded py-2 px-4">Editar</button>
+                    <ModalSwitch
+                        modal={EditOrganizationModal}
+                        modalProps={{organization, addOrganization: updateOrganization}}
+                        button={(props: any) => <button {...props} className="bg-neutral-100 hover:bg-neutral-200 text-neutral-500 text-sm rounded py-2 px-4">Editar</button>}
+                    />
                     <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded py-2 px-4">Gerar relatório</button>
                 </div>
             </div>

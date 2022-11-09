@@ -5,8 +5,14 @@ import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
 import * as Yup from 'yup';
 import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
+import { OrganizationType } from "../../../types/OrganizationTypes";
 
-function CreateOrganizationModal(props: ModalType & {addOrganization: (data: any) => {}})
+type OrganizationModalType = {
+    addOrganization?: (data: any) => {},
+    organization?: OrganizationType
+}
+
+function EditOrganizationModal({organization, ...props}: ModalType & OrganizationModalType)
 {
     const formRef = useRef<any>(null)
     const [storages, setStorages] = useState<any[]>([])
@@ -14,6 +20,12 @@ function CreateOrganizationModal(props: ModalType & {addOrganization: (data: any
     useEffect(() => {
         api.get('/storages').then(({data}) => setStorages(data))
     }, [])
+
+    useEffect(() => {
+        if (organization && formRef.current) {
+            formRef.current.setData(organization)
+        }
+    }, [formRef, organization])
 
     async function handleSubmit(data: any) {
         // validation schema
@@ -26,14 +38,14 @@ function CreateOrganizationModal(props: ModalType & {addOrganization: (data: any
             const payload: any = await schema.validate(data, {abortEarly: false})
             
             // make request
-            const promise = api.post('/organizations', payload)
+            const promise = organization ? api.put('/organizations/' + organization.id, payload) : api.post('/organizations', payload)
             toast.promise(promise, {
-                loading: 'Criando empresa...',
+                loading: 'Salvando empresa...',
                 error: catchApiErrorMessage,
                 success: ({data}) => {
-                    props.addOrganization(data)
+                    if (props.addOrganization) props.addOrganization(data)
                     props.setShow(false)
-                    return 'Empresa criada com sucesso!'
+                    return 'Empresa salva com sucesso!'
                 }
             })
         } catch (err) {
@@ -50,10 +62,9 @@ function CreateOrganizationModal(props: ModalType & {addOrganization: (data: any
             <SelectInput label="Storage" name="storageId">
                 {storages.map(storage => <option key={storage.id} value={storage.id}>{storage.name}</option>)}
             </SelectInput>
-            <Input label="CNPJ da Empresa" name="cnpj" />
             <button className="bg-blue-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
         </Form>
     </Modal>
 }
 
-export default CreateOrganizationModal;
+export default EditOrganizationModal;

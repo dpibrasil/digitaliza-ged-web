@@ -7,7 +7,7 @@ import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
 import api, { catchApiErrorMessage } from "../../services/api";
 import { OrganizationType } from "../../types/OrganizationTypes";
-import CreateOrganizationModal from "./modals/CreateOrganizationModal";
+import EditOrganizationModal from "./modals/EditOrganizationModal";
 
 function Organizations()
 {
@@ -30,7 +30,7 @@ function Organizations()
             <div className="flex justify-between items-center">
                 <h1 className="text-lg font-semibold m-0">Empresas ({organizations.length})</h1>
                 <SearchInput />
-                <ModalSwitch modalProps={{addOrganization}} modal={CreateOrganizationModal} button={(props: any) => <button className="bg-green-500 hover:bg-green-600 text-white text-sm rounded py-2 px-4" {...props}>Criar empresa</button>} />
+                <ModalSwitch modalProps={{addOrganization}} modal={EditOrganizationModal} button={(props: any) => <button className="bg-green-500 hover:bg-green-600 text-white text-sm rounded py-2 px-4" {...props}>Criar empresa</button>} />
             </div>
             <table className="w-full mt-4">
                 <thead>
