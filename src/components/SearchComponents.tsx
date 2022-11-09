@@ -10,8 +10,6 @@ export function ResultsTable({searchResult}: {searchResult: any})
     const navigate = useNavigate()
     if (searchResult.total === 0) return <h1 className="text-base text-center">Nenhum resultado encontrado.</h1>
 
-    console.log(searchResult.results)
-
     return <table id="search-results" className="w-full text-sm">
         <thead>
             <tr>

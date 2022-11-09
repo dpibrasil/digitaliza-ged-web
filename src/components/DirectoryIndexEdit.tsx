@@ -67,16 +67,17 @@ function DirectoryIndexEdit({setIndex, index}: DirectoryIndexEditProps)
                 placeholder="Padrão"
             >
                 {indexType === 'number' && <>
-                    <option>Número inteiro</option>
-                    <option>Número decimal</option>
-                    <option>Valor em reais (R$ 00,00)</option>
-                    <option>CPF/CNPJ</option>
+                    <option value="integer">Número inteiro</option>
+                    <option value="float">Número decimal</option>
+                    <option value="brl-money">Valor em reais (R$ 00,00)</option>
+                    <option value="cpf-cnpj">CPF/CNPJ</option>
+                    <option value="rg">RG</option>
                 </>}
                 {indexType === 'datetime' && <>
-                    <option>Data</option>
-                    <option>Data e hora</option>
+                    <option value="date">Data</option>
+                    <option value="datetime">Data e hora</option>
                 </>}
-                {indexType === 'string' && <option>URL</option>}
+                {indexType === 'string' && <option value="url">URL</option>}
             </SelectInput>
             {indexType === 'number' && <>
                 <Input
