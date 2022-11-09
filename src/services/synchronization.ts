@@ -10,7 +10,7 @@ export async function syncDocumentFromQueue(data: any) {
     // append indexes
     for (const key in data.indexes) {
         if (key.includes('index-')) {
-            form.append(key, String(data[key]))
+            form.append(key, String(data.indexes[key]))
         }
     }
 
