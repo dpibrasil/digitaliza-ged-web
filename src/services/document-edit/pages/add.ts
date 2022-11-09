@@ -76,7 +76,6 @@ export default async function add(by: AddType, position?: number) {
     toast.promise((async () => {
         const data = await getDataBy[by]()
         if (!data || !data.length) throw Error('Nenhuma página selecionada.')
-        console.log(data)
         await processDocument(data, position)
         await syncSequence()
     })(), {

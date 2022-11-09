@@ -20,7 +20,8 @@ function DocumentEdit()
     const db = new Database()
     const [document, setDocument] = useState<DocumentType|null>(null)
     const params = useParams()
-    const pages = useLiveQuery(() => db.workingDocumentPages.toArray())
+    const query = useLiveQuery(() => db.workingDocumentPages.toArray())
+    const pages = query?.sort((x, y) => x.sequence - y.sequence)
 
     useEffect(() => {
         if (params.documentId) {
@@ -52,6 +53,12 @@ function DocumentEdit()
         return selectedPages
     }
 
+    function handleCheckboxAllChanges(event: any)
+    {
+        const inputs = window.document.querySelectorAll('input[type="checkbox"][name="page"]')
+        inputs.forEach((input: any) => input.checked = event.target.checked)
+    }
+
     async function deletePages()
     {
         const selectedPages = getSelectedPages()
@@ -67,13 +74,27 @@ function DocumentEdit()
         })
     }
 
+    async function rotatePages(rotation: number)
+    {
+        const selectedPages = getSelectedPages()
+        if (!selectedPages) return
+
+        const promise = documentEdit.rotate(selectedPages, rotation)
+        toast.promise(promise, {
+            error: (e) => e.message,
+            loading: 'Rotacionando páginas...',
+            success: 'Páginas rotacionadas com sucesso!'
+        })
+    }
+
     return <Layout>
         <h1 className="text-lg font-semibold mb-3">{document ? `Editando documento de ${document.organization.name} com ID ${document.id}` : 'Editando novo arquivo'}</h1>
         <div className="grid grid-flow-col gap-x-2 text-slate-500 text-sm items-center justify-start mb-3 border-slate-200 border-b pb-3">
             <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200">
-                <IoReload size={20} />
-                <IoReload size={20} />
-                <IoTrash onClick={deletePages} size={20} />
+                <input type="checkbox" onChange={handleCheckboxAllChanges} />
+                <IoReload className="-scale-x-100 cursor-pointer" onClick={() => rotatePages(-90)} size={20} />
+                <IoReload className="cursor-pointer" onClick={() => rotatePages(-90)} size={20} />
+                <IoTrash className="cursor-pointer" onClick={deletePages} size={20} />
             </div>
             <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
                 Exportar

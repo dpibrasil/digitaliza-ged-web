@@ -13,7 +13,7 @@ export default async function _export(exportType: ExportType = 'base64', deleteP
     const pdf = await PDFDocument.create()
     const db = new Database()
 
-    for (const page of await db.workingDocumentPages.toArray()) {
+    for (const page of (await db.workingDocumentPages.toArray()).sort((x, y) => x.sequence - y.sequence)) {
         const pagePdf = await PDFDocument.load(page.data)
         const [p] = await pdf.copyPages(pagePdf, [0])
         pdf.addPage(p)
@@ -23,5 +23,5 @@ export default async function _export(exportType: ExportType = 'base64', deleteP
 
     if (exportType === 'buffer') return await pdf.save()
 
-    return 'data:application/pdf;base64, ' + await pdf.saveAsBase64()
+    return await pdf.saveAsBase64({dataUri: true})
 }
