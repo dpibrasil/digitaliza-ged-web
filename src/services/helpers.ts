@@ -2,7 +2,7 @@ import { DirectoryIndexType } from "../types/OrganizationTypes";
 
 export function displayIndex(index: DirectoryIndexType, indexValue: any) {
 
-    if (indexValue === null) return null
+    if ([null, '', undefined].includes(indexValue)) return null
 
     // Boleano
     if (index.type === 'boolean') return Boolean(indexValue) ? 'Sim' : 'Não'
