@@ -1,5 +1,8 @@
 import toast from "react-hot-toast"
 import api, { catchApiErrorMessage } from "./api"
+import Database from "./database"
+
+const db = new Database()
 
 export async function syncDocumentFromQueue(data: any) {
     // create document
@@ -9,8 +12,8 @@ export async function syncDocumentFromQueue(data: any) {
                 
     // append indexes
     for (const key in data.indexes) {
-        if (key.includes('index-')) {
-            form.append(key, String(data.indexes[key]))
+        if (key.includes('index-') && ![null, undefined, ''].includes(data.indexes[key])) {
+            form.append(key, data.indexes[key])
         }
     }
 
@@ -22,6 +25,9 @@ export async function syncDocumentFromQueue(data: any) {
     toast.promise(promise, {
         loading: 'Salvando documento...',
         error: catchApiErrorMessage,
-        success: 'Documento salvo com sucesso!'
+        success: () => {
+            db.documentsQueue.delete(data.id)
+            return 'Documento salvo com sucesso!'
+        }
     })
 }

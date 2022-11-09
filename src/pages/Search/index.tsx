@@ -44,7 +44,7 @@ function Search()
             const {value, operator} = data['indexes'][key]
             if (data['indexes'][key]) {
                 delete data['indexes'][key]
-                if (value === '---' || value === '') {
+                if ([null, undefined, '---', '', []].includes(value)) {
                     data['indexes'][index.id] = undefined
                 } else if (index.type === 'boolean') {
                     data['indexes'][index.id] = {operator, value: Boolean(value)}
