@@ -8,14 +8,14 @@ import api, { catchApiErrorMessage } from "../../services/api"
 import { UserType } from "../../types/UserTypes"
 import UserDeleteModal from "./modals/UserDeleteModal"
 
-const UserTypeColor: any = {
+export const UserTypeColor: any = {
     admin: 'purple',
     superAdmin: 'yellow',
     operator: 'green',
     client: 'red'
 }
 
-const UserTypeName: any = {
+export const UserTypeName: any = {
     admin: 'Administrador',
     superAdmin: 'Super-Admin',
     operator: 'Scanner',

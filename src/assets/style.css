@@ -54,3 +54,31 @@ table.indexes-table td {
     color: #50CD89;
     text-align: right;
 }
+
+#header-title {
+    position: relative;
+}
+
+#header-title::before {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    bottom: 1.50rem;
+    left: 0;
+    height: 1em;
+    width: 1em;
+    border-top-left-radius: 0.5em;
+    box-shadow: 0 -0.5em 0 0 rgb(59 130 246);
+}
+
+#header-title::after {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    bottom: 1.50rem;
+    right: 0;
+    height: 1em;
+    width: 1em;
+    border-top-right-radius: 0.5em;
+    box-shadow: 0 -0.5em 0 0 rgb(59 130 246);
+}

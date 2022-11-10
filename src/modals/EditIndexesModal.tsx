@@ -6,6 +6,7 @@ import api, { catchApiErrorMessage } from "../services/api";
 import { DirectoryType } from "../types/OrganizationTypes";
 import Database from "../services/database";
 import { useLiveQuery } from "dexie-react-hooks";
+import * as Yup from 'yup';
 
 type EditIndexesModalProps = {
     directoryId: number,
@@ -47,8 +48,18 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
     }, [values])
 
     async function validate(data: any) {
-        // todo: validate
-        handleSubmit(data)
+        try {
+            const schema = Yup.object().shape({
+                organizationId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.'),
+                directoryId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.')
+            })
+            await schema.validate(data, {abortEarly: false})
+            handleSubmit(data)
+        } catch (err) {
+            if (err instanceof Yup.ValidationError) {
+                formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
+            }
+        }
     }
 
     return <Modal {...props}>
