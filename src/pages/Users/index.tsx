@@ -25,6 +25,9 @@ export const UserTypeName: any = {
 function Users () {
 
     const [users, setUsers] = useState<UserType[]|undefined>()
+    const [searchQuery, setSearchQuery] = useState<string>('')
+
+    const filteredUsers = (users ?? []).filter(u => searchQuery.length ? u.name.toLowerCase().includes(searchQuery.toLocaleLowerCase()) : true)
 
     useEffect(() => {
         api.get('/users')
@@ -37,7 +40,7 @@ function Users () {
             <div className="justify-between items-center flex">
                 <div className="flex items-center">
                     <h1 className="text-lg font-semibold mr-10">Usuários ({users.length})</h1>
-                    <SearchInput />
+                    <SearchInput onChange={(event) => setSearchQuery(event.target.value)} />
                 </div>
                 <div className=" text-slate-300 grid grid-flow-col items-center gap-x-9 cursor-pointer">
                     <IoGrid size={20}/>
@@ -55,7 +58,7 @@ function Users () {
                         <th>Ações</th>
                     </thead>
                     <tbody>
-                        {users.map(user => <tr>
+                        {filteredUsers.map(user => <tr>
                             <th>{user.name}</th>
                             <td></td>
                             <td>{user.email}</td>
