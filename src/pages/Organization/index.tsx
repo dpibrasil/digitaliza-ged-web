@@ -28,7 +28,7 @@ function Organization()
 
     useEffect(updateOrganization, [organizationId])
 
-    return <Layout>
+    return <Layout title="Empresa">
         {organization ? <>
             <div className="flex flex-row items-center justify-between pb-4 mb-4 border-b border-neutral-200">
                 <div className="flex flex-row">

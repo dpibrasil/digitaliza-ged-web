@@ -35,7 +35,7 @@ function DocumentView()
         })
     }
 
-    return <Layout>
+    return <Layout title="Documento">
         {document ? <>
             <h1 className="text-lg font-semibold mb-4">Visualização do documento</h1>
             <div className="grid grid-cols-5 gap-x-8 gap-y-6">

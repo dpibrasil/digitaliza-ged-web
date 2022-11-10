@@ -35,7 +35,7 @@ function Users () {
         .catch(e => toast.error(catchApiErrorMessage(e)))
     }, [])
 
-    return <Layout>
+    return <Layout title="Usuários">
         {users ? <>
             <div className="justify-between items-center flex">
                 <div className="flex items-center">

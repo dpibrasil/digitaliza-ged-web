@@ -22,7 +22,7 @@ function Organizations()
         .catch(e => toast.error(catchApiErrorMessage(e)))
     }, [setOrganizations])
 
-    return <Layout>
+    return <Layout title="Empresas">
         {organizations == null ? <>Carregando...</> : <>
             <div className="flex justify-between items-center">
                 <h1 className="text-lg font-semibold m-0">Empresas ({organizations.length})</h1>

@@ -87,7 +87,7 @@ function DocumentEdit()
         })
     }
 
-    return <Layout>
+    return <Layout title="Editando documento">
         <h1 className="text-lg font-semibold mb-3">{document ? `Editando documento de ${document.organization.name} com ID ${document.id}` : 'Editando novo arquivo'}</h1>
         <div className="grid grid-flow-col gap-x-2 text-slate-500 text-sm items-center justify-start mb-3 border-slate-200 border-b pb-3">
             <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200">

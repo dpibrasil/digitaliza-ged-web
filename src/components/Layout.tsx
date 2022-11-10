@@ -17,13 +17,21 @@ function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: str
     </NavLink>
 }
 
-function Layout(props: any)
+type LayoutType = {
+    children: any,
+    title?: string
+}
+
+function Layout(props: LayoutType)
 {
     const auth = useAuth()
     const userType = auth?.userData?.type
 
     return <div className="flex h-screen">
         <div id="menu" className="bg-menu p-0 w-64 h-screen">
+            <div className="bg-menu-active text-white px-6 py-4 mb-10">
+                <h1 className="text-sm">DIGITALIZA</h1>
+            </div>
             <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
             <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
             <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
@@ -36,13 +44,13 @@ function Layout(props: any)
                 <div className="relative bg-blue-500 w-full h-14 px-24 flex items-center justify-between">
                     <div className="grid grid-flow-col auto-cols-max gap-4 h-full items-center">
                         <img className="h-8" alt="Digitaliza" src={process.env.PUBLIC_URL + '/static/logo-icon.svg'} />
-                        <div className="flex flex-row bg-white self-end">
+                        {!!props.title && <div className="flex flex-row bg-white self-end">
                             <div className="bg-blue-500 w-2 rounded-br-lg"></div>
                             <div id="header-title" className="bg-white rounded-t-lg h-10 px-4 flex items-center justify-center">
-                                <h1 className="font-normal text-sm">Pesquisar</h1>
+                                <h1 className="font-normal text-sm">{props.title}</h1>
                             </div>
                             <div className="bg-blue-500 w-2 rounded-bl-lg"></div>
-                        </div>
+                        </div>}
                     </div>
                     <div className="grid grid-flow-col gap-2">
                         <div className="flex flex-col">
