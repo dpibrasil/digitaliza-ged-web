@@ -85,7 +85,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                     {directories?.map(directory => <option value={directory.id}>{directory.name}</option>)}
                 </SelectInput>
             </>}
-            {indexes && indexes.map((index: any) => <IndexInput index={index} indexName={'index-' + index.id} />)}
+            {indexes && indexes.map((index: any) => <IndexInput background="neutral-100" index={index} indexName={'index-' + index.id} />)}
             <button className="bg-green-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
         </Form>
     </Modal>

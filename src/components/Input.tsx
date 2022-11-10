@@ -81,32 +81,32 @@ export function SelectInput({label, placeholder, children, width, name, backgrou
     </div>
 }
 
-type IndexInputBase = {indexName: string, index: DirectoryIndexType}
+type IndexInputBase = {indexName: string, index: DirectoryIndexType, background?: string}
 
-export function IndexInputBase({indexName, index}: IndexInputBase)
+export function IndexInputBase({indexName, index, background = 'white'}: IndexInputBase)
 {
     if (index.type === 'string') {
-        return <Input background="white" type="text" name={indexName} />
+        return <Input background={background} type="text" name={indexName} />
     }
     else if (index.type === 'number') {
-        return <Input background="white"
+        return <Input background={background}
             type="number"
             name={indexName}
             step={index.displayAs && ['float', 'brl-money'].includes(index.displayAs) ? '.01' : 'any'}
         />
     }
     else if (index.type === 'datetime') {
-        return <Input background="white" type={index.displayAs === 'date' ? 'date' : 'datetime-local'} name={indexName} />
+        return <Input background={background} type={index.displayAs === 'date' ? 'date' : 'datetime-local'} name={indexName} />
     }
     else if (index.type === 'boolean') {
-        return <SelectInput background="white" name={indexName}>
+        return <SelectInput background={background} name={indexName}>
             <option>---</option>
             <option value={'true'}>Sim</option>
             <option value={'false'}>Não</option>
         </SelectInput>
     }
     else if (index.type === 'list') {
-        return <SelectInput background="white" name={indexName}>
+        return <SelectInput background={background} name={indexName}>
             <option>---</option>
             {index.listValues.map((value: any) => <option key={value.id}>{value.value}</option>)}
         </SelectInput>
@@ -115,11 +115,11 @@ export function IndexInputBase({indexName, index}: IndexInputBase)
     }
 }
 
-export function IndexInput({indexName, index}: IndexInputBase) {
+export function IndexInput({indexName, index, background}: IndexInputBase) {
     return <div>
         <label className="text-xs font-semibold mb-1 text-primary-text">{index.name}</label>
         <div className="bg-neutral-200 rounded">
-            <IndexInputBase indexName={indexName} index={index} />
+            <IndexInputBase background={background} indexName={indexName} index={index} />
         </div>
     </div>
 }
