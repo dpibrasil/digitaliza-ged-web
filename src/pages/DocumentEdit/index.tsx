@@ -127,9 +127,13 @@ function DocumentEdit()
                 modalProps={{directoryId: document?.directoryId, handleSubmit: handleSave}}
             />
         </div>
-        <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
-            {pages && pages.map(page => <Page key={page.id} {...page} />)}
-        </div>
+        {pages && pages.length ? <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
+            {pages.map(page => <Page key={page.id} {...page} />)}
+        </div> : <div className="flex items-center justify-center flex-col w-full">
+            <h1 className="font-semibold text-lg">{'Não foi encontrado páginas :('}</h1>
+            <h2 className="text-slate-500 text-sm mt-1">Verifique o documento e selecione ou adicione páginas</h2>
+            <img src={process.env.PUBLIC_URL + '/static/no-pages.svg'} className="h-96 mt-8" alt="Nenhum página encontrada" />
+        </div>}
     </Layout>
 }
 
