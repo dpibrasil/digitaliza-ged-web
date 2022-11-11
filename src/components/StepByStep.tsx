@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 type ContainerProps = {
     children: any[],
-    elementClassName?: string
+    elementClassName?: string,
+    validate?: (step: number, currentStep: number, next: boolean) => Promise<boolean>
 }
 
-function Container({elementClassName, ...props}: ContainerProps)
+function Container({elementClassName, validate, ...props}: ContainerProps)
 {
     const steps = props.children.map((step, index) => ({
         index: index + 1,
@@ -15,9 +16,12 @@ function Container({elementClassName, ...props}: ContainerProps)
     }))
     const [currentStep, setCurrentStep] = useState(1)
 
-    function changeStep(step: number)
+    async function changeStep(step: number)
     {
         if (step > steps.length || step <= 0) return false
+        if (validate && !await validate(step, currentStep, step - currentStep >= 0)) {
+            return false
+        }
 
         setCurrentStep(step)
     }
@@ -39,7 +43,9 @@ function Container({elementClassName, ...props}: ContainerProps)
         </div>
         <div className="flex flex-col justify-between ml-4">
             <div className={elementClassName}>
-                {props.children[currentStep - 1]}
+                {props.children.map((v, i) => <div className={i === currentStep - 1 ? elementClassName : 'hidden'}>
+                    {v}
+                </div>)}
             </div>
             <div className="flex flex-row items-center justify-between px-4 mt-6">
                 <button type="button" onClick={backStep}  className="bg-neutral-200 hover:bg-neutral-300 text-neutral-600 text-sm rounded py-2 px-4">Voltar</button>

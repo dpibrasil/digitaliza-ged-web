@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useField } from '@unform/core'
 import { DirectoryIndexType } from '../types/OrganizationTypes';
 import { IoSearch } from 'react-icons/io5';
+import Select from 'react-select'
 
 type InputType = {
     label?: string,
@@ -54,6 +55,33 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
         <input defaultValue={defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm`} />
+        {!!error && <Error>{error}</Error>}
+    </div>
+}
+
+export function ReactSelectInput({label, width, name, background = 'neutral-100', ...rest}: InputType & any)
+{
+    const inputRef = useRef(null)
+    const { fieldName, defaultValue, registerField, error } = useField(name)
+
+    useEffect(() => {
+        registerField({
+            name: fieldName,
+            ref: inputRef.current,
+            getValue: (ref) => ref.getValue().map((v: any) => v.value),
+            clearValue: (ref) => ref.clearValue(),
+            setValue: (ref, value) => ref.setValue(value)
+        })
+    }, [fieldName, registerField])
+
+    return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
+        {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
+        <Select
+            {...rest}
+            ref={inputRef}
+            defaultValue={defaultValue}
+            classNamePrefix={`rounded bg-${background} text-black text-[12px]`}
+        />
         {!!error && <Error>{error}</Error>}
     </div>
 }

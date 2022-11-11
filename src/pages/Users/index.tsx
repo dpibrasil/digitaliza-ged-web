@@ -7,6 +7,7 @@ import { ModalSwitch } from "../../components/Modal"
 import api, { catchApiErrorMessage } from "../../services/api"
 import { UserType } from "../../types/UserTypes"
 import UserDeleteModal from "./modals/UserDeleteModal"
+import UserEditModal from "./modals/UserEditModal"
 
 export const UserTypeColor: any = {
     admin: 'purple',
@@ -42,11 +43,10 @@ function Users () {
                     <h1 className="text-lg font-semibold mr-10">Usuários ({users.length})</h1>
                     <SearchInput onChange={(event) => setSearchQuery(event.target.value)} />
                 </div>
-                <div className=" text-slate-300 grid grid-flow-col items-center gap-x-9 cursor-pointer">
-                    <IoGrid size={20}/>
-                    <h1 className="text-[12px] text-gray-400 font-bold">Exportar</h1>
-                    <button className="bg-green-500 hover:bg-green-600 text-white text-sm rounded py-2 px-4">Criar usuário</button>
-                </div>
+                <ModalSwitch
+                    modal={UserEditModal}
+                    button={(props: any) => <button {...props} className="bg-green-500 hover:bg-green-600 text-white text-sm rounded py-2 px-4">Criar usuário</button>}
+                />
             </div>
             <table className="w-full mt-4">
                     <thead>
