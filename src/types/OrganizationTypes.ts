@@ -5,6 +5,7 @@ export interface OrganizationType {
     isDeleted: boolean,
     createdAt: Date,
     updatedAt: Date,
+    directories: DirectoryType[]
 }
 
 export interface DirectoryType {
@@ -18,6 +19,7 @@ export interface DirectoryType {
 
 export interface DirectoryIndexType {
     id: number,
+    directoryId: number,
     name: string,
     type: 'number'|'string'|'boolean'|'list'|'datetime'|string,
     displayAs: null|string,

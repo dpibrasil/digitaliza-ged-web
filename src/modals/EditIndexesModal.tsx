@@ -22,39 +22,40 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
 
     const [organizationId, setOrganizationId] = useState(0)
     const [directoryId, setDirectoryId] = useState<number>(defaultDirectoryId)
+
     const organizations = useLiveQuery(() => db.organizations.toArray())
     const directories = useLiveQuery(() => db.directories.where({organizationId}).toArray(), [organizationId])
 
     // sempre desseleciona diretório quando atualiza empresa
-    useEffect(() => setDirectoryId(0), [organizationId])
+    useEffect(() => {
+        if (!defaultDirectoryId) setDirectoryId(0)
+    }, [organizationId])
 
     // busca indíces quando atualiza diretório
     useEffect(() => {
-        if (directoryId) {
-            api.get('/directories/' + directoryId)
-            .then(({data}) => setIndexes(data.indexes))
-            .catch(catchApiErrorMessage)
-        } else {
-            setIndexes([])
-        }
+        db.directoryIndexes.filter(i => i.directoryId === directoryId).toArray()
+        .then((i: any) => setIndexes(i))
     }, [directoryId])
 
     // coloca valor padrão nos índices
     useEffect(() => {
-        if (values) {
+        if (values && formRef.current) {
             const defaultValue: any = Object.fromEntries(values.map(value => (['index-' + value.id, value.value])))
             formRef.current.setData(defaultValue)
         }
-    }, [values])
+    }, [values, formRef.current])
 
     async function validate(data: any) {
         try {
-            const schema = Yup.object().shape({
-                organizationId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.'),
-                directoryId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.')
-            })
-            await schema.validate(data, {abortEarly: false})
+            if (!defaultDirectoryId) {
+                const schema = Yup.object().shape({
+                    organizationId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.'),
+                    directoryId: Yup.number().required('Este campo é obrigatório.').moreThan(0, 'Este campo é obrigatório.')
+                })
+                await schema.validate(data, {abortEarly: false})
+            }
             handleSubmit(data)
+            props.setShow(false)
         } catch (err) {
             if (err instanceof Yup.ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
@@ -73,7 +74,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                     label="Empresa"
                 >
                     <option value={0}>---</option>
-                    {organizations?.map(organization => <option value={organization.id}>{organization.name}</option>)}
+                    {organizations?.map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
                 </SelectInput>
                 <SelectInput
                     name="directoryId"
@@ -82,10 +83,10 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                     label="Diretório"
                 >
                     <option value={0}>---</option>
-                    {directories?.map(directory => <option value={directory.id}>{directory.name}</option>)}
+                    {directories?.map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
                 </SelectInput>
             </>}
-            {indexes && indexes.map((index: any) => <IndexInput background="neutral-100" index={index} indexName={'index-' + index.id} />)}
+            {indexes && indexes.map((index: any) => <IndexInput key={index.id} background="neutral-100" index={index} indexName={'index-' + index.id} />)}
             <button className="bg-green-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
         </Form>
     </Modal>

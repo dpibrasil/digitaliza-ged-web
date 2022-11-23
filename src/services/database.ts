@@ -14,7 +14,7 @@ class Database extends Dexie {
         super('digitaliza')
         this.version(1).stores({
             organizations: 'id, name, storageId, isDeleted, createdAt, updatedAt',
-            directories: 'id, name, organizationId, storageId, isDeleted, createdAt, updatedAt',
+            directories: 'id, directoryId, name, organizationId, storageId, isDeleted, createdAt, updatedAt',
             directoryIndexes: 'id, name, type, displayAs, notNullable, min, max, minLength, maxLength, regex, createdAt, updatedAt',
             workingDocumentPages: '++id, sequency, type, data, url',
             documentsQueue: '++id, documentId, directoryId, data, indexes, synced, fail, createdAt, lastSync'

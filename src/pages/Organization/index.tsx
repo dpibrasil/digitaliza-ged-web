@@ -9,6 +9,7 @@ import api, { catchApiErrorMessage } from "../../services/api";
 import { DirectoryType, OrganizationType } from "../../types/OrganizationTypes";
 import CreateDirectoryModal from "./modals/EditDirectoryModal";
 import EditOrganizationModal from '../Organizations/modals/EditOrganizationModal';
+import GenerateReportModal from "./modals/GenerateReportModal";
 
 function Organization()
 {
@@ -59,7 +60,11 @@ function Organization()
                         modalProps={{organization, addOrganization: updateOrganization}}
                         button={(props: any) => <button {...props} className="bg-neutral-100 hover:bg-neutral-200 text-neutral-500 text-sm rounded py-2 px-4">Editar</button>}
                     />
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded py-2 px-4">Gerar relatório</button>
+                    <ModalSwitch
+                        modal={GenerateReportModal}
+                        modalProps={{organization}}
+                        button={(props: any) => <button {...props} className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded py-2 px-4">Gerar relatório</button>}
+                    />
                 </div>
             </div>
             <div className="flex flex-row items-center justify-between">

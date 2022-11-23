@@ -10,11 +10,7 @@ export function displayIndex(index: DirectoryIndexType, indexValue: any) {
 
     // Date
     if (index.type === 'datetime') {
-        if (index.displayAs !== 'date') {
-            return new Date(indexValue).toLocaleDateString()
-        } else {
-            return new Date(indexValue).toLocaleString()
-        }
+        return index.displayAs === 'date' ? new Date(indexValue).toLocaleDateString() : new Date(indexValue).toLocaleString()
     }
 
     // Valor em reais

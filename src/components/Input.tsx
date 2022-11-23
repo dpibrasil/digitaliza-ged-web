@@ -42,8 +42,12 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
         registerField({
             name: fieldName,
             ref: inputRef.current,
-            setValue: (target, value) => {
-                target[rest.type === 'checkbox' ? 'checked' : 'value'] = value
+            setValue: (target, value: any) => {
+                if (rest.type?.includes('date')) {
+                    target.valueAsDate = new Date(value)
+                } else {
+                    target[rest.type === 'checkbox' ? 'checked' : 'value'] = value
+                }
             },
             getValue: (target) => {
                 if (rest.type === 'number' && target.value === '') return null
@@ -54,7 +58,7 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
 
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <input defaultValue={defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm`} />
+        <input defaultValue={rest.type?.includes('date') ? new Date(defaultValue) : defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm`} />
         {!!error && <Error>{error}</Error>}
     </div>
 }
