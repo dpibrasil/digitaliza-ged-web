@@ -2,7 +2,6 @@ import { Form } from "@unform/web";
 import { useEffect, useRef, useState } from "react";
 import { IndexInput, SelectInput } from "../components/Input";
 import Modal, { ModalTitle, ModalType } from "../components/Modal";
-import api, { catchApiErrorMessage } from "../services/api";
 import { DirectoryType } from "../types/OrganizationTypes";
 import Database from "../services/database";
 import { useLiveQuery } from "dexie-react-hooks";

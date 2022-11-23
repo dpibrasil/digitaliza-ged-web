@@ -41,7 +41,7 @@ function DocumentView()
             <div className="grid grid-cols-5 gap-x-8 gap-y-6">
                 <div className="bg-menu rounded-lg p-6 col-span-5 md:col-span-2">
                     <div className="flex items-center justify-start">
-                        <img className="w-10 h-10 rounded-lg bg-white" />
+                        <img alt="Cliente" className="w-10 h-10 rounded-lg bg-white" />
                         <div className="flex flex-col ml-3">
                             <h1 className="text-slate-400 text-sm">Cliente:</h1>
                             <h2 className="text-slate-400 text-sm">{document.organization.name}</h2>

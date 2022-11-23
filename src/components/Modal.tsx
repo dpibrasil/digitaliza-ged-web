@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
+import ReactGA from 'react-ga4';
 
 export function ModalSwitch({modal: ModalComponent, button: Button, modalProps = {}}: {modal: any, button: any, modalProps?: any})
 {
@@ -31,7 +32,10 @@ function Modal(props: ModalType)
 
 export function ModalTitle({title, subtitle}: {title: string, subtitle?: string})
 {
-    return <div className="mb-2">
+    useEffect(() => {
+        ReactGA.send({hitType: 'modalview', modal: title})
+    }, [title])
+    return <div className="mb-2">,
         {!!title && <h1 className="font-semibold text-lg">{title}</h1>}
         {!!subtitle && <h2 className="font-normal text-base text-neutral-400">{subtitle}</h2>}
     </div>

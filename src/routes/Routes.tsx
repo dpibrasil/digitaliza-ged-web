@@ -1,4 +1,5 @@
-import {BrowserRouter, Navigate, Route, Routes as RouterRoutes} from 'react-router-dom'
+import { useEffect } from 'react';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom'
 import { useAuth } from "../context/AuthContext";
 import DocumentEdit from '../pages/DocumentEdit';
 import DocumentView from "../pages/DocumentView";
@@ -8,13 +9,19 @@ import Search from "../pages/Search";
 import SignIn from "../pages/SignIn";
 import SignOut from "../pages/SignOut";
 import Users from "../pages/Users";
+import ReactGA from 'react-ga4';
 
 function Routes()
 {
     const auth = useAuth()
+    
+    const location = useLocation()
+    
+    useEffect(() => {
+        ReactGA.send({ hitType: 'pageview', page: location.pathname })
+    }, [location.pathname])
 
-    return <BrowserRouter>
-        <RouterRoutes>
+    return <RouterRoutes>
             <Route path="/auth">
                 <Route path="sign-in" element={<SignIn />} />
                 <Route path="sign-out" element={<SignOut />} />
@@ -28,7 +35,6 @@ function Routes()
                 <Route path="Users" element={<Users />} />
             </> : <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />}
         </RouterRoutes>
-    </BrowserRouter>
 }
 
 export default Routes;

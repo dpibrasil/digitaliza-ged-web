@@ -113,9 +113,9 @@ export function SelectInput({label, placeholder, children, width, name, backgrou
     </div>
 }
 
-type IndexInputBase = {indexName: string, index: DirectoryIndexType, background?: string}
+type IndexInputBaseType = {indexName: string, index: DirectoryIndexType, background?: string}
 
-export function IndexInputBase({indexName, index, background = 'white'}: IndexInputBase)
+export function IndexInputBase({indexName, index, background = 'white'}: IndexInputBaseType)
 {
     if (index.type === 'string') {
         return <Input background={background} type="text" name={indexName} />
@@ -147,7 +147,7 @@ export function IndexInputBase({indexName, index, background = 'white'}: IndexIn
     }
 }
 
-export function IndexInput({indexName, index, background}: IndexInputBase) {
+export function IndexInput({indexName, index, background}: IndexInputBaseType) {
     return <div>
         <label className="text-xs font-semibold mb-1 text-primary-text">{index.name}</label>
         <div className="bg-neutral-200 rounded">

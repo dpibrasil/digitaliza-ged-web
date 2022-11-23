@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoAdd, IoFolder } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,7 +27,7 @@ function Organization()
         })
     }
 
-    useEffect(updateOrganization, [organizationId])
+    useEffect(updateOrganization, [organizationId, navigate])
 
     return <Layout title="Empresa">
         {organization ? <>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { IoCreateOutline, IoGrid, IoTrashOutline } from "react-icons/io5"
+import { IoCreateOutline, IoTrashOutline } from "react-icons/io5"
 import { SearchInput } from "../../components/Input"
 import Layout from "../../components/Layout"
 import { ModalSwitch } from "../../components/Modal"

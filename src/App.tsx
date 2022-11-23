@@ -1,6 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
+import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Routes from "./routes/Routes";
 import Database from "./services/database";
@@ -22,7 +23,9 @@ function App()
     }, [auth.authenticated, db])
 
     return <>
-        <Routes />
+        <BrowserRouter>
+            <Routes />
+        </BrowserRouter>
         <Toaster position="top-right" />
     </>
 }
