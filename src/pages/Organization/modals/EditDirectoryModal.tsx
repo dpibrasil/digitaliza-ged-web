@@ -32,7 +32,7 @@ function IndexPreview({index, setEditingIndex}: {index: DirectoryIndexType & any
     </div>
 }
 
-function CreateDirectoryModal({organization, directory, ...rest}: ModalType & {organization: OrganizationType, directory?: DirectoryType})
+function EditDirectoryModal({organization, directory, ...rest}: ModalType & {organization: OrganizationType, directory?: DirectoryType})
 {
     const [indexes, setIndexes] = useState<any>({})
     const [name, setName] = useState('')
@@ -107,4 +107,4 @@ function CreateDirectoryModal({organization, directory, ...rest}: ModalType & {o
     </Modal>
 }
 
-export default CreateDirectoryModal;
+export default EditDirectoryModal;

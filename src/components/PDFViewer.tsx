@@ -34,13 +34,13 @@ function PDFViewer({url, document}: PDFViewerType)
             <IoSearch />
             <div className="flex flex-row items-center">
                 <div className="bg-white grid grid-flow-col gap-x-2 p-2 rounded items-center">
-                    <IoArrowUp className="cursor-pointer" onClick={nextPage} />
-                    <IoArrowDown className="cursor-pointer" onClick={backPage} />
-                    <select className="text-sm text-menu">
+                    <IoArrowUp className="cursor-pointer" onClick={backPage} />
+                    <IoArrowDown className="cursor-pointer" onClick={nextPage} />
+                    <select value={pageNumber} className="text-sm text-menu">
                         {Array.from(Array(numPages).keys()).map(i => <option key={i + 1}>{i + 1}</option>)}
                     </select>
                 </div>
-                <h1 className="text-sm text-white font-normal ml-1">de {pageNumber}</h1>
+                <h1 className="text-sm text-white font-normal ml-1">de {numPages}</h1>
             </div>
             <div className="w-[1px] h-full bg-white mx-2"></div>
             <button onClick={handleDownload} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
@@ -52,16 +52,16 @@ function PDFViewer({url, document}: PDFViewerType)
                 <IoCreate size={16} />
             </button>
         </div>
-        <div className="bg-menu text-white p-6 rounded-b-lg flex items-center justify-center flex-col">
+        <div className="bg-menu mb-8 text-white p-6 rounded-b-lg flex items-center justify-center flex-col">
             <Document file={{url: url, httpHeaders: api.defaults.headers}} onLoadSuccess={onDocumentLoadSuccess}>
                 <Page width={500} pageNumber={pageNumber} rotate={rotation} />
             </Document>
             <div className="grid grid-flow-col mt-4 items-center">
-                <button className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
+                <button onClick={backPage} className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
                     <IoArrowBack size={18} />
                 </button>
                 <h1 className="text-white mx-4">{pageNumber} de {numPages}</h1>
-                <button className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
+                <button onClick={nextPage} className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
                     <IoArrowForward size={18} />
                 </button>
             </div>

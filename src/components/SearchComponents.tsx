@@ -69,7 +69,7 @@ export function Pagination({searchResult, changePagination}: {searchResult: any,
                 {searchResult.currentPage !== 2 && <div className={`w-min ${1 === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(1)}>1</div>}
                 {Array.from(Array(searchResult.lastPage - searchResult.currentPage > 2 ? 3 : searchResult.lastPage + 1 - searchResult.currentPage).keys()).map(i => {
                     const pageNumber = i + searchResult.currentPage - (searchResult.currentPage === 1 ? -1 : 1)
-                    return <div className={`w-min ${pageNumber === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(pageNumber)}>{pageNumber}</div>
+                    return <div key={i} className={`w-min ${pageNumber === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(pageNumber)}>{pageNumber}</div>
                 })}
                 <div className={`w-min ${searchResult.lastPage === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(searchResult.lastPage)}>{searchResult.lastPage}</div>
             <IoChevronForward onClick={() => changePage(searchResult.currentPage + 1)} />

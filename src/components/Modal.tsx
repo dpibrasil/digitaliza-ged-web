@@ -35,7 +35,7 @@ export function ModalTitle({title, subtitle}: {title: string, subtitle?: string}
     useEffect(() => {
         ReactGA.send({hitType: 'modalview', modal: title})
     }, [title])
-    return <div className="mb-2">,
+    return <div className="mb-2">
         {!!title && <h1 className="font-semibold text-lg">{title}</h1>}
         {!!subtitle && <h2 className="font-normal text-base text-neutral-400">{subtitle}</h2>}
     </div>
