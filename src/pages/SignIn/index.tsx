@@ -1,11 +1,12 @@
 import  { useRef } from "react";
 import { AuthInput as Input } from "../../components/Input";
 import { Form } from '@unform/web';
-import * as Yup from 'yup';
+import { ValidationError } from "yup";
 import api, { catchApiErrorMessage } from "../../services/api";
 import toast from 'react-hot-toast';
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import { SignInValidator } from "../../validators/AuthValidators";
 
 function SignIn() {
     const formRef = useRef<any>(null)
@@ -15,11 +16,7 @@ function SignIn() {
         if (!formRef.current) return
         formRef.current.setErrors({})
         try {
-            const schema = Yup.object().shape({
-                email: Yup.string().email('Digite um e-mail válido.').required('Este campo é obrigatório.'),
-                password: Yup.string().min(6, 'Digite ao menos 6 caracteres.').required('Este campo é obrigatório.'),
-            })
-            const payload = await schema.validate(data, {abortEarly: false})
+            const payload = await SignInValidator.validate(data, {abortEarly: false})
     
             // authenticate
             const res = await api.post('/auth/login', payload)
@@ -28,7 +25,7 @@ function SignIn() {
             if (err.isAxiosError) {
                 toast.error(catchApiErrorMessage(err))
             }
-            if (err instanceof Yup.ValidationError) {
+            if (err instanceof ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(e => [e.path, e.message])))
             }
         }

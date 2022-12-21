@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Input, SelectInput } from "./Input";
-import * as Yup from "yup";
+import { ValidationError } from "yup";
 import { Form } from "@unform/web";
 import { SubmitHandler } from "@unform/core";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
 import uuid from 'react-uuid';
 import { IoTrash } from "react-icons/io5";
 import { toast } from "react-hot-toast";
+import { DirectoryIndexSchema } from "../validators/IndexesValidators";
 
 type DirectoryIndexEditProps = {
     indexActions: any,
@@ -24,20 +25,15 @@ function DirectoryIndexEdit({indexActions, index, setEditingIndex}: DirectoryInd
     const handleSubmit: SubmitHandler<any> = async (data: any) => {
         try {
             formRef.current.setErrors({})
-            const indexSchema = Yup.object().shape({index: Yup.object().shape({
-                name: Yup.string().min(3).required('Campo obrigatório.'),
-                type: Yup.string().required('Campo obrigatório.'),
-                displayAs: Yup.string(),
-                notNullable: Yup.boolean().required('Campo obrigatório.')
-            })})
-            const payload: any = await indexSchema.validate(data, {abortEarly: false})
+            
+            const payload: any = await DirectoryIndexSchema.validate(data, {abortEarly: false})
             payload.index.key = index ? index.key : uuid()
             indexActions.set(payload.index.key, payload.index)
             formRef.current.reset()
             setEditingIndex(-1)
             toast.success(`Índice ${payload.index.name} salvo`)
         } catch (err) {
-            if (err instanceof Yup.ValidationError) {
+            if (err instanceof ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
             }
         }

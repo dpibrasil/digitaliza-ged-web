@@ -9,6 +9,7 @@ import Database from "../../../services/database";
 import * as Yup from 'yup';
 import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
+import { UserValidators } from "../../../validators/UserValidators";
 
 function UserEditModal(props: ModalType)
 {
@@ -35,20 +36,7 @@ function UserEditModal(props: ModalType)
         const data = formRef.current.getData()
         formRef.current.setErrors({})
         try {
-            const schemas: any = {
-                1: {
-                    name: Yup.string().required('Este campo é obrigatório.').min(3, 'Deve conter ao menos 3 caracteres.'),
-                    email: Yup.string().required('Este campo é obrigatório.').email('Insira um e-mail válido.'),
-                    password: Yup.string().required('Este campo é obrigatório.').min(3, 'Deve conter ao menos 6 caracteres.')
-                },
-                2: {
-                    type: Yup.string().required('Este campo é obrigatório.').equals(Object.keys(UserTypeName), 'Selecione um perfil válido.'),
-                    organizationId: Yup.number().required('Este campo é obrigatório.'),
-                    organizations: Yup.array().of(Yup.number()).required('Este campo é obrigatório.').min(1, 'Este campo é obrigatório.'),
-                    directories: Yup.array().of(Yup.number()).required('Este campo é obrigatório.').min(1, 'Este campo é obrigatório.')
-                }
-            }
-            const schema = Yup.object().shape(schemas[currentStep])
+            const schema = Yup.object().shape(UserValidators[currentStep])
             await schema.validate(data, {abortEarly: false})
             
             if (step === 3) {

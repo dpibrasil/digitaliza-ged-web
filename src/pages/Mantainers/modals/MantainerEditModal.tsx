@@ -5,10 +5,11 @@ import { useSet } from "react-use";
 import { Input } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
 import StepByStep from "../../../components/StepByStep";
-import * as Yup from 'yup';
+import {ValidationError} from 'yup';
 import api, { catchApiErrorMessage } from "../../../services/api";
 import { toast } from "react-hot-toast";
 import { MantainerType } from "../../../types/MantainerTypes";
+import { MantainersValidator } from "../../../validators/MantainersValidators";
 
 function MantainerEditModal({mantainer, ...props}: ModalType & {mantainer?: MantainerType})
 {
@@ -21,13 +22,9 @@ function MantainerEditModal({mantainer, ...props}: ModalType & {mantainer?: Mant
         const data = formRef.current.getData()
         data.authorizedDomains = Object.values(data.authorizedDomains)
         try {
-            const schema = Yup.object().shape({
-                name: Yup.string().required('Campo obrigatório.'),
-                authorizedDomains: Yup.array().of(Yup.string().required('Campo obrigatório.').matches(new RegExp('(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]'), 'Digite um domínio valido.'))
-            })
-            await schema.validate(data, {abortEarly: false})
+            await MantainersValidator.validate(data, {abortEarly: false})
         } catch (err) {
-            if (err instanceof Yup.ValidationError) {
+            if (err instanceof ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
             }
             return false

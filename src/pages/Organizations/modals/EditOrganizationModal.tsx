@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 import { Input, SelectInput } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
-import * as Yup from 'yup';
 import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
 import { OrganizationType } from "../../../types/OrganizationTypes";
+import { ValidationError } from "yup";
+import { OrganizationValidator } from "../../../validators/OrganizationValidators";
 
 type OrganizationModalType = {
     addOrganization?: (data: any) => {},
@@ -29,13 +30,10 @@ function EditOrganizationModal({organization, ...props}: ModalType & Organizatio
 
     async function handleSubmit(data: any) {
         // validation schema
-        const schema = Yup.object().shape({
-            name: Yup.string().required('Este campo é obrigatório.'),
-            storageId: Yup.number().required('Este campo é obrigatório.')
-        })
+        
         try {
             // validate
-            const payload: any = await schema.validate(data, {abortEarly: false})
+            const payload: any = await OrganizationValidator.validate(data, {abortEarly: false})
             
             // make request
             const promise = organization ? api.put('/organizations/' + organization.id, payload) : api.post('/organizations', payload)
@@ -49,7 +47,7 @@ function EditOrganizationModal({organization, ...props}: ModalType & Organizatio
                 }
             })
         } catch (err) {
-            if (err instanceof Yup.ValidationError) {
+            if (err instanceof ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
             }
         }
