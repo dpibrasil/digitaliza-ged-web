@@ -1,6 +1,6 @@
 import React from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
@@ -38,6 +38,7 @@ function Layout(props: LayoutType)
             <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
             <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
             <MenuItem name="Usuários" to="/users" icon={IoPeople} />
+            <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
         </div>
         <div className="w-full h-full h-max-screen overflow-auto">
             <div className="header w-full">

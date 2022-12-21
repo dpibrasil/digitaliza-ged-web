@@ -10,6 +10,7 @@ import SignIn from "../pages/SignIn";
 import SignOut from "../pages/SignOut";
 import Users from "../pages/Users";
 import ReactGA from 'react-ga4';
+import Mantainers from '../pages/Mantainers';
 
 function Routes()
 {
@@ -32,7 +33,8 @@ function Routes()
                 <Route path="documents/create" element={<DocumentEdit />} />
                 <Route path="organizations" element={<Organizations />} />
                 <Route path="organizations/:organizationId" element={<Organization />} />
-                <Route path="Users" element={<Users />} />
+                <Route path="users" element={<Users />} />
+                <Route path="mantainers" element={<Mantainers />} />
             </> : <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />}
         </RouterRoutes>
 }
