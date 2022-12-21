@@ -5,20 +5,23 @@ import { Form } from "@unform/web";
 import { SubmitHandler } from "@unform/core";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
 import uuid from 'react-uuid';
+import { IoTrash } from "react-icons/io5";
+import { toast } from "react-hot-toast";
 
 type DirectoryIndexEditProps = {
-    setIndex: (indexName: string, index: any) => void,
+    indexActions: any,
+    setEditingIndex: any,
     index?: DirectoryIndexType & {key: string}
 }
 
-function DirectoryIndexEdit({setIndex, index}: DirectoryIndexEditProps)
+function DirectoryIndexEdit({indexActions, index, setEditingIndex}: DirectoryIndexEditProps)
 {
     const formRef = useRef<any>(null)
     const [indexType, setIndexType] = useState('text')
 
     useEffect(() => index ? formRef.current.setData({index}) : undefined, [index])
 
-    const handleSubmit: SubmitHandler<any> = async (data: any, {reset}) => {
+    const handleSubmit: SubmitHandler<any> = async (data: any) => {
         try {
             formRef.current.setErrors({})
             const indexSchema = Yup.object().shape({index: Yup.object().shape({
@@ -29,8 +32,10 @@ function DirectoryIndexEdit({setIndex, index}: DirectoryIndexEditProps)
             })})
             const payload: any = await indexSchema.validate(data, {abortEarly: false})
             payload.index.key = index ? index.key : uuid()
-            setIndex(payload.index.key, payload.index)
+            indexActions.set(payload.index.key, payload.index)
             formRef.current.reset()
+            setEditingIndex(-1)
+            toast.success(`Índice ${payload.index.name} salvo`)
         } catch (err) {
             if (err instanceof Yup.ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
@@ -104,6 +109,16 @@ function DirectoryIndexEdit({setIndex, index}: DirectoryIndexEditProps)
                 />
             </>}
         </div>
+        {indexType === 'list' && <div className="grid grid-flow-row gap-2 mb-3 w-full">
+            <label className="text-xs font-semibold mb-1 text-primary-text">Lista criada</label>
+            <div className="flex items-center justify-between w-full">
+                <h1 className="rounded bg-neutral-100 py-2 w-full px-3 text-xs ">Neutral</h1>
+                <div className="bg-neutral-100 flex items-center justify-center w-8 h-8 rounded ml-2">
+                    <IoTrash />
+                </div>
+            </div>
+            <button className="bg-emerald-500 hover:bg-emerald-600 rounded w-full py-3 text-sm text-white">Adicionar opção</button>
+        </div>}
         <button className="bg-emerald-500 hover:bg-emerald-600 rounded w-full py-3 text-sm text-white">{index ? 'Salvar' : 'Adicionar'} índice</button>
     </Form>
 }

@@ -7,27 +7,22 @@ import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
 import api, { catchApiErrorMessage } from "../../services/api";
 import { DirectoryType, OrganizationType } from "../../types/OrganizationTypes";
-import CreateDirectoryModal from "./modals/EditDirectoryModal";
 import EditOrganizationModal from '../Organizations/modals/EditOrganizationModal';
 import GenerateReportModal from "./modals/GenerateReportModal";
+import EditDirectoryModal from "./modals/EditDirectoryModal";
+import { useQuery } from "react-query";
 
 function Organization()
 {
-    const [organization, setOrganization] = useState<OrganizationType & {directories: DirectoryType[]}|null>()
     const {organizationId} = useParams()
     const navigate = useNavigate()
 
-    function updateOrganization()
-    {
-        api.get('/organizations/' + organizationId)
-        .then(({data}) => setOrganization(data))
-        .catch(e => {
-            toast.error(catchApiErrorMessage(e))
-            navigate('/error/' + e.response.status)
-        })
-    }
+    const {data: organization, refetch} = useQuery('organzations', async () => (await api.get('/organizations/' + organizationId)).data)
+    console.log(organization)
 
-    useEffect(updateOrganization, [organizationId, navigate])
+    useEffect(() => {
+        refetch()
+    }, [organizationId, navigate])
 
     return <Layout title="Empresa">
         {organization ? <>
@@ -57,7 +52,7 @@ function Organization()
                 <div className="grid grid-flow-col gap-x-2">
                     <ModalSwitch
                         modal={EditOrganizationModal}
-                        modalProps={{organization, addOrganization: updateOrganization}}
+                        modalProps={{organization, addOrganization: refetch}}
                         button={(props: any) => <button {...props} className="bg-neutral-100 hover:bg-neutral-200 text-neutral-500 text-sm rounded py-2 px-4">Editar</button>}
                     />
                     <ModalSwitch
@@ -71,19 +66,19 @@ function Organization()
                 <h1 className="text-lg font-semibold m-0">Diretórios</h1>
                 <div className="grid grid-flow-col gap-2">
                     <SearchInput />
-                    <ModalSwitch modalProps={{organization}} modal={CreateDirectoryModal} button={(props: any) => <button {...props} className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded py-2 px-4">Criar diretório</button>} />
+                    <ModalSwitch modalProps={{organization}} modal={EditDirectoryModal} button={(props: any) => <button {...props} className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded py-2 px-4">Criar diretório</button>} />
                 </div>
             </div>
             <div className="grid grid-flow-col mt-4 gap-6">
-                {organization.directories.length === 0 && <ModalSwitch modalProps={{organization}} modal={CreateDirectoryModal} button={(props: any) => <div {...props} className="bg-neutral-100 text-slate-400 hover:text-slate-700 cursor-pointer rounded-xl p-8 flex items-center justify-center flex-col">
+                {organization.directories.length === 0 && <ModalSwitch modalProps={{organization}} modal={EditDirectoryModal} button={(props: any) => <div {...props} className="bg-neutral-100 text-slate-400 hover:text-slate-700 cursor-pointer rounded-xl p-8 flex items-center justify-center flex-col">
                     <IoAdd size={81} />
                     <h1 className="font-semibold mt-2">Criar diretório</h1>
                 </div>} />}
-                {organization.directories.map(directory => <div key={directory.id} className="bg-neutral-100 text-slate-400 rounded-xl p-8 flex items-center justify-center flex-col">
+                {organization.directories.map((directory: any) => <ModalSwitch modalProps={{directory, organization}} modal={EditDirectoryModal} button={(props: any) => <div {...props} key={directory.id} className="bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-slate-400 rounded-xl p-8 flex items-center justify-center flex-col">
                     <IoFolder size={81} />
                     <h1 className="font-semibold text-black mt-2">{directory.name}</h1>
                     <h2 className="text-sm ">103.210 documentos</h2>
-                </div>)}
+                </div>} />)}
             </div>
         </> : <>Carregando...</>}
     </Layout>
