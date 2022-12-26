@@ -58,7 +58,8 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
 
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <input defaultValue={rest.type?.includes('date') ? new Date(defaultValue) : defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm`} />
+        <input defaultValue={rest.type?.includes('date') ? new Date(defaultValue) : defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm ${rest.type == 'checkbox' && 'hidden'}`} id={'input-' + name} />
+        {rest.type == 'checkbox' && <label className="checkbox" htmlFor={'input-' + name}></label>}
         {!!error && <Error>{error}</Error>}
     </div>
 }

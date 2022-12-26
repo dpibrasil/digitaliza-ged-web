@@ -82,3 +82,43 @@ table.indexes-table td {
     border-top-right-radius: 0.5em;
     box-shadow: 0 -0.5em 0 0 rgb(59 130 246);
 }
+
+.modal.dark label {
+    color: #FFFFFF;
+}
+
+label.checkbox {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 25px;
+	background: #d6d6d6;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+}
+
+label.checkbox:after {
+	content: '';
+	position: absolute;
+	top: 2.5px;
+	left: 2.5px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 100%;
+	transition: 150ms ease;
+}
+
+input:checked + label.checkbox {
+    background-color: rgb(59 130 246);
+}
+
+input:checked + label.checkbox:after {
+	left: calc(100% - 2.5px);
+	transform: translateX(-100%);
+}
+
+label.checkbox:active:after {
+	width: 18px;
+}

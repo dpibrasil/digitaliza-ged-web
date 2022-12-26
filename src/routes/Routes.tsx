@@ -11,6 +11,7 @@ import SignOut from "../pages/SignOut";
 import Users from "../pages/Users";
 import ReactGA from 'react-ga4';
 import Mantainers from '../pages/Mantainers';
+import Storages from '../pages/Storages';
 
 function Routes()
 {
@@ -35,6 +36,7 @@ function Routes()
                 <Route path="organizations/:organizationId" element={<Organization />} />
                 <Route path="users" element={<Users />} />
                 <Route path="mantainers" element={<Mantainers />} />
+                <Route path="storages" element={<Storages />} />
             </> : <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />}
         </RouterRoutes>
 }
