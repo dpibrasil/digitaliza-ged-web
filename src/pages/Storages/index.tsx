@@ -29,66 +29,68 @@ function Storages()
                 />
             </div>
             <table className="w-full mt-4">
-                    <thead>
+                <thead>
+                    <tr>
                         <th>Nome ID</th>
                         <th>Armazenamento utilizado</th>
                         <th>Tempo de atividade</th>
                         <th>Status</th>
                         <th>Ações</th>
-                    </thead>
-                    <tbody>
-                        {filteredStorages.map((storage) => <tr>
-                            <th>
-                                <div className="flex items-center justify-start">
-                                    <div className="w-5 h-5 mr-1 flex items-center justify-center rounded bg-slate-900 text-blue-500">
-                                        <IoFileTrayOutline />
-                                    </div>
-                                    <h1 className="font-semibold text-xs text-slate-900">{storage.name}</h1>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredStorages.map((storage) => <tr key={storage.id}>
+                        <th>
+                            <div className="flex items-center justify-start">
+                                <div className="w-5 h-5 mr-1 flex items-center justify-center rounded bg-slate-900 text-blue-500">
+                                    <IoFileTrayOutline />
                                 </div>
-                            </th>
-                            <td>
-                                <h1 className="font-semibold text-xs text-slate-900">1,2TB</h1>
-                                <h1 className="font-light text-xs text-neutral-400 mt-1">{Number(storage.documentsCount).toLocaleString()} docs</h1>
-                            </td>
-                            <td>
-                                <h1 className="font-semibold text-xs text-slate-900">6 horas e dois minutos</h1>
-                                <h1 className="font-light text-xs text-neutral-400 mt-1">10/12/22 às 16h47</h1>
-                            </td>
-                            <td>
-                                <div className="flex">
-                                    <h1 className={`bg-green-100 text-xs text-green-500 rounded px-2 py-1`}>Ativo</h1>
+                                <h1 className="font-semibold text-xs text-slate-900">{storage.name}</h1>
+                            </div>
+                        </th>
+                        <td>
+                            <h1 className="font-semibold text-xs text-slate-900">1,2TB</h1>
+                            <h1 className="font-light text-xs text-neutral-400 mt-1">{Number(storage.documentsCount).toLocaleString()} docs</h1>
+                        </td>
+                        <td>
+                            <h1 className="font-semibold text-xs text-slate-900">6 horas e dois minutos</h1>
+                            <h1 className="font-light text-xs text-neutral-400 mt-1">10/12/22 às 16h47</h1>
+                        </td>
+                        <td>
+                            <div className="flex">
+                                <h1 className={`bg-green-100 text-xs text-green-500 rounded px-2 py-1`}>Ativo</h1>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="grid grid-flow-col gap-x-1 justify-start">
+                                <ModalSwitch
+                                    modal={StorageMigrationModal}
+                                    modalProps={{storage}}
+                                    button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
+                                        <IoRepeat />
+                                    </div>}
+                                />
+                                <ModalSwitch
+                                    modal={StorageReplicationConfigModal}
+                                    modalProps={{storage}}
+                                    button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
+                                        <IoDocumentsOutline />
+                                    </div>}
+                                />
+                                <ModalSwitch
+                                    modal={StorageEditModal}
+                                    modalProps={{storage}}
+                                    button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
+                                        <IoCreateOutline />
+                                    </div>}
+                                />
+                                <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
+                                    <IoTrashOutline />
                                 </div>
-                            </td>
-                            <td>
-                                <div className="grid grid-flow-col gap-x-1 justify-start">
-                                    <ModalSwitch
-                                        modal={StorageMigrationModal}
-                                        modalProps={{storage}}
-                                        button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
-                                            <IoRepeat />
-                                        </div>}
-                                    />
-                                    <ModalSwitch
-                                        modal={StorageReplicationConfigModal}
-                                        modalProps={{storage}}
-                                        button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
-                                            <IoDocumentsOutline />
-                                        </div>}
-                                    />
-                                    <ModalSwitch
-                                        modal={StorageEditModal}
-                                        modalProps={{storage}}
-                                        button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
-                                            <IoCreateOutline />
-                                        </div>}
-                                    />
-                                    <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded cursor-pointer">
-                                        <IoTrashOutline />
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>)}
-                    </tbody>
+                            </div>
+                        </td>
+                    </tr>)}
+                </tbody>
             </table>
         </>}
     </Layout>

@@ -36,7 +36,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                     <input type="checkbox" name="search-documents" value={result.documentId} />
                 </th>
                 <th>{result.documentId}</th>
-                {searchResult.indexes.map((index: DirectoryIndexType) => <td>{displayIndex(index, result[index.id])}</td>)}
+                {searchResult.indexes.map((index: DirectoryIndexType) => <td key={index.id}>{displayIndex(index, result[index.id])}</td>)}
                 <td className="grid auto-col-max grid-flow-col justify-start gap-x-1">
                     <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
                         <IoDownloadOutline />

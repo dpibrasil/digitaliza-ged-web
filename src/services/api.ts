@@ -1,6 +1,16 @@
 import axios from "axios";
+import CryptoJS from "crypto-js";
 
-const authToken = JSON.parse(window.localStorage.getItem('@auth-token') ?? 'null')
+const key = window.localStorage.getItem('@a-k')
+const deserializer = (v: string) => {
+    // @ts-ignore
+    const bytes = CryptoJS.AES.decrypt(v, JSON.parse(window.localStorage.getItem('@a-k')))
+    const plain = bytes.toString(CryptoJS.enc.Utf8)
+    return plain ? JSON.parse(plain) : plain
+}
+
+const rawToken = window.localStorage.getItem('@auth-token')
+const authToken = rawToken ?  deserializer(rawToken) : undefined
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,

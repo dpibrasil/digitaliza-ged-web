@@ -50,15 +50,17 @@ function Users () {
             </div>
             <table className="w-full mt-4">
                     <thead>
-                        <th>Nome ID</th>
-                        <th>Empresa/Secundária</th>
-                        <th>e-mail/Cell</th>
-                        <th>CPF</th>
-                        <th>Cargo</th>
-                        <th>Ações</th>
+                        <tr>
+                            <th>Nome ID</th>
+                            <th>Empresa/Secundária</th>
+                            <th>e-mail/Cell</th>
+                            <th>CPF</th>
+                            <th>Cargo</th>
+                            <th>Ações</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        {filteredUsers.map(user => <tr>
+                        {filteredUsers.map(user => <tr key={user.id}>
                             <th>{user.name}</th>
                             <td></td>
                             <td>{user.email}</td>

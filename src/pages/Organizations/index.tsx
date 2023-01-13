@@ -31,11 +31,13 @@ function Organizations()
             </div>
             <table className="w-full mt-4">
                 <thead>
-                    <th></th>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>CNPJ</th>
-                    <th>Detalhes</th>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CNPJ</th>
+                        <th>Detalhes</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {filteredOrganizations.map(organization => <tr key={organization.id}>

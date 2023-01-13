@@ -1,6 +1,8 @@
 import { createContext, useContext } from "react";
 import {useLocalStorage} from 'react-use'
 import { UserType } from "../types/UserTypes";
+import { v4 as uuid } from 'uuid'
+import CryptoJS from "crypto-js";
 
 type AuthContextType = {
      authenticated: boolean,
@@ -14,8 +16,18 @@ export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export function AuthProvider(props: any) {
 
-    const [token, setToken] = useLocalStorage<string|undefined>('@auth-token', undefined)
-    const [userData, setUserData] = useLocalStorage<UserType|undefined>('@auth-user-data', undefined)
+    const [k] = useLocalStorage<string>('@a-k', uuid())
+
+    // @ts-ignore
+    const serializer = (v: any) => CryptoJS.AES.encrypt(JSON.stringify(v), k).toString()
+    const deserializer = (v: string) => {
+        // @ts-ignore
+        const bytes = CryptoJS.AES.decrypt(v, k)
+        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+    }
+
+    const [token, setToken] = useLocalStorage<string|undefined>('@auth-token', undefined, {raw: false, serializer, deserializer})
+    const [userData, setUserData] = useLocalStorage<UserType|undefined>('@auth-user-data', undefined, {raw: false, serializer, deserializer})
 
     function signIn(user: UserType|any, t: string) {
         setToken(t)

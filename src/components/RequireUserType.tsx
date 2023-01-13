@@ -16,9 +16,6 @@ interface RequireUserTypeProps {
 function RequireUserType({children, type}: RequireUserTypeProps): JSX.Element
 {
     const {userData} = useAuth()
-
-    console.log(userData)
-
     return userData && levels[userData.type] >= levels[type] ? children : <></>
 }
 

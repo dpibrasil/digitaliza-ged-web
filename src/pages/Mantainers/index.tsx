@@ -28,44 +28,46 @@ function Mantainers()
                 />
             </div>
             <table className="w-full mt-4">
-                    <thead>
+                <thead>
+                    <tr>
                         <th>Nome</th>
                         <th>Domínios</th>
                         <th>Data de abertura</th>
                         <th>Status</th>
                         <th>Ações</th>
-                    </thead>
-                    <tbody>
-                        {filteredMantainers.map((mantainer: any) => <tr>
-                            <th>{mantainer.name}</th>
-                            <td>
-                                <h1 className="text-xs font-semibold">{mantainer.authorizedDomains[0]}</h1>
-                                {mantainer.authorizedDomains.length == 1 ? <h2 className="text-xs font-normal text-neutral-400">domínio único</h2> : <h2 className="text-xs font-normal text-blue-500">mostrar mais</h2>}
-                            </td>
-                            <td>
-                                <h1 className="text-xs font-semibold">{new Date(mantainer.createdAt).getFullYear()}</h1>
-                                <h2 className="text-xs font-normal text-neutral-400">{new Date(mantainer.createdAt).getDate()} de {months[new Date(mantainer.createdAt).getMonth()]}</h2>
-                            </td>
-                            <td>
-                                <div className="flex">
-                                    <h1 className={`bg-green-100 text-green-500 rounded p-2`}>Ativo</h1>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredMantainers.map((mantainer: any) => <tr key={mantainer.id}>
+                        <th>{mantainer.name}</th>
+                        <td>
+                            <h1 className="text-xs font-semibold">{mantainer.authorizedDomains[0]}</h1>
+                            {mantainer.authorizedDomains.length == 1 ? <h2 className="text-xs font-normal text-neutral-400">domínio único</h2> : <h2 className="text-xs font-normal text-blue-500">mostrar mais</h2>}
+                        </td>
+                        <td>
+                            <h1 className="text-xs font-semibold">{new Date(mantainer.createdAt).getFullYear()}</h1>
+                            <h2 className="text-xs font-normal text-neutral-400">{new Date(mantainer.createdAt).getDate()} de {months[new Date(mantainer.createdAt).getMonth()]}</h2>
+                        </td>
+                        <td>
+                            <div className="flex">
+                                <h1 className={`bg-green-100 text-green-500 rounded p-2`}>Ativo</h1>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="grid auto-col-max grid-flow-col justify-start gap-x-1 cursor-pointer">
+                                <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                                    <IoCreateOutline />
                                 </div>
-                            </td>
-                            <td>
-                                <div className="grid auto-col-max grid-flow-col justify-start gap-x-1 cursor-pointer">
-                                    <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
-                                        <IoCreateOutline />
-                                    </div>
-                                    {/* <ModalSwitch
-                                        modal={UserDeleteModal}
-                                        button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
-                                        <IoTrashOutline />
-                                    </div>}
-                                    /> */}
-                                </div>
-                            </td>
-                        </tr>)}
-                    </tbody>
+                                {/* <ModalSwitch
+                                    modal={UserDeleteModal}
+                                    button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                                    <IoTrashOutline />
+                                </div>}
+                                /> */}
+                            </div>
+                        </td>
+                    </tr>)}
+                </tbody>
             </table>
         </> : <>Carregando...</>}
     </Layout>
