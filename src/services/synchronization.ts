@@ -24,9 +24,13 @@ export async function syncDocumentFromQueue(data: any) {
     })
     toast.promise(promise, {
         loading: 'Salvando documento...',
-        error: catchApiErrorMessage,
+        error: (e) => {
+            const error = catchApiErrorMessage(e)
+            db.documentsQueue.update(data.id, {fail: error})
+            return error
+        },
         success: () => {
-            db.documentsQueue.delete(data.id)
+            db.documentsQueue.update(data.id, {synced: true, lastSync: new Date()})
             return 'Documento salvo com sucesso!'
         }
     })

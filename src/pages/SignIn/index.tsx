@@ -39,8 +39,8 @@ function SignIn() {
         <div className="basis-full lg:basis-2/5 md:basis-3/4 flex flex-col items-center justify-between p-10">
             <div className="h-full w-full max-w-[250]  flex items-center justify-center flex-col">
                 <img src={process.env.PUBLIC_URL + '/static/digitaliza.svg'} className="w-100" alt="Digitaliza" />
-                    <Input name="email" label="E-mail" type="email" placeholder="Ex.: exemplo@digitaliza.com.br" />
-                    <Input name="password" label="Senha" type="password" placeholder="············" />
+                    <Input background="slate-100" name="email" label="E-mail" type="email" placeholder="Ex.: exemplo@digitaliza.com.br" />
+                    <Input background="slate-100" name="password" label="Senha" type="password" placeholder="············" />
                     <button className="w-full text-white bg-blue-500 p-3 rounded">Entrar</button>
             </div>
             <div className="w-full grid md:grid-cols-4 grid-cols-2 gap-0.5 text-center text-neutral-500">

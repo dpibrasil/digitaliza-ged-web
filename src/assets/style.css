@@ -122,3 +122,23 @@ input:checked + label.checkbox:after {
 label.checkbox:active:after {
 	width: 18px;
 }
+
+* {
+    scrollbar-width: auto;
+    scrollbar-color: rgb(59 130 246) #e3e3e3;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 16px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #e3e3e3;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(59 130 246);
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+}

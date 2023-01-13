@@ -8,6 +8,7 @@ const api = axios.create({
 })
 
 export function catchApiErrorMessage(error: any) {
+    if (!error.response) return error.message
     const res = error.response.data
     if (!res) {
         return 'Falha ao se conectar.'
@@ -17,9 +18,10 @@ export function catchApiErrorMessage(error: any) {
     }
     if (res.errors) {
         return res.errors
-        .map((e: any) => e.message)
+        .map((e: any) => !!e.field && (e.field + ': ') + e.message)
         .reduce((x: string, y: string) => x + ' ' + y, [])
     }
+    return res
 }
 
 export default api;

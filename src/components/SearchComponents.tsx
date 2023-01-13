@@ -10,10 +10,21 @@ export function ResultsTable({searchResult}: {searchResult: any})
     const navigate = useNavigate()
     if (searchResult.total === 0) return <h1 className="text-base text-center">Nenhum resultado encontrado.</h1>
 
+
+    function handleChangeAllCheckboxes(event: any)
+    {
+        const inputs: any = document.querySelectorAll('input[type="checkbox"][name="search-documents"]')
+        inputs.forEach((input: any) => {
+            input.checked = event.target.checked
+        })
+    }
+
     return <table id="search-results" className="w-full text-sm">
         <thead>
             <tr>
-                <th></th>
+                <th>
+                    <input type="checkbox" onChange={handleChangeAllCheckboxes} />
+                </th>
                 <th>ID</th>
                 {searchResult.indexes.map((index: DirectoryIndexType) => <th key={index.id}>{index.name}</th>)}
                 <th>Ações</th>
@@ -22,7 +33,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
         <tbody>
             {searchResult.results.map((result: any) => <tr key={result.documentId}>
                 <th>
-                    <input type="checkbox" />
+                    <input type="checkbox" name="search-documents" value={result.documentId} />
                 </th>
                 <th>{result.documentId}</th>
                 {searchResult.indexes.map((index: DirectoryIndexType) => <td>{displayIndex(index, result[index.id])}</td>)}

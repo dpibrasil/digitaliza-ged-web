@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
+import RequireUserType from "./RequireUserType";
+import SyncQueue from "./SyncQueue";
 
 function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: string}) {
 
@@ -25,6 +27,7 @@ type LayoutType = {
 function Layout(props: LayoutType)
 {
     const auth = useAuth()
+    const [showSyncQueue, setShowSyncQueue] = useState(false)
     const userType = auth?.userData?.type
 
     return <div className="flex h-screen">
@@ -34,11 +37,17 @@ function Layout(props: LayoutType)
             </div>
             <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
             <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
-            <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
-            <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
-            <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
-            <MenuItem name="Usuários" to="/users" icon={IoPeople} />
-            <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
+            <RequireUserType type="operator">
+                <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
+            </RequireUserType>
+            <RequireUserType type="admin">
+                <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
+                <MenuItem name="Usuários" to="/users" icon={IoPeople} />        
+            </RequireUserType>        
+            <RequireUserType type="super-admin">
+                <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
+                <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
+            </RequireUserType>
         </div>
         <div className="w-full h-full h-max-screen overflow-auto">
             <div className="header w-full">
@@ -53,13 +62,19 @@ function Layout(props: LayoutType)
                             <div className="bg-blue-500 w-2 rounded-bl-lg"></div>
                         </div>}
                     </div>
-                    <div className="grid grid-flow-col gap-2">
-                        <div className="flex flex-col">
-                            <h1 className="text-[10px] font-normal text-blue-200">{auth?.userData?.name}</h1>
-                            <h2 className="text-[12px] font-normal text-white">{!!userType && UserTypeName[userType]}</h2>
+                    <div className="grid gap-4 grid-flow-col items-center">
+                        <div onClick={() => setShowSyncQueue(!showSyncQueue)} className="text-blue-800 hover:text-blue-900 cursor-pointer">
+                            <IoFileTrayStacked size={24} />
                         </div>
-                        <div className="w-8 h-8 rounded bg-blue-400 border-white border flex items-center justify-center">
-                            <h1 className="text-white font-sm">{auth?.userData?.name.slice(0, 1)}</h1>
+                        {showSyncQueue && <SyncQueue />}
+                        <div className="grid grid-flow-col gap-2 items-center">
+                            <div className="flex flex-col">
+                                <h1 className="text-[10px] font-normal text-blue-200">{auth?.userData?.name}</h1>
+                                <h2 className="text-[12px] font-normal text-white">{!!userType && UserTypeName[userType]}</h2>
+                            </div>
+                            <div className="w-8 h-8 rounded bg-blue-400 border-white border flex items-center justify-center">
+                                <h1 className="text-white font-sm">{auth?.userData?.name.slice(0, 1)}</h1>
+                            </div>
                         </div>
                     </div>
                 </div>

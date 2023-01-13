@@ -58,7 +58,7 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
 
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <input defaultValue={rest.type?.includes('date') ? new Date(defaultValue) : defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm ${rest.type == 'checkbox' && 'hidden'}`} id={'input-' + name} />
+        <input defaultValue={rest.type?.includes('date') ? new Date(defaultValue) : defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-sm text-black ${rest.type == 'checkbox' && 'hidden'}`} id={'input-' + name} />
         {rest.type == 'checkbox' && <label className="checkbox" htmlFor={'input-' + name}></label>}
         {!!error && <Error>{error}</Error>}
     </div>
@@ -106,7 +106,7 @@ export function SelectInput({label, placeholder, children, width, name, backgrou
 
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <label className="text-xs font-semibold mb-1 text-primary-text">{label}</label>}
-        <select defaultValue={defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-[12px]`}>
+        <select defaultValue={defaultValue} {...rest} ref={inputRef} className={`rounded bg-${background} py-1 px-3 min-h-[35px] text-[12px] text-black`}>
             {!!placeholder && <option>{placeholder}</option>}
             {children}
         </select>
@@ -167,7 +167,7 @@ export function SearchIndexInput({index}: {index: DirectoryIndexType})
     return <div className="flex flex-col w-full">
         <label className="text-xs font-semibold mb-1 text-primary-text">{index.name}</label>
         <div className="flex flex-row">
-            <SelectInput background="white" onChange={changeOperator} name={indexName + '.operator'}>
+            <SelectInput width="auto" background="white" onChange={changeOperator} name={indexName + '.operator'}>
                 <option value="==">=</option>
                 <option>!=</option>
                 <option value="interval">{'<>'}</option>
@@ -176,8 +176,8 @@ export function SearchIndexInput({index}: {index: DirectoryIndexType})
                 <option>{'>='}</option>
                 <option>{'<='}</option>
             </SelectInput>
-            <div className="ml-1">
-                {isInterval ? <div className="grid auto-col-max grid-flow-col gap-x-1">
+            <div className="pl-1 w-full">
+                {isInterval ? <div className="grid w-full auto-col-max grid-flow-col gap-x-1">
                     <IndexInputBase indexName={indexName + '.value[0]'} index={index} />
                     <IndexInputBase indexName={indexName + '.value[1]'} index={index} />
                 </div>: <IndexInputBase indexName={indexName + '.value'} index={index} />}

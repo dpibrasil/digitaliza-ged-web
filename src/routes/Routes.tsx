@@ -31,6 +31,7 @@ function Routes()
             {auth.authenticated ? <>
                 <Route index element={<Search />} />
                 <Route path="documents/:documentId" element={<DocumentView />} />
+                <Route path="documents/:documentId/edit" element={<DocumentEdit />} />
                 <Route path="documents/create" element={<DocumentEdit />} />
                 <Route path="organizations" element={<Organizations />} />
                 <Route path="organizations/:organizationId" element={<Organization />} />

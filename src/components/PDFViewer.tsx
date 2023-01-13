@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IoArrowBack, IoArrowDown, IoArrowForward, IoArrowUp, IoCreate, IoDownload, IoReload, IoSearch } from 'react-icons/io5';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { downloadData } from '../services/download';
 import { DocumentType } from '../types/DocumentTypes';
@@ -47,10 +48,10 @@ function PDFViewer({url, document}: PDFViewerType)
                 <h1 className="text-[12px] mr-2">Exportar</h1>
                 <IoDownload size={16} />
             </button>
-            <button onClick={handleDownload} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
+            <Link to={`/documents/${document.id}/edit`} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
                 <h1 className="text-[12px] mr-2">Editar documento</h1>
                 <IoCreate size={16} />
-            </button>
+            </Link>
         </div>
         <div className="bg-menu mb-8 text-white p-6 rounded-b-lg flex items-center justify-center flex-col">
             <Document file={{url: url, httpHeaders: api.defaults.headers}} onLoadSuccess={onDocumentLoadSuccess}>

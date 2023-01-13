@@ -18,7 +18,6 @@ function Organization()
     const navigate = useNavigate()
 
     const {data: organization, refetch} = useQuery('organzations', async () => (await api.get('/organizations/' + organizationId)).data)
-    console.log(organization)
 
     useEffect(() => {
         refetch()
@@ -35,7 +34,7 @@ function Organization()
                         <h1 className="font-semibold text-lg">{organization.name}</h1>
                         <div className="grid grid-flow-col gap-x-4">
                             <div className="rounded border-neutral-100 border p-2 min-w-[120px]">
-                                <h1 className="text-xl font-semibold">64.234</h1>
+                                <h1 className="text-xl font-semibold">{organization.totalDocuments.toLocaleString()}</h1>
                                 <h2 className="text-[11px] text-neutral-400">Documentos</h2>
                             </div>
                             <div className="rounded border-neutral-100 border p-2 min-w-[120px]">
@@ -77,7 +76,7 @@ function Organization()
                 {organization.directories.map((directory: any) => <ModalSwitch modalProps={{directory, organization}} modal={EditDirectoryModal} button={(props: any) => <div {...props} key={directory.id} className="bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-slate-400 rounded-xl p-8 flex items-center justify-center flex-col">
                     <IoFolder size={81} />
                     <h1 className="font-semibold text-black mt-2">{directory.name}</h1>
-                    <h2 className="text-sm ">103.210 documentos</h2>
+                    <h2 className="text-sm ">{Number(directory.documentsCount).toLocaleString()} documento{directory.documentsCount != 1 && 's'}</h2>
                 </div>} />)}
             </div>
         </> : <>Carregando...</>}

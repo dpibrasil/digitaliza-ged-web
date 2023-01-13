@@ -8,8 +8,8 @@ import Database from "../../services/database";
 import * as documentEdit from "../../services/document-edit/pages";
 import { DocumentType } from "../../types/DocumentTypes";
 import { downloadBase64 } from "../../services/download";
-import { useParams } from "react-router-dom";
-import api from "../../services/api";
+import { redirect, useParams } from "react-router-dom";
+import api, { catchApiErrorMessage } from "../../services/api";
 import EditIndexesModal from "../../modals/EditIndexesModal";
 import { ModalSwitch } from "../../components/Modal";
 import Page from "./Page";
@@ -26,7 +26,14 @@ function DocumentEdit()
     useEffect(() => {
         if (params.documentId) {
             api.get('/documents/' + params.documentId)
-            .then(({data}) => setDocument(data))
+            .then(({data}) => {
+                setDocument(data)
+                documentEdit.deleteAll().then(() => toast.promise(documentEdit.import(data.id), {
+                    loading: 'Carregando documento, por favor, aguarde.',
+                    success: 'Ok.',
+                    error: catchApiErrorMessage
+                }))
+            })
         }
     }, [params])
 
@@ -36,6 +43,20 @@ function DocumentEdit()
     {
         if (document) {
             // update document
+            const form = new FormData()
+            const file = await documentEdit.export('buffer')
+            form.append('file', new Blob([file]), 'document.pdf')
+            const promise = api.post(`/documents/${document.id}/versions`, form, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            })
+            toast.promise(promise, {
+                loading: 'Salvando...',
+                error: catchApiErrorMessage,
+                success: ({data}) => {
+                    window.location.href = `/documents/${document.id}`
+                    return `Documento salvo com versão ${data.version}.`
+                }
+            })
         } else {
             // create document
             await documentEdit.save(data.directoryId, data)
@@ -118,14 +139,17 @@ function DocumentEdit()
                 Escanear arquivo
                 <IoPrint />
             </button>
-            <ModalSwitch
+            {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+                Atualizar documento
+                <IoArrowForward />
+            </button> : <ModalSwitch
                 button={(props: any) => <button {...props} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
                     Continuar
                     <IoArrowForward />
                 </button>}
                 modal={EditIndexesModal}
-                modalProps={{directoryId: document?.directoryId, handleSubmit: handleSave}}
-            />
+                modalProps={{handleSubmit: handleSave}}
+            />}
         </div>
         {pages && pages.length ? <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
             {pages.map(page => <Page key={page.id} {...page} />)}

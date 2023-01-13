@@ -3,9 +3,9 @@ import toast from "react-hot-toast"
 import Database from "../../database"
 import syncSequence from './syncSequence'
 
-type AddType = 'file'|'scanner'|'url'
+type AddType = 'file'|'scanner'|'url'|'id'
 
-async function processDocument(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: number) {
+export async function processDocument(documents: string[]|Uint8Array[]|ArrayBuffer[], position?: number) {
     const db = new Database()
     var sequence = position ?? Math.max(1, ...((await db.workingDocumentPages.toArray()).map(p => p.sequence)))
     const x = Math.pow(10, -documents.length.toString().length - 1)

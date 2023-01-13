@@ -4,3 +4,4 @@ export {default as deleteAll} from "./deleteAll";
 export {default as delete} from "./delete";
 export {default as export} from "./export";
 export {default as rotate} from "./rotate";
+export {default as import} from "./importFromFile";
