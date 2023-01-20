@@ -43,7 +43,7 @@ function Container({elementClassName, validate, ...props}: ContainerProps)
         </div>
         <div className="flex flex-col justify-between ml-4">
             <div className={elementClassName}>
-                {props.children.map((v, i) => <div className={i === currentStep - 1 ? elementClassName : 'hidden'}>
+                {props.children.map((v, i) => <div key={i} className={i === currentStep - 1 ? elementClassName : 'hidden'}>
                     {v}
                 </div>)}
             </div>

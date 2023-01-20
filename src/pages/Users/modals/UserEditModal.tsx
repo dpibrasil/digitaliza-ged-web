@@ -1,6 +1,6 @@
 import { Form } from "@unform/web";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserTypeName } from "..";
 import { Input, ReactSelectInput, SelectInput } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
@@ -11,22 +11,42 @@ import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
 import { UserValidators } from "../../../validators/UserValidators";
 
-function UserEditModal(props: ModalType)
+function UserEditModal(props: ModalType & {userId?: number})
 {
     const db = new Database()
     const organizations = useLiveQuery(() => db.organizations.toArray())
     const [selectedOrganizations, setSelectedOrganizations] = useState<number[]>([])
     const directories = useLiveQuery(() => db.directories.filter((d => selectedOrganizations.includes(d.organizationId))).toArray(), [selectedOrganizations])
+    console.log(selectedOrganizations)
     const formRef = useRef<any>()
+
+    useEffect(() => {
+        if (props.userId) {
+            (async () => {
+                const resource = '/users/' + props.userId
+                const {data} = await api.get(resource)
+                const {data: allowedOrganizations} = await api.get(resource + '/organizations')
+                const {data: allowedDirectories} = await api.get(resource + '/directories')
+                data.organizations = allowedOrganizations.map((o: any) => ({value: o.id, label: o.name}))
+                data.directories = allowedDirectories.map((directory: any) => ({
+                    label: organizations?.find((o => o.id === directory.organizationId))?.name + ' ➝ ' + directory.name,
+                    value: directory.id
+                }))
+                formRef.current.setData(data)
+            })()
+            .catch(e => toast.error(catchApiErrorMessage(e)))
+        }
+    }, [props.userId])
 
     async function createUser(data: any)
     {
-        const {data: user} = await api.post('/users', {
+        const userData = {
             name: data.name,
             type: data.type,
             email: data.email,
             password: data.password
-        })
+        }
+        const {data: user} = editing ? await api.put('/users/' + props.userId, userData) : await api.post('/users', userData)
 
         return Promise.all([...data.organizations.map((o: number) => api.post(`/users/${user.id}/organizations`, {organizationId: o})), ...data.directories.map((o: number) => api.post(`/users/${user.id}/directories`, {directoryId: o}))])
     }
@@ -55,10 +75,12 @@ function UserEditModal(props: ModalType)
         return true
     }
 
+    const editing = !!props.userId
+
     return <Modal {...props}>
-        <ModalTitle title="Criar usuário" subtitle="Preencha os campos coretamente abaixo." />
+        <ModalTitle title={editing ? 'Editando usuário' : 'Criar usuário'} subtitle="Preencha os campos coretamente abaixo." />
         <Form ref={formRef} onSubmit={() => {}}>
-            <StepByStep.Container validate={handleSubmit} elementClassName="min-w-[400px] min-h-[300px]">
+            <StepByStep.Container validate={handleSubmit} elementClassName="min-w-[400px] max-w-[600px] min-h-[300px]">
                 <StepByStep.Step name="Criação de usuário" subtitle="Informações de usuário">
                     <Input
                         label="E-mail"
@@ -66,12 +88,12 @@ function UserEditModal(props: ModalType)
                         type="email"
                         placeholder="Ex.: exemplo@digitaliza.com"
                     />
-                    <Input
+                    {!editing && <Input
                         label="Senha"
                         type="password"
                         name="password"
                         placeholder="••••••••••"
-                    />
+                    />}
                     <Input
                         label="Nome completo"
                         name="name"

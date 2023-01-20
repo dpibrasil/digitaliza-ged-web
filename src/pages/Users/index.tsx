@@ -11,14 +11,14 @@ import UserEditModal from "./modals/UserEditModal"
 
 export const UserTypeColor: any = {
     admin: 'purple',
-    superAdmin: 'yellow',
+    'super-admin': 'yellow',
     operator: 'green',
     client: 'red'
 }
 
 export const UserTypeName: any = {
     admin: 'Administrador',
-    superAdmin: 'Super-Admin',
+    'super-admin': 'Super-Admin',
     operator: 'Scanner',
     client: 'Cliente'
 }
@@ -53,7 +53,7 @@ function Users () {
                         <tr>
                             <th>Nome ID</th>
                             <th>Empresa/Secundária</th>
-                            <th>e-mail/Cell</th>
+                            <th>E-mail/Cell</th>
                             <th>CPF</th>
                             <th>Cargo</th>
                             <th>Ações</th>
@@ -73,9 +73,13 @@ function Users () {
                             </td>
                             <td>
                                 <div className="grid auto-col-max grid-flow-col justify-start gap-x-1 cursor-pointer">
-                                    <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                                    <ModalSwitch
+                                        modal={UserEditModal}
+                                        modalProps={{userId: user.id}}
+                                        button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
                                         <IoCreateOutline />
-                                    </div>
+                                    </div>}
+                                    />
                                     <ModalSwitch
                                         modal={UserDeleteModal}
                                         button={(props: any) => <div {...props} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">

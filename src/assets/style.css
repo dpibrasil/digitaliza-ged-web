@@ -142,3 +142,7 @@ label.checkbox:active:after {
     border-radius: 10px;
     border: 3px solid #ffffff;
 }
+
+div.react-select-mono {
+    grid-area: unset!important;
+}

@@ -5,6 +5,9 @@ export function displayIndex(index: DirectoryIndexType, indexValue: any) {
     if ([null, '', undefined].includes(indexValue)) return null
     if (index.displayAs === null) return indexValue
 
+    // List 
+    if (index.type === 'list') return indexValue.value
+
     // Boleano
     if (index.type === 'boolean') return Boolean(indexValue) ? 'Sim' : 'Não'
 

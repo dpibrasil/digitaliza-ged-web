@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
 import { useMap } from "react-use";
+import Database from "../../../services/database";
 
 function IndexPreview({index, setEditingIndex, indexActions}: {index: DirectoryIndexType & any, indexActions: any, setEditingIndex: (index: any) => void})
 {
@@ -21,19 +22,19 @@ function IndexPreview({index, setEditingIndex, indexActions}: {index: DirectoryI
 
     return <div key={index.name} className="w-full flex flex-row justify-between">
         <div className="flex flex-row items-center justify-start">
-            <div className="bg-blue-100 text-blue-500 rounded-lg w-10 h-10 flex items-center justify-center">
+            <div className="bg-blue-500 bg-opacity-10 text-blue-500 rounded-lg w-10 h-10 flex items-center justify-center">
                 <IoDocumentText size={24} />
             </div>
             <div className="flex flex-col ml-2">
                 <h1 className="font-medium text-sm">{index.name}</h1>
-                <h2 className="text-neutral-700 text-[11px]">{index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}</h2>
+                <h2 className="text-slate-500 text-[11px]">{index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}{index.type == 'list' && ` • ${index.listValues ? index.listValues.length : 0} ${index.listValues && index.listValues.length === 1 ? 'opção' : 'opções'}`}</h2>
             </div>
         </div>
         <div className="grid grid-flow-col gap-x-1">
-            {!index.id && <div onClick={handleDelete} className="bg-blue-100 text-blue-500 cursor-pointer rounded-lg w-10 h-10 flex items-center justify-center">
+            {!index.id && <div onClick={handleDelete} className="bg-blue-500 bg-opacity-10 text-blue-500 cursor-pointer rounded-lg w-10 h-10 flex items-center justify-center">
                 <IoTrashOutline size={24} />
             </div>}
-            <div onClick={() => setEditingIndex(index.key)} className="bg-blue-100 text-blue-500 cursor-pointer rounded-lg w-10 h-10 flex items-center justify-center">
+            <div onClick={() => setEditingIndex(index.key)} className="bg-blue-500 bg-opacity-10 text-blue-500 cursor-pointer rounded-lg w-10 h-10 flex items-center justify-center">
                 <IoCreateOutline size={24} />
             </div>
         </div>
@@ -67,13 +68,22 @@ function EditDirectoryModal({organization, directory, ...rest}: ModalType & {org
 
             for (var indexData of i) {
                 indexData = {directoryId: d.id, ...indexData}
-                await (indexData.id ? api.put('/directory-indexes/' + indexData.id, indexData) : api.post('/directory-indexes', indexData))
+                const {data: index} = await (indexData.id ? api.put('/directory-indexes/' + indexData.id, indexData) : api.post('/directory-indexes', indexData))
+
+                for (const option of (indexData.listOptions ?? [])) {
+                    if (option && option.value) {
+                        await api.post(`/directory-indexes/${index.id}/list-values`, {value: option.value})
+                        .catch(e => toast.error(catchApiErrorMessage(e)))
+                    }
+                }
             }
         }
 
         toast.promise(Promise(), {
             success: () => {
                 rest.setShow(false)
+                const database = new Database()
+                database.sync()
                 return 'Diretório salvo com sucesso!'
             },
             error: catchApiErrorMessage,
@@ -95,7 +105,7 @@ function EditDirectoryModal({organization, directory, ...rest}: ModalType & {org
                             onChange={(event) => setName(event.target.value)}
                         />
                     </Form>
-                    <h1 className="text-neutral-600 text-[12px]">{editing ? `Editando diretório ${directory.name} em: ${organization.name}` : `Criando o diretório em: ${organization.name}`}</h1>
+                    <h1 className="text-slate-500 text-[12px]">{editing ? `Editando diretório ${directory.name} em: ${organization.name}` : `Criando o diretório em: ${organization.name}`}</h1>
                     <div className="flex items-center justify-center">
                         <img alt="Adicionar" className="w-[250px]" src={process.env.PUBLIC_URL + '/static/add.png'} />
                     </div>

@@ -73,7 +73,10 @@ export function ReactSelectInput({label, width, name, background = 'neutral-100'
         registerField({
             name: fieldName,
             ref: inputRef.current,
-            getValue: (ref) => ref.getValue().map((v: any) => v.value),
+            getValue: (ref) => {
+                const d = ref.getValue().map((v: any) => v.value)
+                return rest.isMulti ? d : d[0]
+            },
             clearValue: (ref) => ref.clearValue(),
             setValue: (ref, value) => ref.setValue(value)
         })
@@ -85,7 +88,8 @@ export function ReactSelectInput({label, width, name, background = 'neutral-100'
             {...rest}
             ref={inputRef}
             defaultValue={defaultValue}
-            classNamePrefix={`rounded bg-${background} text-black text-[12px]`}
+            classNamePrefix={`rounded bg-${background} text-black text-[12px] ${!rest.isMulti && 'react-select-mono'} `}
+            placeholder="Pesquisar"
         />
         {!!error && <Error>{error}</Error>}
     </div>
@@ -139,10 +143,11 @@ export function IndexInputBase({indexName, index, background = 'white'}: IndexIn
         </SelectInput>
     }
     else if (index.type === 'list') {
-        return <SelectInput background={background} name={indexName}>
-            <option>---</option>
-            {index.listValues.map((value: any) => <option key={value.id}>{value.value}</option>)}
-        </SelectInput>
+        return <ReactSelectInput
+            background={background}
+            name={indexName}
+            options={index.listValues.map((value: any) => ({label: value.value, value: value.id}))}
+        />
     } else {
         return <></>
     }

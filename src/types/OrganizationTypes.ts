@@ -17,6 +17,12 @@ export interface DirectoryType {
     updatedAt: Date,
 }
 
+export interface IndexListValueType {
+    id: number,
+    indexId: number,
+    value: string
+}
+
 export interface DirectoryIndexType {
     id: number,
     directoryId: number,

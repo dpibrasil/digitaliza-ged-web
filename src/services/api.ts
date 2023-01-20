@@ -18,6 +18,7 @@ const api = axios.create({
 })
 
 export function catchApiErrorMessage(error: any) {
+    console.error(error)
     if (!error.response) return error.message
     const res = error.response.data
     if (!res) {
