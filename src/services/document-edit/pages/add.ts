@@ -30,6 +30,30 @@ export async function processDocument(documents: string[]|Uint8Array[]|ArrayBuff
     }
 }
 
+export async function addPageByImages(data: string[], position?: number)
+{
+    const db = new Database()
+    var sequence = position ?? Math.max(1, ...((await db.workingDocumentPages.toArray()).map(p => p.sequence)))
+    const x = Math.pow(10, -data.length.toString().length - 1)
+
+    const pages = []
+    for (const image of data) {
+        console.log(image)
+        const pdf = await PDFDocument.create()
+        const page = pdf.addPage()
+        page.drawImage(await pdf.embedJpg(image))
+        const pageb64 = await pdf.saveAsBase64()
+        sequence = sequence + x
+        pages.push({
+            type: 'base64',
+            data: pageb64,
+            sequence
+        })
+    }
+    db.workingDocumentPages.bulkAdd(pages)
+    await syncSequence()
+}
+
 const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsDataURL') => new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader[type](file)
@@ -68,6 +92,10 @@ const getDataBy: any = {
                 }, 300)
             }, { once: true })
         })
+    },
+    scanner: function()
+    {
+        document.getElementById('scan-modal')?.removeAttribute('class')
     }
 }
 

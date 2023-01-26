@@ -6,6 +6,7 @@ export function displayIndex(index: DirectoryIndexType, indexValue: any) {
     if (index.displayAs === null) return indexValue
 
     // List 
+    console.log(indexValue)
     if (index.type === 'list') return indexValue.value
 
     // Boleano

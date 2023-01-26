@@ -124,9 +124,9 @@ function DocumentEdit()
             <Dropdown
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
-                    <DropdownMenu.Item onClick={() => documentEdit.add('url')} name="A partir da URL" />
-                    <DropdownMenu.Item onClick={() => documentEdit.add('scanner')} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => documentEdit.add('file')} name="A partir do arquivo" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('url', 0)} name="A partir da URL" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('scanner', 0)} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.add('file', 0)} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >

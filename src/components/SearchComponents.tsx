@@ -1,6 +1,8 @@
 import React from "react";
 import { IoChevronBack, IoChevronForward, IoCreateOutline, IoDownloadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { downloadData } from "../services/download";
 import { displayIndex } from "../services/helpers";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
 import { SelectInput } from "./Input";
@@ -17,6 +19,11 @@ export function ResultsTable({searchResult}: {searchResult: any})
         inputs.forEach((input: any) => {
             input.checked = event.target.checked
         })
+    }
+
+    async function handleDownload(id: number) {
+        const response = await api.get(`/documents/${id}/file`, { responseType: 'blob' })
+        downloadData(response.data, `${id}.pdf`)
     }
 
     return <table id="search-results" className="w-full text-sm">
@@ -38,10 +45,10 @@ export function ResultsTable({searchResult}: {searchResult: any})
                 <th>{result.documentId}</th>
                 {searchResult.indexes.map((index: DirectoryIndexType) => <td key={index.id}>{displayIndex(index, result[index.id])}</td>)}
                 <td className="grid auto-col-max grid-flow-col justify-start gap-x-1">
-                    <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                    <div onClick={() => handleDownload(result.documentId)} className="w-min bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-blue-500 p-1 rounded">
                         <IoDownloadOutline />
                     </div>
-                    <div onClick={() => navigate('/documents/' + result.documentId)} className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
+                    <div onClick={() => navigate('/documents/' + result.documentId)} className="w-min bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-blue-500 p-1 rounded">
                         <IoCreateOutline />
                     </div>
                 </td>

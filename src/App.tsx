@@ -4,6 +4,8 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import { ServiceProvider } from "./context/ServiceContext";
+import ScanModal from "./modals/ScanModal";
 import Routes from "./routes/Routes";
 import Database from "./services/database";
 import { syncDocumentFromQueue } from "./services/synchronization";
@@ -34,9 +36,12 @@ function App()
     }, [auth.authenticated, db])
 
     return <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-            <Routes />
-        </BrowserRouter>
+        <ServiceProvider>
+            <BrowserRouter>
+                <Routes />
+            </BrowserRouter>
+            <ScanModal />
+        </ServiceProvider>
         <Toaster position="top-right" />
     </QueryClientProvider>
 }
