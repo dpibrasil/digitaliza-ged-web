@@ -1,7 +1,6 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-const key = window.localStorage.getItem('@a-k')
 const deserializer = (v: string) => {
     // @ts-ignore
     const bytes = CryptoJS.AES.decrypt(v, JSON.parse(window.localStorage.getItem('@a-k')))
@@ -34,5 +33,7 @@ export function catchApiErrorMessage(error: any) {
     }
     return res
 }
+
+export const agentApi = axios.create({baseURL: process.env.REACT_APP_SERVICE_API_BASE_URL})
 
 export default api;

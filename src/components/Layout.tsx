@@ -3,7 +3,6 @@ import { IconType } from "react-icons";
 import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useAgentService } from "../context/ServiceContext";
 import { UserTypeName } from "../pages/Users";
 import RequireUserType from "./RequireUserType";
 import SyncQueue from "./SyncQueue";
@@ -28,7 +27,6 @@ type LayoutType = {
 function Layout(props: LayoutType)
 {
     const auth = useAuth()
-    const {isError: isAgentUnavailable} = useAgentService()
     const [showSyncQueue, setShowSyncQueue] = useState(false)
     const userType = auth?.userData?.type
 
@@ -65,9 +63,9 @@ function Layout(props: LayoutType)
                         </div>}
                     </div>
                     <div className="grid gap-4 grid-flow-col items-center">
-                        {isAgentUnavailable && <a href={process.env.BASE_URL + '/assets/service-installer.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
+                        <a href={process.env.BASE_URL + '/assets/service-installer.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
                             <IoDownload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
-                        </a>}
+                        </a>
                         <div onClick={() => setShowSyncQueue(!showSyncQueue)} className="text-blue-800 hover:text-blue-900 cursor-pointer">
                             <IoFileTrayStacked size={24} />
                         </div>
@@ -77,7 +75,7 @@ function Layout(props: LayoutType)
                                 <h1 className="text-[10px] font-normal text-blue-200">{auth?.userData?.name}</h1>
                                 <h2 className="text-[12px] font-normal text-white">{!!userType && UserTypeName[userType]}</h2>
                             </div>
-                            <div className={`w-8 h-8 rounded bg-blue-400 ${isAgentUnavailable ? 'border-red-500' : 'border-white'} border flex items-center justify-center`}>
+                            <div className={`w-8 h-8 rounded bg-blue-400 ${true ? 'border-red-500' : 'border-white'} border flex items-center justify-center`}>
                                 <h1 className="text-white font-sm">{auth?.userData?.name.slice(0, 1)}</h1>
                             </div>
                         </div>
