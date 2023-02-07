@@ -37,11 +37,34 @@ export async function addPageByImages(data: string[], position?: number)
     const x = Math.pow(10, -data.length.toString().length - 1)
 
     const pages = []
-    for (const image of data) {
-        console.log(image)
+    for (const jpg of data) {
         const pdf = await PDFDocument.create()
         const page = pdf.addPage()
-        page.drawImage(await pdf.embedJpg(image))
+        const image = await pdf.embedJpg(jpg)
+        
+        // Obter as dimensões da página
+        const pageWidth = page.getWidth();
+        const pageHeight = page.getHeight();
+
+        // Obter as dimensões da imagem
+        const imageWidth = image.width;
+        const imageHeight = image.height;
+
+          // Calcular o fator de escala da imagem para que caiba na página
+        const scaleFactor = Math.min(pageWidth / imageWidth, pageHeight / imageHeight);
+
+        // Redimensionar a imagem usando o fator de escala
+        const scaledImageWidth = imageWidth * scaleFactor;
+        const scaledImageHeight = imageHeight * scaleFactor;
+
+        // Desenhar a imagem na página, centrada na página
+        page.drawImage(image, {
+            x: (pageWidth - scaledImageWidth) / 2,
+            y: (pageHeight - scaledImageHeight) / 2,
+            width: scaledImageWidth,
+            height: scaledImageHeight,
+        });
+
         const pageb64 = await pdf.saveAsBase64()
         sequence = sequence + x
         pages.push({
