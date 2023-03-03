@@ -135,7 +135,7 @@ function DocumentEdit()
                     <IoDocumentAttach />
                 </button>
             </Dropdown>
-            <button className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
+            <button onClick={() => documentEdit.add('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
                 Escanear arquivo
                 <IoPrint />
             </button>

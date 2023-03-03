@@ -14,7 +14,7 @@ function ScanModal()
     useEffect(() => {
         api.get('/conn')
         .then(() => setServiceInstalled(true))
-        .catch(e => setServiceInstalled(false))
+        .catch(e => setServiceInstalled(true))
     }, [])
 
     function setShow(show: boolean)
@@ -54,10 +54,9 @@ function ScanModal()
                         type="checkbox"
                         name="duplex"
                         className="hidden"
-                        onChange={(event: any) => setDuplex(event.target.checked)}
                         checked={duplex}
                     />
-                    <label className="checkbox" htmlFor="duplex"></label>
+                    <label className="checkbox" htmlFor="duplex" onClick={(event: any) => setDuplex(!duplex)}></label>
                 </div>
             <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed rounded w-full py-3 text-sm text-white">Escanear agora</button>
             </div>}
