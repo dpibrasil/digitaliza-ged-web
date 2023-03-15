@@ -1,5 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
@@ -14,6 +14,7 @@ const queryClient = new QueryClient()
 function App()
 {
     const db = useMemo(() => new Database(), [])
+    const [synced, setSynced] = useState(false)
     const auth = useAuth()
     const documentsQueue = useLiveQuery(() => db.documentsQueue.toArray())
 
@@ -33,6 +34,13 @@ function App()
             db.sync()
         }
     }, [auth.authenticated, db])
+
+    useEffect(() => {
+        if (!synced && documentsQueue) {
+            documentsQueue?.filter(d => !d.synced).map(syncDocumentFromQueue) 
+            setSynced(true)
+        }
+    }, [documentsQueue])
 
     return <QueryClientProvider client={queryClient}>
         <BrowserRouter>
