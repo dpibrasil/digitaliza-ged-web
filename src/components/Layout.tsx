@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
@@ -28,6 +28,7 @@ function Layout(props: LayoutType)
 {
     const auth = useAuth()
     const [showSyncQueue, setShowSyncQueue] = useState(false)
+    const [showDisconnectPopUp, setShowDisconnectPopUp] = useState(false)
     const userType = auth?.userData?.type
 
     return <div className="flex h-screen">
@@ -70,15 +71,22 @@ function Layout(props: LayoutType)
                             <IoFileTrayStacked size={24} />
                         </div>
                         {showSyncQueue && <SyncQueue />}
-                        <div className="grid grid-flow-col gap-2 items-center">
+                        <div className="grid grid-flow-col gap-2 items-center" onClick={() => setShowDisconnectPopUp(!showDisconnectPopUp)}>
                             <div className="flex flex-col">
                                 <h1 className="text-[10px] font-normal text-blue-200">{auth?.userData?.name}</h1>
                                 <h2 className="text-[12px] font-normal text-white">{!!userType && UserTypeName[userType]}</h2>
                             </div>
-                            <div className={`w-8 h-8 rounded bg-blue-400 ${true ? 'border-red-500' : 'border-white'} border flex items-center justify-center`}>
+                            <div className={`w-8 h-8 rounded bg-blue-400 border-white border flex items-center justify-center`}>
                                 <h1 className="text-white font-sm">{auth?.userData?.name.slice(0, 1)}</h1>
                             </div>
                         </div>
+                        {showDisconnectPopUp && <div className="fixed top-14 right-24 shadow-lg bg-menu text-neutral-300 px-6 py-4 pr-16 rounded-b-lg rounded-tl-lg">
+                            <h1 className="font-semibold text-base mb-2">Deseja sair?</h1>
+                            <div className="flex flex-row items-center justify-start cursor-pointer" onClick={() => auth.signOut()}>
+                                <IoLogOutOutline className="text-blue-500" size={20} />
+                                <h1 className="font-light text-sm ml-1">Desconectar</h1>
+                            </div> 
+                        </div>}
                     </div>
                 </div>
             </div>

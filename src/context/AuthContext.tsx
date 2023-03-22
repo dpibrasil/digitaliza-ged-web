@@ -36,6 +36,8 @@ export function AuthProvider(props: any) {
     }
 
     function signOut() {
+        window.localStorage.removeItem('@auth-token')
+        window.localStorage.removeItem('@auth-user-data')
         window.location.href = '/'
     }
 
