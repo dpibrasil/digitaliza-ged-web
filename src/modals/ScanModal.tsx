@@ -24,7 +24,7 @@ function ScanModal()
             loading: 'Escaneando...',
             error: catchApiErrorMessage,
             success: ({data}) => {
-                documentEdit.add(data)
+                documentEdit.add('data:image/jpeg;base64,' + data)
                 setShow(false)
                 return 'Página importada.'
             }
