@@ -64,7 +64,7 @@ function Layout(props: LayoutType)
                         </div>}
                     </div>
                     <div className="grid gap-4 grid-flow-col items-center">
-                        <a href={process.env.BASE_URL + '/assets/service-installer.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
+                        <a href={'/assets/digitaliza-setup.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
                             <IoDownload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
                         </a>
                         <div onClick={() => setShowSyncQueue(!showSyncQueue)} className="text-blue-800 hover:text-blue-900 cursor-pointer">
