@@ -2,10 +2,10 @@ import { DirectoryIndexType } from "../types/OrganizationTypes";
 
 export function displayIndex(index: DirectoryIndexType, indexValue: any) {
 
-    console.log(indexValue)
     if ([null, '', undefined].includes(indexValue)) return null
 
     // List 
+    console.log(indexValue)
     if (index.type === 'list') return indexValue.value
 
     // Boleano
@@ -30,5 +30,8 @@ export function displayIndex(index: DirectoryIndexType, indexValue: any) {
 
     // CNPJ
     if (index.displayAs === 'cpf-cnpj' && String(indexValue).length === 14) return String(indexValue).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1 $2 $3/$4-$5")
-
+    
+    if (index.displayAs === null) return indexValue
+    
+    return indexValue
 }
