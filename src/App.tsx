@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import { DocumentContextProvider } from "./context/DocumentContext";
 import ScanModal from "./modals/ScanModal";
 import Routes from "./routes/Routes";
 import Database from "./services/database";
@@ -40,12 +41,14 @@ function App()
             documentsQueue?.filter(d => !d.synced).map(syncDocumentFromQueue) 
             setSynced(true)
         }
-    }, [documentsQueue])
+    }, [documentsQueue, synced])
 
     return <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-            <Routes />
-        </BrowserRouter>
+        <DocumentContextProvider>
+            <BrowserRouter>
+                <Routes />
+            </BrowserRouter>
+        </DocumentContextProvider>
         <ScanModal />
         <Toaster position="top-right" />
     </QueryClientProvider>

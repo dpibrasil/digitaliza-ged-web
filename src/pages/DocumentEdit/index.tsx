@@ -1,50 +1,45 @@
 import { useEffect, useState } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
 import Dropdown from "rc-dropdown";
 import { IoArrowForward, IoCloudUpload, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
 import DropdownMenu from "../../components/DropdownMenu";
 import Layout from "../../components/Layout";
-import Database from "../../services/database";
-import * as documentEdit from "../../services/document-edit/pages";
 import { DocumentType } from "../../types/DocumentTypes";
-import { downloadBase64 } from "../../services/download";
-import { redirect, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api, { catchApiErrorMessage } from "../../services/api";
 import EditIndexesModal from "../../modals/EditIndexesModal";
 import { ModalSwitch } from "../../components/Modal";
 import Page from "./Page";
 import toast from "react-hot-toast";
+import { useDocument } from "../../context/DocumentContext";
 
 function DocumentEdit()
 {
-    const db = new Database()
     const [document, setDocument] = useState<DocumentType|null>(null)
     const params = useParams()
-    const query = useLiveQuery(() => db.workingDocumentPages.toArray())
-    const pages = query?.sort((x, y) => x.sequence - y.sequence)
+    const documentEdit = useDocument()
 
     useEffect(() => {
         if (params.documentId) {
             api.get('/documents/' + params.documentId)
             .then(({data}) => {
                 setDocument(data)
-                documentEdit.deleteAll().then(() => toast.promise(documentEdit.import(data.id), {
-                    loading: 'Carregando documento, por favor, aguarde.',
-                    success: 'Ok.',
-                    error: catchApiErrorMessage
-                }))
+                // documentEdit.clear().then(() => toast.promise(documentEdit.import(data.id), {
+                //     loading: 'Carregando documento, por favor, aguarde.',
+                //     success: 'Ok.',
+                //     error: catchApiErrorMessage
+                // }))
             })
         }
     }, [params])
 
-    const exportPdf = async () => downloadBase64(await documentEdit.export('base64'), 'preview.pdf') 
+    const exportPdf = async () => documentEdit.downloadProject()
 
     async function handleSave(data: any)
     {
         if (document) {
             // update document
             const form = new FormData()
-            const file = await documentEdit.export('buffer')
+            const file = await documentEdit.exportDocument('buffer')
             form.append('file', new Blob([file]), 'document.pdf')
             const promise = api.post(`/documents/${document.id}/versions`, form, {
                 headers: {'Content-Type': 'multipart/form-data'}
@@ -60,6 +55,7 @@ function DocumentEdit()
         } else {
             // create document
             await documentEdit.save(data.directoryId, data)
+            documentEdit.clear()
         }
     }
 
@@ -87,12 +83,9 @@ function DocumentEdit()
 
         if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length === 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
 
-        const promise = documentEdit.delete(selectedPages)
-        toast.promise(promise, {
-            error: (e) => e.message,
-            loading: 'Deletando páginas...',
-            success: 'Páginas deletadas com sucesso!'
-        })
+        for (const page of selectedPages) {
+            documentEdit.remove(page)
+        }
     }
 
     async function rotatePages(rotation: number)
@@ -100,12 +93,12 @@ function DocumentEdit()
         const selectedPages = getSelectedPages()
         if (!selectedPages) return
 
-        const promise = documentEdit.rotate(selectedPages, rotation)
-        toast.promise(promise, {
-            error: (e) => e.message,
-            loading: 'Rotacionando páginas...',
-            success: 'Páginas rotacionadas com sucesso!'
-        })
+        // const promise = documentEdit.rotate(selectedPages, rotation)
+        // toast.promise(promise, {
+        //     error: (e) => e.message,
+        //     loading: 'Rotacionando páginas...',
+        //     success: 'Páginas rotacionadas com sucesso!'
+        // })
     }
 
     return <Layout title="Editando documento">
@@ -124,9 +117,9 @@ function DocumentEdit()
             <Dropdown
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
-                    <DropdownMenu.Item onClick={() => documentEdit.add('url', 0)} name="A partir da URL" />
-                    <DropdownMenu.Item onClick={() => documentEdit.add('scanner', 0)} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => documentEdit.add('file', 0)} name="A partir do arquivo" />
+                    {/* <DropdownMenu.Item onClick={() => documentEdit.addPageBy('url', 0)} name="A partir da URL" /> */}
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', 0)} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', 0)} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >
@@ -135,7 +128,7 @@ function DocumentEdit()
                     <IoDocumentAttach />
                 </button>
             </Dropdown>
-            <button onClick={() => documentEdit.add('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
+            <button onClick={() => documentEdit.addPageBy('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
                 Escanear arquivo
                 <IoPrint />
             </button>
@@ -151,8 +144,8 @@ function DocumentEdit()
                 modalProps={{handleSubmit: handleSave}}
             />}
         </div>
-        {pages && pages.length ? <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
-            {pages.map(page => <Page key={page.id} {...page} />)}
+        {documentEdit.pages && documentEdit.pages.length ? <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
+            {documentEdit.pages.map((page, index) => <Page key={index} data={page} index={index} />)}
         </div> : <div className="flex items-center justify-center flex-col w-full">
             <h1 className="font-semibold text-lg">{'Não foi encontrado páginas :('}</h1>
             <h2 className="text-slate-500 text-sm mt-1">Verifique o documento e selecione ou adicione páginas</h2>

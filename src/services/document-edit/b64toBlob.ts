@@ -1,5 +1,5 @@
 export default function b64toBlob(b64Data: string, contentType = '', sliceSize=512) {
-    const byteCharacters = atob(b64Data);
+    const byteCharacters = atob(b64Data.slice(b64Data.indexOf(',') + 1));
     const byteArrays = [];
   
     for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {

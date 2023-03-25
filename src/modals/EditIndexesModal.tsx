@@ -83,7 +83,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                 </SelectInput>
             </>}
             {indexes && indexes.map((index: any) => <IndexInput key={index.id} background="neutral-100" index={index} indexName={'index-' + index.id} />)}
-            <button className="bg-green-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
+            <div onClick={() => formRef.current.submitForm()} className="bg-green-500 rounded text-white px-3 py-2 text-sm flex items-center justify-center">Salvar</div>
         </Form>
     </Modal>
 }

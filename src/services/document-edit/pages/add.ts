@@ -18,7 +18,13 @@ export async function processDocument(documents: string[]|Uint8Array[]|ArrayBuff
             const pagePdf = await PDFDocument.create()
             const [page] = await pagePdf.copyPages(pdf, [i])
             pagePdf.addPage(page)
-            const pageb64 = await pagePdf.saveAsBase64()
+
+            const p = pagePdf.getPages()[0]
+            const { width, height } = p.getSize()
+            console.log(width, height)
+            p.setSize(width / 2, height / 2)
+
+            const pageb64 = await pagePdf.save()
             sequence = sequence + x
             pages.push({
                 type: 'base64',
@@ -26,7 +32,8 @@ export async function processDocument(documents: string[]|Uint8Array[]|ArrayBuff
                 sequence
             })
         }
-        db.workingDocumentPages.bulkAdd(pages)
+        console.log(pages)
+        // db.workingDocumentPages.bulkAdd(pages)
     }
 }
 
