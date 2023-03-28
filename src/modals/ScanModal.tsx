@@ -43,6 +43,7 @@ function ScanModal()
             <div className="grid grid-flow-row gap-y-3">
                 <h1 className="font-bold text-lg mt-2">Escanear arquivo.</h1>
                 <div className="grid grid-flow-col justify-between">
+                    <input type="hidden" id="document-position" value="0" />
                     <label className="text-xs font-semibold mb-1 text-primary-text">Duplex</label>
                     <input
                         type="checkbox"
@@ -50,7 +51,6 @@ function ScanModal()
                         className="hidden"
                         checked={duplex}
                     />
-                    <input type="hidden" id="document-position" value="0" />
                     <label className="checkbox" htmlFor="duplex" onClick={() => setDuplex(!duplex)}></label>
                 </div>
             <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed rounded w-full py-3 text-sm text-white">Escanear agora</button>
