@@ -48,8 +48,8 @@ function App()
             <BrowserRouter>
                 <Routes />
             </BrowserRouter>
+            <ScanModal />
         </DocumentContextProvider>
-        <ScanModal />
         <Toaster position="top-right" />
     </QueryClientProvider>
 }

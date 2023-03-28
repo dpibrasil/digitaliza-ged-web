@@ -12,7 +12,6 @@ export default function Page({data, index}: any)
     const documentEdit = useDocument()
 
     const View = useMemo(() => {
-        console.log(data)
         const blob = b64toBlob(data)
         const url = URL.createObjectURL(blob)
         return <img alt={`Página `} src={url} className="bg-white max-w-[190px] max-h-[150px]" />
@@ -42,9 +41,9 @@ export default function Page({data, index}: any)
             <Dropdown
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
-                    {/* <DropdownMenu.Item onClick={() => addPage('url', sequence)} name="A partir da URL" />
-                    <DropdownMenu.Item onClick={() => addPage('scanner', sequence)} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => addPage('file', sequence)} name="A partir do arquivo" /> */}
+                    {/* <DropdownMenu.Item onClick={() => addPage('url', sequence)} name="A partir da URL" /> */}
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', 0)} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', 0)} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >
