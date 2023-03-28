@@ -25,7 +25,6 @@ function ScanModal()
             loading: 'Escaneando...',
             error: catchApiErrorMessage,
             success: ({data}) => {
-                data.reverse()
                 for (const page of data) {
                     position++
                     documentEdit.add('data:image/jpeg;base64,' + page, position)
