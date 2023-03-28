@@ -42,8 +42,8 @@ export default function Page({data, index}: any)
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
                     {/* <DropdownMenu.Item onClick={() => addPage('url', sequence)} name="A partir da URL" /> */}
-                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', 0)} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', 0)} name="A partir do arquivo" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', index)} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', index)} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >

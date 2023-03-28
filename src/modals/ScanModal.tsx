@@ -18,13 +18,18 @@ function ScanModal()
     
     async function handleSubmit()
     {
+        var position = Number(document.getElementById('document-position')?.getAttribute('value'))
         const promise = api.get('/acquire', {params: {duplex}})
 
         toast.promise(promise, {
             loading: 'Escaneando...',
             error: catchApiErrorMessage,
             success: ({data}) => {
-                documentEdit.add('data:image/jpeg;base64,' + data)
+                data.reverse()
+                for (const page of data) {
+                    position++
+                    documentEdit.add('data:image/jpeg;base64,' + page, position)
+                }
                 setShow(false)
                 return 'Página importada.'
             }
@@ -45,6 +50,7 @@ function ScanModal()
                         className="hidden"
                         checked={duplex}
                     />
+                    <input type="hidden" id="document-position" value="0" />
                     <label className="checkbox" htmlFor="duplex" onClick={() => setDuplex(!duplex)}></label>
                 </div>
             <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed rounded w-full py-3 text-sm text-white">Escanear agora</button>

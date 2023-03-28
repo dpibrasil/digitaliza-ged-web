@@ -37,8 +37,9 @@ const readPage = {
             }, { once: true })
         })
     },
-    scanner: function()
+    scanner: function(position: number = 0)
     {
+        document.getElementById('document-position')?.setAttribute('value', String(position))
         document.getElementById('scan-modal')?.removeAttribute('class')
     }
 }
