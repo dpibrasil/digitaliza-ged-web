@@ -28,7 +28,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     const exportDocument = async (type: 'base64'|'buffer' = 'base64') => {
         const pdf = await PDFDocument.create()
 
-        for (const data of pages) {
+        for (const data of pages.filter(page => !!page)) {
             // Create a new page with the same size as the image
             const image = data.includes('image/jp') ? await pdf.embedJpg(data) : await pdf.embedPng(data)
             const { width, height } = image.scale(0.5)
@@ -65,7 +65,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
         const data: any = await readPage[by](position)
-        var i = position + 1
+        var i = position != 0 ? position + 1 : position
         for (const page of data) {
             add(page, i)
             i++
