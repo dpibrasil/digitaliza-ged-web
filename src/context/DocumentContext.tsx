@@ -65,7 +65,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
         const data: any = await readPage[by](position)
-        var i = position != 0 ? position + 1 : position
+        var i = position !== 0 ? position + 1 : position
         for (const page of data) {
             add(page, i)
             i++

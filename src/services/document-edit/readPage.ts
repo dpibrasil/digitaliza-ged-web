@@ -1,7 +1,14 @@
+import { pdf2png } from "../pdf2png"
+
 const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsDataURL') => new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader[type](file)
-    reader.onload = () => resolve(reader.result)
+    reader.onload = async () => {
+        if (typeof reader.result == 'string' && reader.result.includes('application')) {
+            return resolve(await pdf2png(reader.result))
+        }
+        resolve(reader.result)
+    }
     reader.onerror = (error: any) => reject(error)
 })
 
@@ -20,9 +27,14 @@ const readPage = {
             // file changed
             input.addEventListener('change', async (event: any) => {
                 lock = true
-                const files = []
+                var files: any = []
                 for (const file of event.target.files) {
-                    files.push(await readFile(file))
+                    const data = await readFile(file)
+                    if (Array.isArray(data)) {
+                        files = [...files, ...data]
+                    } else {
+                        files = [...files, data]
+                    }
                 }
                 resolve(files)
             }, false)
