@@ -25,4 +25,5 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(<AuthProvider>
   <App />
+  <input type="hidden" id="document-position" value="0" />
 </AuthProvider>)

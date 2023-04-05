@@ -8,6 +8,7 @@ import { useDocument } from "../context/DocumentContext";
 function ScanModal()
 {
     const [duplex, setDuplex] = useState(true)
+    const [position, setPosition] = useState(0)
     const documentEdit = useDocument()
 
     function setShow(show: boolean)
@@ -19,6 +20,7 @@ function ScanModal()
     async function handleSubmit()
     {
         var position = Number(document.getElementById('document-position')?.getAttribute('value'))
+        console.log(position)
         const promise = api.get('/acquire', {params: {duplex}})
 
         toast.promise(promise, {
@@ -42,7 +44,6 @@ function ScanModal()
             <div className="grid grid-flow-row gap-y-3">
                 <h1 className="font-bold text-lg mt-2">Escanear arquivo.</h1>
                 <div className="grid grid-flow-col justify-between">
-                    <input type="hidden" id="document-position" value="0" />
                     <label className="text-xs font-semibold mb-1 text-primary-text">Duplex</label>
                     <input
                         type="checkbox"
