@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
 import RequireUserType from "./RequireUserType";
 import SyncQueue from "./SyncQueue";
+import Database from "../services/database";
+import { toast } from "react-hot-toast";
+import { catchApiErrorMessage } from "../services/api";
 
 function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: string}) {
 
@@ -27,9 +30,18 @@ type LayoutType = {
 function Layout(props: LayoutType)
 {
     const auth = useAuth()
+    const db = new Database()
     const [showSyncQueue, setShowSyncQueue] = useState(false)
     const [showDisconnectPopUp, setShowDisconnectPopUp] = useState(false)
     const userType = auth?.userData?.type
+
+    const dbSync = () => {
+        toast.promise(db.sync(), {
+            loading: 'Sincronizando...',
+            error: catchApiErrorMessage,
+            success: 'Índices sincronizados com sucesso.'
+        })
+    }
 
     return <div className="flex h-screen">
         <div id="menu" className="bg-menu p-0 w-64 h-screen">
@@ -64,6 +76,9 @@ function Layout(props: LayoutType)
                         </div>}
                     </div>
                     <div className="grid gap-4 grid-flow-col items-center">
+                        <div onClick={dbSync}>
+                            <IoReload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
+                        </div>
                         <a href={'/assets/digitaliza-setup.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
                             <IoDownload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
                         </a>

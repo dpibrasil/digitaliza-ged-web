@@ -16,25 +16,9 @@ function App()
 {
     const db = useMemo(() => new Database(), [])
     const [synced, setSynced] = useState(false)
-    const auth = useAuth()
     const documentsQueue = useLiveQuery(() => db.documentsQueue.toArray())
 
     documentsQueue?.filter(d => !d.synced && !d.fail).map(syncDocumentFromQueue) 
-
-    // if is authenticated, sync data
-    useEffect(() => {
-        if (auth.authenticated) {
-            let online = true
-            setInterval(() => {
-                try {
-                    if (online) db.sync()
-                } catch (e) {
-                    online = false
-                }
-            }, 60000)
-            db.sync()
-        }
-    }, [auth.authenticated, db])
 
     useEffect(() => {
         if (!synced && documentsQueue) {
