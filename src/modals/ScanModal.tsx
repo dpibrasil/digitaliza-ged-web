@@ -8,7 +8,6 @@ import { useDocument } from "../context/DocumentContext";
 function ScanModal()
 {
     const [duplex, setDuplex] = useState(true)
-    const [position, setPosition] = useState(0)
     const documentEdit = useDocument()
 
     function setShow(show: boolean)

@@ -27,7 +27,7 @@ function IndexPreview({index, setEditingIndex, indexActions}: {index: DirectoryI
             </div>
             <div className="flex flex-col ml-2">
                 <h1 className="font-medium text-sm">{index.name}</h1>
-                <h2 className="text-slate-500 text-[11px]">{index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}{index.type == 'list' && ` • ${index.listValues ? index.listValues.length : 0} ${index.listValues && index.listValues.length === 1 ? 'opção' : 'opções'}`}</h2>
+                <h2 className="text-slate-500 text-[11px]">{index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}{index.type === 'list' && ` • ${index.listValues ? index.listValues.length : 0} ${index.listValues && index.listValues.length === 1 ? 'opção' : 'opções'}`}</h2>
             </div>
         </div>
         <div className="grid grid-flow-col gap-x-1">
