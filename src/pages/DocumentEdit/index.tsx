@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Dropdown from "rc-dropdown";
-import { IoArrowForward, IoCloudUpload, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
+import { IoArrowForward, IoCloudUpload, IoCloudUploadOutline, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
 import DropdownMenu from "../../components/DropdownMenu";
 import Layout from "../../components/Layout";
 import { DocumentType } from "../../types/DocumentTypes";
@@ -11,10 +11,12 @@ import { ModalSwitch } from "../../components/Modal";
 import Page from "./Page";
 import toast from "react-hot-toast";
 import { useDocument } from "../../context/DocumentContext";
+import b64toBlob from "../../services/document-edit/b64toBlob";
 
 function DocumentEdit()
 {
     const [document, setDocument] = useState<DocumentType|null>(null)
+    const [largeUpload, setLargeUpload] = useState(false)
     const params = useParams()
     const documentEdit = useDocument()
 
@@ -23,11 +25,6 @@ function DocumentEdit()
             api.get('/documents/' + params.documentId)
             .then(({data}) => {
                 setDocument(data)
-                // documentEdit.clear().then(() => toast.promise(documentEdit.import(data.id), {
-                //     loading: 'Carregando documento, por favor, aguarde.',
-                //     success: 'Ok.',
-                //     error: catchApiErrorMessage
-                // }))
             })
         }
     }, [params])
@@ -51,6 +48,41 @@ function DocumentEdit()
                     window.location.href = `/documents/${document.id}`
                     return `Documento salvo com versão ${data.version}.`
                 }
+            })
+        } else if (largeUpload) {
+            toast.promise((async () => {
+                // upload images to server
+                const {data: pdf} = await api.post('/pdfs')
+                for (const pageIndex in documentEdit.pages) {
+                    const image = b64toBlob(documentEdit.pages[pageIndex])
+                    const form = new FormData()
+                    form.append('index', pageIndex)
+                    form.append('image', image)
+                    await api.post(`/pdfs/${pdf.id}/image`, form)
+                }
+
+                // export pdfId from server
+                const {data: output} = await api.get(`/pdfs/${pdf.id}/export`)
+
+                // create document
+                const form = new FormData()
+                for (const key in data) {
+                    form.append(key, data[key])
+                }
+                form.append('pdfId', output.id)
+
+                const {data: document} = await api.post('/documents', form, {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                })
+                documentEdit.clear()
+                return document
+            })(), {
+                loading: 'Carregando arquivo para nuvem...',
+                success: (document) => {
+                    window.location.href = `/documents/${document.id}`
+                    return `Documento salvo com sucesso.`
+                },
+                error: catchApiErrorMessage,
             })
         } else {
             // create document
@@ -129,6 +161,10 @@ function DocumentEdit()
             <button onClick={() => documentEdit.addPageBy('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
                 Escanear arquivo
                 <IoPrint />
+            </button>
+            <button onClick={() => setLargeUpload(!largeUpload)} className={`${largeUpload ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-slate-100 hover:bg-slate-200'} flex-row px-4 py-2 rounded flex items-center justify-center`}>
+                Carregamento {largeUpload ? 'otimizado' : 'normal'}
+                {largeUpload ? <IoCloudUploadOutline /> : <IoCloudUpload />}
             </button>
             {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
                 Atualizar documento
