@@ -43,7 +43,7 @@ function ScanModal()
             <div className="grid grid-flow-row gap-y-3">
                 <h1 className="font-bold text-lg mt-2">Escanear arquivo.</h1>
                 <div className="grid grid-flow-col justify-between">
-                    <label className="text-xs font-semibold mb-1 text-primary-text">Duplex</label>
+                    <label className="text-xs font-semibold mb-1 text-primary-text">Frente e verso</label>
                     <input
                         type="checkbox"
                         name="duplex"
