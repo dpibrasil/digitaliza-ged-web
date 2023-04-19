@@ -10,12 +10,13 @@ export default function Page({data, index}: any)
 {
     const [showOptions, setShowOptions] = useState(false)
     const documentEdit = useDocument()
+    const [fullScreen, setFullScreen] = useState(false)
 
     const View = useMemo(() => {
         const blob = b64toBlob(data)
         const url = URL.createObjectURL(blob)
-        return <img alt={`Página `} src={url} className="bg-white max-w-[190px] max-h-[150px]" />
-    }, [data])
+        return <img alt={`Página ${index + 1}`} onDoubleClick={() => setFullScreen(!fullScreen)} src={url} className={fullScreen ? "fixed top-0 max-w-full max-h-full bg-white" : "bg-white max-w-[190px] max-h-[150px]"} />
+    }, [data, fullScreen])
 
     function handleDelete() {
         if (!window.confirm(`Você tem certeza que quer deletar a página ${index + 1}?`)) return false
