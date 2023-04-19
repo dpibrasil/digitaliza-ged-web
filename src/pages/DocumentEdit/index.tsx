@@ -83,9 +83,7 @@ function DocumentEdit()
 
         if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length === 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
 
-        for (const page of selectedPages) {
-            documentEdit.remove(page)
-        }
+        documentEdit.set(documentEdit.pages.filter((_, i) => !selectedPages.includes(i)))
     }
 
     async function rotatePages(rotation: number)

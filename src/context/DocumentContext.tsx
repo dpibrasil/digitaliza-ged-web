@@ -13,14 +13,15 @@ interface Props {
     exportDocument: (type?: 'base64'|'buffer') => Promise<string|Uint8Array>,
     downloadProject: () => Promise<void>,
     addPageBy: (by: 'file'|'scanner', position: number) => Promise<void>,
-    save: (directoryId: number, indexes: any) => void
+    save: (directoryId: number, indexes: any) => void,
+    set: (data: string[]) => void
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
 
 export const DocumentContextProvider: React.FC<any> = (props) => {
 
-    const [pages, { insertAt, removeAt, clear }] = useList<string>([])
+    const [pages, { insertAt, removeAt, clear, set }] = useList<string>([])
 
     const add = (data: string, position = 0) => insertAt(position, data)
     const remove = (position: number) => removeAt(position)
@@ -78,7 +79,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     //     const pdfDoc = await PDFDocument.load(i)
     // } 
 
-    return <DocumentContext.Provider value={{pages, add, remove, clear, exportDocument, downloadProject, addPageBy, save}}>
+    return <DocumentContext.Provider value={{pages, add, remove, clear, exportDocument, downloadProject, addPageBy, save, set}}>
         {props.children}
     </DocumentContext.Provider>
 }
