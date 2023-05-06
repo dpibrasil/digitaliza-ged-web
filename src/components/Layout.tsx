@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload, IoCloudOffline } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
@@ -44,23 +44,30 @@ function Layout(props: LayoutType)
     }
 
     return <div className="flex h-screen">
-        <div id="menu" className="bg-menu p-0 w-64 h-screen">
-            <div className="bg-menu-active text-white px-6 py-4 mb-10">
-                <h1 className="text-sm">DIGITALIZA</h1>
+        <div id="menu" className="bg-menu p-0 w-64 h-screen flex flex-col justify-between">
+            <div>
+                <div className="bg-menu-active text-white px-6 py-4 mb-10">
+                    <h1 className="text-sm">DIGITALIZA</h1>
+                </div>
+                <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
+                <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
+                <RequireUserType type="operator">
+                    <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
+                    <MenuItem name="Arquivos off-line" to="/upload-project" icon={IoCloudOffline} />
+                </RequireUserType>
+                <RequireUserType type="admin">
+                    <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
+                    <MenuItem name="Usuários" to="/users" icon={IoPeople} />        
+                </RequireUserType>        
+                <RequireUserType type="super-admin">
+                    <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
+                    <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
+                </RequireUserType>
             </div>
-            <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
-            <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
-            <RequireUserType type="operator">
-                <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
-            </RequireUserType>
-            <RequireUserType type="admin">
-                <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
-                <MenuItem name="Usuários" to="/users" icon={IoPeople} />        
-            </RequireUserType>        
-            <RequireUserType type="super-admin">
-                <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
-                <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
-            </RequireUserType>
+            <div className="w-full pb-6 flex flex-col items-center">
+                <img className="h-4 mb-2" src={process.env.PUBLIC_URL + '/static/dpi.png'} />
+                <h1 className="text-white text-center text-xs">Criado por DPI Brasil</h1>
+            </div>
         </div>
         <div className="w-full h-full h-max-screen overflow-auto">
             <div className="header w-full">
