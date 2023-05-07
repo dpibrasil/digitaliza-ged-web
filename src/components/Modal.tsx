@@ -14,9 +14,9 @@ export function ModalSwitch({modal: ModalComponent, button: Button, modalProps =
 }
 
 export interface ModalType {
-    children: any,
+    children?: any,
     mode?: 'dark'|'light',
-    setShow: (show: boolean) => {}
+    setShow: (show: boolean) => void
 }
 
 function Modal({mode = 'dark', ...props}: ModalType)

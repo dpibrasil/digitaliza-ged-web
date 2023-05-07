@@ -12,9 +12,16 @@ import Page from "./Page";
 import toast from "react-hot-toast";
 import { useDocument } from "../../context/DocumentContext";
 import b64toBlob from "../../services/document-edit/b64toBlob";
+import { downloadBase64 } from "../../services/download";
+import { v4 as uuid } from 'uuid';
+import { useAuth } from "../../context/AuthContext";
+import { Buffer } from "buffer";
+
+const DOC_PACKAGE_SIZE = Number(process.env.REACT_APP_DOCUMENT_PACKAGE_SIZE)
 
 function DocumentEdit()
 {
+    const auth = useAuth()
     const [document, setDocument] = useState<DocumentType|null>(null)
     const [largeUpload, setLargeUpload] = useState(false)
     const params = useParams()
@@ -49,6 +56,34 @@ function DocumentEdit()
                     return `Documento salvo com versão ${data.version}.`
                 }
             })
+        } else if (data.export) {
+            const startDate = new Date()
+            var documentId = uuid()
+            const packagesLength = Math.ceil(documentEdit.pages.length / DOC_PACKAGE_SIZE)
+            
+            for (var i = 1; i <= packagesLength; i++) {
+                const zip = require('jszip')()
+
+                // add pages to zip
+                const pages: number[] = []
+                for (
+                    var x = (i - 1) * DOC_PACKAGE_SIZE + (i === 1 ? 0 : 1);
+                    (x <= DOC_PACKAGE_SIZE * (i - 1) + DOC_PACKAGE_SIZE) && x < documentEdit.pages.length;
+                    x++
+                ) {
+                    pages.push(x)
+                    zip.file(`page-${documentId}-${i}-${x}`, b64toBlob(documentEdit.pages[x]), { binary: true })
+                }
+
+                // add meta data
+                const meta = { documentId, packagesLength, package: i, pages, data }
+                zip.file('meta', JSON.stringify(meta))
+
+                // export
+                const zipOutput = await zip.generateAsync({ type: 'base64' })
+                downloadBase64('data:application/zip;base64, ' + zipOutput, `${documentId}-${i}.ged-part-project`)
+            }
+            downloadBase64('data:application/txt;base64, ' + Buffer.from(`ID do Documento: ${documentId};\nTotal de pacotes: ${packagesLength};\nTamanho do pacote: ${DOC_PACKAGE_SIZE};\nTotal de páginas: ${documentEdit.pages.length}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(data)}`).toString('base64'), `${documentId}-log.txt`)
         } else if (largeUpload) {
             toast.promise((async () => {
                 // upload images to server
@@ -140,7 +175,7 @@ function DocumentEdit()
                 <IoReload className="cursor-pointer" onClick={() => rotatePages(-90)} size={20} />
                 <IoTrash className="cursor-pointer" onClick={deletePages} size={20} />
             </div>
-            <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
+            <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1">
                 Exportar
                 <IoCloudUpload />
             </button>
@@ -153,29 +188,29 @@ function DocumentEdit()
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >
-                <button className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
+                <button className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1">
                     Inserir página
                     <IoDocumentAttach />
                 </button>
             </Dropdown>
-            <button onClick={() => documentEdit.addPageBy('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center">
+            <button onClick={() => documentEdit.addPageBy('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1">
                 Escanear arquivo
                 <IoPrint />
             </button>
-            <button onClick={() => setLargeUpload(!largeUpload)} className={`${largeUpload ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-slate-100 hover:bg-slate-200'} flex-row px-4 py-2 rounded flex items-center justify-center`}>
+            <button onClick={() => setLargeUpload(!largeUpload)} className={`${largeUpload ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-slate-100 hover:bg-slate-200'} flex-row px-4 py-2 rounded flex items-center justify-center gap-x-1`}>
                 Carregamento {largeUpload ? 'otimizado' : 'normal'}
                 {largeUpload ? <IoCloudUploadOutline /> : <IoCloudUpload />}
             </button>
-            {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+            {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">
                 Atualizar documento
                 <IoArrowForward />
             </button> : <ModalSwitch
-                button={(props: any) => <button {...props} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+                button={(props: any) => <button {...props} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">
                     Continuar
                     <IoArrowForward />
                 </button>}
                 modal={EditIndexesModal}
-                modalProps={{handleSubmit: handleSave}}
+                modalProps={{handleSubmit: handleSave, editingDocument: true}}
             />}
         </div>
         {documentEdit.pages && documentEdit.pages.length ? <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5">
