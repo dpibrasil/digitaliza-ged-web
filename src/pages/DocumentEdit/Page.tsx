@@ -1,10 +1,10 @@
-import b64toBlob from "../../services/document-edit/b64toBlob";
 import { IoTrash } from "react-icons/io5"
 import {FiFilePlus} from "react-icons/fi";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Dropdown from "rc-dropdown";
 import DropdownMenu from "../../components/DropdownMenu";
 import { useDocument } from "../../context/DocumentContext";
+import { Page as RenderPage } from "react-pdf";
 
 export default function Page({data, index}: any)
 {
@@ -12,23 +12,17 @@ export default function Page({data, index}: any)
     const documentEdit = useDocument()
     const [fullScreen, setFullScreen] = useState(false)
 
-    const View = useMemo(() => {
-        const blob = b64toBlob(data)
-        const url = URL.createObjectURL(blob)
-        return <img alt={`Página ${index + 1}`} onDoubleClick={() => setFullScreen(!fullScreen)} src={url} className={fullScreen ? "fixed top-0 max-w-full max-h-full bg-white" : "bg-white max-w-[190px] max-h-[150px]"} />
-    }, [data, fullScreen])
-
     function handleDelete() {
         if (!window.confirm(`Você tem certeza que quer deletar a página ${index + 1}?`)) return false
-        documentEdit.remove(index)
+        documentEdit.deletePages([index])
     }
 
     const handleClick = () => setShowOptions(!showOptions)
 
     return <div className="flex flex-row items-center justify-center">
         <div className="flex w-[200px] flex-col items-center justify-center">
-            <div onClick={handleClick} className="bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600">
-                {View}
+            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className="bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600">
+                <RenderPage width={fullScreen ? 300 : 800} scale={fullScreen ? 1.5 : 0.2} pageIndex={index} loading="Carregando página..." />
             </div>
             <div className="grid grid-flow-col items-center justify-center gap-1">
                 <input type="checkbox" name="page" value={index} />
@@ -43,8 +37,8 @@ export default function Page({data, index}: any)
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>
                     {/* <DropdownMenu.Item onClick={() => addPage('url', sequence)} name="A partir da URL" /> */}
-                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', index)} name="A partir do scanner" />
-                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', index)} name="A partir do arquivo" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('scanner', index + 1)} name="A partir do scanner" />
+                    <DropdownMenu.Item onClick={() => documentEdit.addPageBy('file', index + 1)} name="A partir do arquivo" />
                 </DropdownMenu.Container>}
                 animation="slide-up"
             >
