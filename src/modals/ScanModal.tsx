@@ -19,17 +19,13 @@ function ScanModal()
     async function handleSubmit()
     {
         var position = Number(document.getElementById('document-position')?.getAttribute('value'))
-        console.log(position)
         const promise = api.get('/acquire', {params: {duplex}})
 
         toast.promise(promise, {
             loading: 'Escaneando...',
             error: catchApiErrorMessage,
             success: ({data}) => {
-                for (const page of data) {
-                    position++
-                    documentEdit.add('data:image/jpeg;base64,' + page, position)
-                }
+                documentEdit.add(data.map((d: any) => 'data:image/jpeg;base64,' + d), position)
                 setShow(false)
                 return 'Página importada.'
             }
@@ -38,7 +34,6 @@ function ScanModal()
     }
 
     return <div className="hidden" id="scan-modal">
-        {/* @ts-ignore */}
         <Modal setShow={setShow}>
             <div className="grid grid-flow-row gap-y-3">
                 <h1 className="font-bold text-lg mt-2">Escanear arquivo.</h1>

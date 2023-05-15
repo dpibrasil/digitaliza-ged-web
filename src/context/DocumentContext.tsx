@@ -62,6 +62,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const add = async (data: any, position: number = 0) => {
+        data = Array.isArray(data) ? data : [data]
         if (!pdfDoc) {
             toast.error('Aguarde o PDF iniciar.')
             return
@@ -81,26 +82,28 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
                 newPdf.addPage(originalPage)
             }
 
-            // import PDF Document
-            if (i == position && data.includes('application/pdf')) {
-                const importPdf = await PDFDocument.load(data)
-                const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
+            for (const d of data) {
+                // import PDF Document
+                if (i == position && d.includes('application/pdf')) {
+                    const importPdf = await PDFDocument.load(d)
+                    const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
 
-                for (const page of importPdfPages) newPdf.addPage(page)
-            }
+                    for (const page of importPdfPages) newPdf.addPage(page)
+                }
 
-            // import images
-            if (i == position && data.includes('image')) {
-                const image =  await newPdf[data.includes('image/jp') ? 'embedJpg' : 'embedPng'](data)
-                const { width, height } = image.scale(1)
-                const page = newPdf.addPage([width, height])
+                // import images
+                if (i == position && d.includes('image')) {
+                    const image =  await newPdf[d.includes('image/jp') ? 'embedJpg' : 'embedPng'](d)
+                    const { width, height } = image.scale(1)
+                    const page = newPdf.addPage([width, height])
 
-                page.drawImage(image, {
-                    x: 0,
-                    y: 0,
-                    width: width,
-                    height: height,
-                })
+                    page.drawImage(image, {
+                        x: 0,
+                        y: 0,
+                        width: width,
+                        height: height,
+                    })
+                }
             }
         }
         setPdfDoc(newPdf)
