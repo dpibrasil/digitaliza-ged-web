@@ -9,7 +9,7 @@ export function downloadBase64(data: string, name: string)
     if (link.parentNode) link.parentNode.removeChild(link)
 }
 
-export function downloadData(data: string, name: string)
+export function downloadData(data: string| Uint8Array, name: string)
 {
     const blob = new File([data], name)
     const objURL = window.URL.createObjectURL(new Blob([blob]),)

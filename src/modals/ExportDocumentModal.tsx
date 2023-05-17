@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import Modal, { ModalTitle, ModalType } from "../components/Modal";
 import { useAuth } from "../context/AuthContext";
 import { useDocument } from "../context/DocumentContext";
-import { downloadBase64 } from "../services/download";
+import { downloadBase64, downloadData } from "../services/download";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
@@ -40,7 +40,12 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
         const zip = new jszip()
 
         // add pdf to zip
-        zip.file('data', new Blob([documentEdit.output]))
+        console.log('convert to blob')
+        const blob = new Blob([documentEdit.output])
+        console.log('add file to zip')
+        zip.file('data', blob)
+        console.log('ok')
+
             
         // add meta data
         const meta = {
@@ -54,8 +59,8 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
         zip.file('meta', JSON.stringify(meta))
 
         // export
-        const zipOutput = await zip.generateAsync({ type: 'base64' })
-        downloadBase64('data:application/zip;base64, ' + zipOutput, `${name}.ged-project`)
+        const zipOutput = await zip.generateAsync({ type: 'uint8array' })
+        downloadData(zipOutput, `${name}.ged-project`)
         downloadBase64('data:application/txt;base64, ' + Buffer.from(`Nome do documento: ${name};\nID do documento: ${documentId};\nNavegador: ${navigator.userAgent};\nPlataforma: ${navigator.platform};\nTamanho do pacote: ${DOC_PACKAGE_SIZE};\nTotal de páginas: ${documentEdit.numPages}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(data)}`).toString('base64'), `${name}-log.txt`)
     }
     

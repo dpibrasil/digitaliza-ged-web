@@ -1,7 +1,7 @@
 import { PDFDocument } from 'pdf-lib';
 import React, { useEffect, useState } from 'react';
 import readPage from '../services/document-edit/readPage';
-import { downloadBase64 } from '../services/download';
+import { downloadData } from '../services/download';
 import { toast } from 'react-hot-toast';
 import api from '../services/api';
 
@@ -52,8 +52,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const downloadProject = async () => {
-        const data: any = await exportDocument('base64')
-        downloadBase64(data, 'draft.pdf')
+        if (output) downloadData(output, 'draft.pdf')
     }
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
