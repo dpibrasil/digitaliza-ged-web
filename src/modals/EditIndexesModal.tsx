@@ -1,13 +1,12 @@
 import { Form } from "@unform/web";
 import { useEffect, useRef, useState } from "react";
 import { IndexInput, SelectInput } from "../components/Input";
-import Modal, { ModalSwitch, ModalTitle, ModalType } from "../components/Modal";
+import Modal, { ModalTitle, ModalType } from "../components/Modal";
 import { DirectoryType } from "../types/OrganizationTypes";
 import Database from "../services/database";
 import { useLiveQuery } from "dexie-react-hooks";
 import {ValidationError} from 'yup';
 import { IndexSchema } from "../validators/IndexesValidators";
-import { IoDownload } from "react-icons/io5";
 import ExportDocumentModal from "./ExportDocumentModal";
 
 type EditIndexesModalProps = {
@@ -91,11 +90,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                 </>}
                 {indexes && indexes.map((index: any) => <IndexInput key={index.id} background="neutral-100" index={index} indexName={'index-' + index.id} />)}
                 <div className="grid grid-flow-col gap-x-2">
-                    <div onClick={() => validate({})} className="bg-green-500 rounded text-white px-3 py-2 text-sm flex items-center justify-center">Salvar</div>
-                    <div onClick={() => setShowExportModal(true)} {...props} className="bg-neutral-300 hover:bg-neutral-200 cursor-pointer rounded text-black px-3 py-2 text-sm flex items-center justify-center">
-                        <IoDownload />
-                        Exportar para projeto
-                    </div>
+                    <div onClick={() => setShowExportModal(true)} className="bg-green-500 rounded text-white px-3 py-2 text-sm flex items-center justify-center">Salvar</div>
                 </div>
             </Form>
         </Modal>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowBack, IoArrowForward, IoCloudUpload, IoCloudUploadOutline, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
 import Layout from "../../components/Layout";
 import { DocumentType } from "../../types/DocumentTypes";
@@ -8,7 +8,6 @@ import EditIndexesModal from "../../modals/EditIndexesModal";
 import { ModalSwitch } from "../../components/Modal";
 import toast from "react-hot-toast";
 import { useDocument } from "../../context/DocumentContext";
-import { useAuth } from "../../context/AuthContext";
 import { Document as RenderDocument } from 'react-pdf';
 import Page from "./Page";
 

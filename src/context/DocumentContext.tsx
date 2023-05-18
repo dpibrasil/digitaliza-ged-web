@@ -123,12 +123,12 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
         setPdfDoc(pdf)
     }
     
-    const importFromDocument = async (id: number|string) => {
-        startUpdate()
-        const { data } = await api.get(`/documents/${id}/file`, {responseType: 'arraybuffer'})
-        const i = Buffer.from(data, 'binary')
-        // const pdfDoc = await PDFDocument.load(i)
-    } 
+    // const importFromDocument = async (id: number|string) => {
+    //     startUpdate()
+    //     const { data } = await api.get(`/documents/${id}/file`, {responseType: 'arraybuffer'})
+    //     const i = Buffer.from(data, 'binary')
+    //     // const pdfDoc = await PDFDocument.load(i)
+    // } 
 
     return <DocumentContext.Provider value={{ exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add }}>
         {props.children}

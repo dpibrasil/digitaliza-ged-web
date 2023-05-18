@@ -5,9 +5,8 @@ import { toast } from "react-hot-toast";
 import api from "../../services/api";
 import MissingPackagesModal from "../../modals/MissingPackagesModal";
 
-function Project({name, packagesLength, totalPages, documentId, documents}: any)
+function Project({meta, data}: any)
 {
-    const document = documents[documentId]
     const [progress, setProgress] = useState<number|string>('Pendente')
     const [missingPackages, setMissingPackages] = useState<number[]>([])
     
@@ -15,35 +14,19 @@ function Project({name, packagesLength, totalPages, documentId, documents}: any)
     {
         if (!document) return toast.error('Faça upload dos arquivos.')
         
-        // Verifica se existe pacotes faltando
-        const missingParts = Array.from(Array(document.packagesLength).keys()).map(i => i + 1).filter(i => !document.packages[i])
-        if (missingParts.length) return setMissingPackages(missingParts)
-
-        // upload images to server
-        const {data: pdf} = await api.post('/pdfs')
-        for (var i = 1; i <= document.packagesLength; i++) {
-            for (const pageIndex of Object.keys(document.packages[i].pages)) {
-                const page = document.packages[i].pages[pageIndex]
-                const form = new FormData()
-                form.append('index', pageIndex)
-                form.append('image', page)
-                await api.post(`/pdfs/${pdf.id}/image`, form)
-                setProgress(i*100/document.packagesLength)
-            }
-        }
-
-        // export pdfId from server
-        const {data: output} = await api.get(`/pdfs/${pdf.id}/export`)
-
         // create document
         const form = new FormData()
-        for (const key in document.data) {
-            form.append(key, document.data[key])
+        for (const key in meta.data) {
+            form.append(key, meta.data[key])
         }
-        form.append('pdfId', output.id)
+        form.append('file', new Blob([data]))
+        setProgress(0)
 
         await api.post('/documents', form, {
-            headers: {'Content-Type': 'multipart/form-data'}
+            headers: {'Content-Type': 'multipart/form-data'},
+            onUploadProgress: (event) => {
+                setProgress(Math.round( (event.loaded * 100) / event.total ))
+            }
         })
     }
 
@@ -55,11 +38,10 @@ function Project({name, packagesLength, totalPages, documentId, documents}: any)
                     <div className="bg-blue-500 rounded-full w-12 h-12 flex items-center justify-center text-white">
                         <IoCloudOfflineOutline size={24} />
                     </div>
-                    <h1 className="font-semibold">{name}</h1>
+                    <h1 className="font-semibold">{meta.name}</h1>
                 </div>
             </td>
-            <td>{packagesLength}</td>
-            <td>{totalPages}</td>
+            <td>{meta.documentPagesCount}</td>
             <td>
                 <div className="grid grid-flow-col gap-x-2">
                     {typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
@@ -69,7 +51,7 @@ function Project({name, packagesLength, totalPages, documentId, documents}: any)
                 </div>
             </td>
             <td>
-                {!!document && <button onClick={upload} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">Upload</button>}
+                {!!document && progress === 'Pendente' && <button onClick={upload} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">Upload</button>}
             </td>
         </tr>
     </>
@@ -79,38 +61,29 @@ function UploadProject()
 {
     const [documents, setDocuments] = useState({})
 
-    const projects = Object.values(documents).map((i: any) => ({name: i.name, documentId: i.documentId, totalPages: i.documentPagesCount, packagesLength: i.packagesLength}))
-
     async function handleChangeInput(event: any)
     {
-        const newDocuments: any = {...documents}
         const jszip = require('jszip')
+        var documentsEntries: any = {}
+
         for (const file of event.target.files) {
-            if (file.name.includes('.ged-part-project')) {
+            if (file && file.name.includes('.ged-project')) {
+                console.log(file.name)
                 const zip = await jszip.loadAsync(file)
                 const meta = JSON.parse(await zip.file('meta').async('string'))
-                const pages = Object.fromEntries(await Promise.all(meta.pages.map(async (pageNumber: number) => {
-                    const pageFileName = `page-${meta.documentId}-${meta.package}-${pageNumber}`
-                    const page = await zip.file(pageFileName).async('blob')
-                    return [pageNumber, page]
-                })))
+                const doc = await zip.file('data').async('uint8array')
 
-                if (!newDocuments[meta.documentId]) newDocuments[meta.documentId] = {
-                    ...meta,
-                    package: undefined,
-                    pages: undefined,
-                    packages: {}
-                }
-                newDocuments[meta.documentId].packages[meta.package] = {...meta, pages}
+                documentsEntries[meta.documentId] = { documentId: meta.documentId, meta, data: doc }
             }
         }
-        setDocuments(newDocuments)
+        setDocuments(documentsEntries)
     }
 
+    console.log(documents)
     return <Layout title="Arquivos off-line">
         <input
             type="file"
-            accept=".ged-part-project"
+            accept=".ged-project"
             multiple={true}
             className="hidden"
             id="offline-files-input"
@@ -124,14 +97,13 @@ function UploadProject()
             <thead>
                 <tr>
                     <th>Arquivo</th>
-                    <th>Partes</th>
                     <th>Páginas</th>
                     <th>Processo</th>
                     <th>Ação</th>
                 </tr>
             </thead>
             <tbody>
-                {projects.map(project => <Project {...project} documents={documents} key={project.documentId} />)}
+                {Object.values(documents).map((project: any) => <Project {...project} documents={documents} key={project.documentId} />)}
             </tbody>
         </table>
     </Layout>
