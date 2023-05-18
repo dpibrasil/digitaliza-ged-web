@@ -17,7 +17,6 @@ function DocumentEdit()
     const [page, setPage] = useState(0)
     const pageIndex = page*itemsPerPage
     const [document, setDocument] = useState<DocumentType|null>(null)
-    const [largeUpload, setLargeUpload] = useState(false)
     const params = useParams()
     const documentEdit = useDocument()
 
@@ -139,10 +138,6 @@ function DocumentEdit()
                 Escanear arquivo
                 <IoPrint />
             </button>
-            <button onClick={() => setLargeUpload(!largeUpload)} className={`${largeUpload ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-slate-100 hover:bg-slate-200'} flex-row px-4 py-2 rounded flex items-center justify-center gap-x-1`}>
-                Carregamento {largeUpload ? 'otimizado' : 'normal'}
-                {largeUpload ? <IoCloudUploadOutline /> : <IoCloudUpload />}
-            </button>
             {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">
                 Atualizar documento
                 <IoArrowForward />
@@ -161,7 +156,11 @@ function DocumentEdit()
                     {Array.from({length: pageIndex + itemsPerPage > documentEdit.numPages ? documentEdit.numPages - pageIndex : itemsPerPage}, (x, i) => i).map(i => <Page key={i} index={pageIndex + i} />)}
                 </div>
             </RenderDocument>
-        ) : <div className="font-semibold text-sm text-center">Iniciando PDF...</div>}
+        ) : <div className="flex items-center justify-center flex-col w-full">
+        <h1 className="font-semibold text-lg">{'Não foi encontrado páginas :('}</h1>
+        <h2 className="text-slate-500 text-sm mt-1">Verifique o documento e selecione ou adicione páginas</h2>
+        <img src={process.env.PUBLIC_URL + '/static/no-pages.svg'} className="h-96 mt-8" alt="Nenhum página encontrada" />
+    </div>}
     </Layout>
 }
 

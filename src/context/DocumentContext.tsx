@@ -14,7 +14,8 @@ interface Props {
     output: Uint8Array|null,
     deletePages: (indices: number[]) => Promise<string | undefined>,
     updating: boolean,
-    add: (data: any, position: number) => Promise<void>
+    add: (data: any, position: number) => Promise<void>,
+    clear: () => void
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
@@ -30,18 +31,16 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     const endUpdate = () => setUpdating(false)
 
     useEffect(() => {
-        pdfDoc?.save().then(output => {
-            setOutput(output)
-            setNumPages(pdfDoc.getPageCount())
-            endUpdate()
-        })
+        if (pdfDoc) {
+            pdfDoc.save().then(output => {
+                setOutput(output)
+                setNumPages(pdfDoc.getPageCount())
+                endUpdate()
+            })
+        } else {
+            setOutput(null)
+        }
     }, [pdfDoc])
-
-    useEffect(() => {
-        // initalizate pdf
-        startUpdate()
-        PDFDocument.create().then(pdf => setPdfDoc(pdf))
-    }, [])
 
     const exportDocument = async (type: 'base64'|'buffer' = 'base64') => {
         if (!pdfDoc) {
@@ -49,6 +48,11 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
         }
         const output = type === 'base64' ? pdfDoc.saveAsBase64({dataUri: true}) : pdfDoc.save()
             return output
+    }
+
+    const clear = () => {
+        startUpdate()
+        setPdfDoc(undefined)
     }
 
     const downloadProject = async () => {
@@ -61,11 +65,9 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const add = async (data: any, position: number = 0) => {
+        const basePdf = pdfDoc ? pdfDoc : await PDFDocument.create()
+
         data = Array.isArray(data) ? data : [data]
-        if (!pdfDoc) {
-            toast.error('Aguarde o PDF iniciar.')
-            return
-        }
         if (!data) {
             toast.error('Você não selecionou arquivos.')
             return
@@ -74,9 +76,9 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
         const newPdf = await PDFDocument.create()
         
-        const originalPages = await newPdf.copyPages(pdfDoc, pdfDoc.getPageIndices())
-        for (var i = 0; i <= originalPages.length; i++) {
-            if (i !== 0) {
+        const originalPages = pdfDoc ? await newPdf.copyPages(basePdf, basePdf.getPageIndices()) : []
+        for (var i = 0; i <= (pdfDoc ? originalPages.length : 1); i++) {
+            if (i !== 0 && pdfDoc) {
                 const originalPage = originalPages[i - 1]
                 newPdf.addPage(originalPage)
             }
@@ -130,7 +132,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     //     // const pdfDoc = await PDFDocument.load(i)
     // } 
 
-    return <DocumentContext.Provider value={{ exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add }}>
+    return <DocumentContext.Provider value={{ clear, exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add }}>
         {props.children}
     </DocumentContext.Provider>
 }
