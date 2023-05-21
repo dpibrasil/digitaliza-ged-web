@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, degrees } from 'pdf-lib';
 import React, { useEffect, useState } from 'react';
 import readPage from '../services/document-edit/readPage';
 import { downloadData } from '../services/download';
@@ -15,7 +15,8 @@ interface Props {
     deletePages: (indices: number[]) => Promise<string | undefined>,
     updating: boolean,
     add: (data: any, position: number) => Promise<void>,
-    clear: () => void
+    clear: () => void,
+    rotatePages: (indices: number[], rotation: number) => void
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
@@ -74,40 +75,45 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
         }
         startUpdate()
 
-        const newPdf = await PDFDocument.create()
+        try {
+            const newPdf = await PDFDocument.create()
         
-        const originalPages = pdfDoc ? await newPdf.copyPages(basePdf, basePdf.getPageIndices()) : []
-        for (var i = 0; i <= (pdfDoc ? originalPages.length : 1); i++) {
-            if (i !== 0 && pdfDoc) {
-                const originalPage = originalPages[i - 1]
-                newPdf.addPage(originalPage)
-            }
-
-            for (const d of data) {
-                // import PDF Document
-                if (i == position && d.includes('application/pdf')) {
-                    const importPdf = await PDFDocument.load(d)
-                    const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
-
-                    for (const page of importPdfPages) newPdf.addPage(page)
+            const originalPages = pdfDoc ? await newPdf.copyPages(basePdf, basePdf.getPageIndices()) : []
+            for (var i = 0; i <= (pdfDoc ? originalPages.length : 1); i++) {
+                if (i !== 0 && pdfDoc) {
+                    const originalPage = originalPages[i - 1]
+                    newPdf.addPage(originalPage)
                 }
-
-                // import images
-                if (i == position && d.includes('image')) {
-                    const image =  await newPdf[d.includes('image/jp') ? 'embedJpg' : 'embedPng'](d)
-                    const { width, height } = image.scale(1)
-                    const page = newPdf.addPage([width, height])
-
-                    page.drawImage(image, {
-                        x: 0,
-                        y: 0,
-                        width: width,
-                        height: height,
-                    })
+    
+                for (const d of data) {
+                    // import PDF Document
+                    if (i == position && d.includes('application/pdf')) {
+                        const importPdf = await PDFDocument.load(d)
+                        const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
+    
+                        for (const page of importPdfPages) newPdf.addPage(page)
+                    }
+    
+                    // import images
+                    if (i == position && d.includes('image')) {
+                        const image =  await newPdf[d.includes('image/jp') ? 'embedJpg' : 'embedPng'](d)
+                        const { width, height } = image.scale(1)
+                        const page = newPdf.addPage([width, height])
+    
+                        page.drawImage(image, {
+                            x: 0,
+                            y: 0,
+                            width: width,
+                            height: height,
+                        })
+                    }
                 }
             }
+            setPdfDoc(newPdf)
+        } catch (e: any) {
+            toast.error(e.message)
+            endUpdate()
         }
-        setPdfDoc(newPdf)
     }
 
     const deletePages = async (indices: number[]) => {
@@ -124,6 +130,15 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
         setPdfDoc(pdf)
     }
+
+    const rotatePages = async (indices: number[], rotation: number) => {
+        startUpdate()
+        if (!output || !pdfDoc) return toast.error('Aguarde o PDF iniciar.')
+        const pdf = await PDFDocument.load(output)
+        const pages = pdf.getPages().filter((v, i) => indices.includes(i))
+        pages.forEach(page => page.setRotation(degrees(page.getRotation().angle + rotation)))
+        setPdfDoc(pdf)
+    }
     
     // const importFromDocument = async (id: number|string) => {
     //     startUpdate()
@@ -132,7 +147,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     //     // const pdfDoc = await PDFDocument.load(i)
     // } 
 
-    return <DocumentContext.Provider value={{ clear, exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add }}>
+    return <DocumentContext.Provider value={{ clear, exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add, rotatePages }}>
         {props.children}
     </DocumentContext.Provider>
 }

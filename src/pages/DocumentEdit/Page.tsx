@@ -1,4 +1,4 @@
-import { IoTrash } from "react-icons/io5"
+import { IoReload, IoTrash } from "react-icons/io5"
 import {FiFilePlus} from "react-icons/fi";
 import { useState } from "react";
 import Dropdown from "rc-dropdown";
@@ -19,9 +19,9 @@ export default function Page({data, index}: any)
 
     const handleClick = () => setShowOptions(!showOptions)
 
-    return <div className="flex flex-row items-center justify-center">
+    return <div className="flex flex-row items-center justify-center gap-x-1">
         <div className="flex w-[200px] flex-col items-center justify-center">
-            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className="bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600">
+            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className={`bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600 ${fullScreen && 'z-50'}`}>
                 <RenderPage width={fullScreen ? 300 : 800} scale={fullScreen ? 1.5 : 0.2} pageIndex={index} loading="Carregando página..." />
             </div>
             <div className="grid grid-flow-col items-center justify-center gap-1">
@@ -31,8 +31,8 @@ export default function Page({data, index}: any)
         </div>
         {showOptions && <div className="bg-blue-600 text-white grid grid-flow-row gap-2 rounded p-2">
             <IoTrash className="cursor-pointer" onClick={handleDelete} />
-            {/* <IoReload className="cursor-pointer -scale-x-100" onClick={() => rotatePage(id ?? 0, -90)} /> */}
-            {/* <IoReload className="cursor-pointer" onClick={() => rotatePage(id ?? 0, 90)} /> */}
+            <IoReload className="cursor-pointer -scale-x-100" onClick={() => documentEdit.rotatePages([index], -90)} />
+            <IoReload className="cursor-pointer" onClick={() => documentEdit.rotatePages([index], 90)} />
             <Dropdown
                 trigger={['click']}
                 overlay={<DropdownMenu.Container>

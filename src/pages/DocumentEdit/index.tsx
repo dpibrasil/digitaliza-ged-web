@@ -92,12 +92,7 @@ function DocumentEdit()
         const selectedPages = getSelectedPages()
         if (!selectedPages) return
 
-        // const promise = documentEdit.rotate(selectedPages, rotation)
-        // toast.promise(promise, {
-        //     error: (e) => e.message,
-        //     loading: 'Rotacionando páginas...',
-        //     success: 'Páginas rotacionadas com sucesso!'
-        // })
+        documentEdit.rotatePages(selectedPages, rotation)
     }
 
     const nextPage = () => pageIndex + itemsPerPage < documentEdit.numPages && setPage(page + 1)
