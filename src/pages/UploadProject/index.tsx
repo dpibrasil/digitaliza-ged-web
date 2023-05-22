@@ -1,16 +1,17 @@
 import { IoCloudOfflineOutline } from "react-icons/io5";
 import Layout from "../../components/Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import api from "../../services/api";
+import api, { catchApiErrorMessage } from "../../services/api";
 import MissingPackagesModal from "../../modals/MissingPackagesModal";
 
 function Project({meta, data}: any)
 {
     const [progress, setProgress] = useState<number|string>('Pendente')
     const [missingPackages, setMissingPackages] = useState<number[]>([])
+    const [error, setError] = useState<string|undefined>()
     
-    async function upload()
+    function upload()
     {
         if (!document) return toast.error('Faça upload dos arquivos.')
         
@@ -21,13 +22,15 @@ function Project({meta, data}: any)
         }
         form.append('file', new Blob([data]))
         setProgress(0)
+        setError(undefined)
 
-        await api.post('/documents', form, {
+        api.post('/documents', form, {
             headers: {'Content-Type': 'multipart/form-data'},
             onUploadProgress: (event) => {
                 setProgress(Math.round( (event.loaded * 100) / event.total ))
             }
         })
+        .catch(e => setError(catchApiErrorMessage(e)))
     }
 
     return <>
@@ -44,10 +47,12 @@ function Project({meta, data}: any)
             <td>{meta.documentPagesCount}</td>
             <td>
                 <div className="grid grid-flow-col gap-x-2">
-                    {typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
-                        <div className="h-full bg-blue-500 rounded-full" style={{width: progress + '%'}} />
-                    </div>}
-                    {typeof progress == 'number' ? progress.toFixed() + '%' : progress}
+                    {error ? <div className="text-red-500 text-xs">{error}</div> : <>
+                        {typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
+                            <div className="h-full bg-blue-500 rounded-full" style={{width: progress + '%'}} />
+                        </div>}
+                        {typeof progress == 'number' ? progress.toFixed() + '%' : progress}
+                    </>}
                 </div>
             </td>
             <td>
@@ -68,7 +73,6 @@ function UploadProject()
 
         for (const file of event.target.files) {
             if (file && file.name.includes('.ged-project')) {
-                console.log(file.name)
                 const zip = await jszip.loadAsync(file)
                 const meta = JSON.parse(await zip.file('meta').async('string'))
                 const doc = await zip.file('data').async('uint8array')
