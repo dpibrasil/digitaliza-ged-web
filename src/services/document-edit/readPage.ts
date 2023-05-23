@@ -1,8 +1,8 @@
-const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsDataURL') => new Promise((resolve, reject) => {
+const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsArrayBuffer') => new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader[type](file)
     reader.onload = async () => {
-        resolve(reader.result)
+        resolve({file, data: reader.result})
     }
     reader.onerror = (error: any) => reject(error)
 })

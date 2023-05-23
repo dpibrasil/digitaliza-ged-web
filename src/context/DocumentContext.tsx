@@ -87,16 +87,16 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     
                 for (const d of data) {
                     // import PDF Document
-                    if (i == position && d.includes('application/pdf')) {
-                        const importPdf = await PDFDocument.load(d)
+                    if (i == position && d.file.type == 'application/pdf') {
+                        const importPdf = await PDFDocument.load(d.data)
                         const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
     
                         for (const page of importPdfPages) newPdf.addPage(page)
                     }
     
                     // import images
-                    if (i == position && d.includes('image')) {
-                        const image =  await newPdf[d.includes('image/jp') ? 'embedJpg' : 'embedPng'](d)
+                    if (i == position && d.file.type.includes('image')) {
+                        const image =  await newPdf[d.file.type.includes('image/jp') ? 'embedJpg' : 'embedPng'](d.data)
                         const { width, height } = image.scale(1)
                         const page = newPdf.addPage([width, height])
     
