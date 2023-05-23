@@ -25,7 +25,7 @@ function ScanModal()
             loading: 'Escaneando...',
             error: catchApiErrorMessage,
             success: ({data}) => {
-                documentEdit.add(data.map((d: any) => ({file: {name: 'image.jpg', data: 'data:image/jpeg;base64,' + d}})), position)
+                documentEdit.add(data.map((d: any) => ({file: {type: 'image/jpeg'}, data: 'data:image/jpeg;base64,' + d})), position)
                 setShow(false)
                 return 'Página importada.'
             }
