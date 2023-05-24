@@ -10,6 +10,7 @@ function Project({meta, data}: any)
     const [progress, setProgress] = useState<number|string>('Pendente')
     const [missingPackages, setMissingPackages] = useState<number[]>([])
     const [error, setError] = useState<string|undefined>()
+    const [documentId, setDocumentId] = useState<number|undefined>()
     
     function upload()
     {
@@ -31,6 +32,7 @@ function Project({meta, data}: any)
             }
         })
         .catch(e => setError(catchApiErrorMessage(e)))
+        .then(({data}: any) => setDocumentId(data.id))
     }
 
     return <>
@@ -48,7 +50,7 @@ function Project({meta, data}: any)
             <td>
                 <div className="grid grid-flow-col gap-x-2">
                     {error ? <div className="text-red-500 text-xs">{error}</div> : <>
-                        {typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
+                        {documentId ? <a href={'/documents/' + documentId} target="_blank" className="text-green-500 text-sm">Concluído</a> : typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
                             <div className="h-full bg-blue-500 rounded-full" style={{width: progress + '%'}} />
                         </div>}
                         {typeof progress == 'number' ? progress.toFixed() + '%' : progress}
@@ -83,7 +85,6 @@ function UploadProject()
         setDocuments(documentsEntries)
     }
 
-    console.log(documents)
     return <Layout title="Arquivos off-line">
         <input
             type="file"
