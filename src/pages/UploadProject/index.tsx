@@ -1,6 +1,6 @@
 import { IoCloudOfflineOutline } from "react-icons/io5";
 import Layout from "../../components/Layout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import api, { catchApiErrorMessage } from "../../services/api";
 import MissingPackagesModal from "../../modals/MissingPackagesModal";
