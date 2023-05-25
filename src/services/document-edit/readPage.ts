@@ -16,7 +16,7 @@ const readPage = {
         input.type = 'file'
         input.classList.add('hidden')
         input.multiple = true
-        input.accept = '.pdf,.png,.jpg,.gedproject'
+        input.accept = '.pdf,.png,.jpg,.ged-project'
 
         return new Promise((resolve) => {
             // file changed

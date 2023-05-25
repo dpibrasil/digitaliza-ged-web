@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import readPage from '../services/document-edit/readPage';
 import { downloadData } from '../services/download';
 import { toast } from 'react-hot-toast';
-import api from '../services/api';
 
 interface Props {
     numPages: number,
@@ -85,9 +84,17 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
                     newPdf.addPage(originalPage)
                 }
     
-                for (const d of data) {
+                for (var d of data) {
                     // import PDF Document
-                    if (i == position && d.file.type == 'application/pdf') {
+                    const isGedProject = d.file.name.includes('.ged-project')
+                    if (i === position && (d.file.type === 'application/pdf' || isGedProject)) {
+
+                        if (isGedProject) {
+                            const jszip = require('jszip')
+                            const zip = await jszip.loadAsync(d.data)
+                            d.data = await zip.file('data').async('uint8array')
+                        }
+
                         const importPdf = await PDFDocument.load(d.data)
                         const importPdfPages = await newPdf.copyPages(importPdf, importPdf.getPageIndices())
     
@@ -95,7 +102,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
                     }
     
                     // import images
-                    if (i == position && d.file.type.includes('image')) {
+                    if (i === position && d.file.type.includes('image')) {
                         const image =  await newPdf[d.file.type.includes('image/jp') ? 'embedJpg' : 'embedPng'](d.data)
                         const { width, height } = image.scale(1)
                         const page = newPdf.addPage([width, height])
@@ -118,7 +125,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     const deletePages = async (indices: number[]) => {
         if (!output || !pdfDoc) return toast.error('Aguarde o PDF iniciar.')
-        if (numPages == indices.length) {
+        if (numPages === indices.length) {
             return toast.error('Você não pode deletar todas páginas de um documento.')
         }
         startUpdate()
