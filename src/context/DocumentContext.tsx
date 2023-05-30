@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import readPage from '../services/document-edit/readPage';
 import { downloadData } from '../services/download';
 import { toast } from 'react-hot-toast';
+import { catchApiErrorMessage } from '../services/api';
 
 interface Props {
     numPages: number,
@@ -118,7 +119,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
             }
             setPdfDoc(newPdf)
         } catch (e: any) {
-            toast.error(e.message)
+            toast.error(catchApiErrorMessage(e))
             endUpdate()
         }
     }
