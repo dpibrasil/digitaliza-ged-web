@@ -18,6 +18,7 @@ function Project({meta, data}: any)
         
         // create document
         const form = new FormData()
+        form.append('documentId', meta.documentId)
         for (const key in meta.data) {
             form.append(key, meta.data[key])
         }
