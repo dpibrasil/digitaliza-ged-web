@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IoArrowBack, IoArrowForward, IoCloudUpload, IoCloudUploadOutline, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
+import { IoArrowBack, IoArrowForward, IoCloudUpload, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
 import Layout from "../../components/Layout";
 import { DocumentType } from "../../types/DocumentTypes";
 import { useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useDocument } from "../../context/DocumentContext";
 import { Document as RenderDocument } from 'react-pdf';
 import Page from "./Page";
+import RequirementsModalSwitch from "../../components/RequirementsModalSwitch";
 
 function DocumentEdit()
 {
@@ -121,6 +122,7 @@ function DocumentEdit()
                 {page + 1}/{Math.ceil(documentEdit.numPages/itemsPerPage)}
                 <IoArrowForward className="cursor-pointer" onClick={nextPage} />
             </div>
+            <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200 items-center">{documentEdit.numPages} páginas.</div>
             <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1">
                 Exportar
                 <IoCloudUpload />
@@ -144,6 +146,7 @@ function DocumentEdit()
                 modal={EditIndexesModal}
                 modalProps={{handleSubmit: handleSave, editingDocument: true}}
             />}
+            <RequirementsModalSwitch />
         </div>
         {documentEdit.output ? (
             documentEdit.updating ? <div className="font-semibold text-sm text-center">Atualizando...</div> : <RenderDocument className="h-full" file={{ data: documentEdit.output }}>

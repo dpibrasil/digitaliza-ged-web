@@ -8,8 +8,6 @@ import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
 import jszip from 'jszip'
 
-const DOC_PACKAGE_SIZE = Number(process.env.REACT_APP_DOCUMENT_PACKAGE_SIZE)
-
 function Card({label, value}: {label: string, value: any})
 {
     return <div className="border-2 border-blue-500 rounded-lg flex flex-row">

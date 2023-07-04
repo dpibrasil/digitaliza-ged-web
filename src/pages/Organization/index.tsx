@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect } from "react";
 import { IoAdd, IoFolder } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { SearchInput } from "../../components/Input";
 import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
-import api, { catchApiErrorMessage } from "../../services/api";
-import { DirectoryType, OrganizationType } from "../../types/OrganizationTypes";
+import api from "../../services/api";
 import EditOrganizationModal from '../Organizations/modals/EditOrganizationModal';
 import GenerateReportModal from "./modals/GenerateReportModal";
 import EditDirectoryModal from "./modals/EditDirectoryModal";
