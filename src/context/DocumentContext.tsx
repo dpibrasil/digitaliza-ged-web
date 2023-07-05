@@ -16,7 +16,8 @@ interface Props {
     updating: boolean,
     add: (data: any, position: number) => Promise<void>,
     clear: () => void,
-    rotatePages: (indices: number[], rotation: number) => void
+    rotatePages: (indices: number[], rotation: number) => void,
+    setOutput: (output: Uint8Array|null) => void
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
@@ -169,7 +170,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     //     // const pdfDoc = await PDFDocument.load(i)
     // } 
 
-    return <DocumentContext.Provider value={{ clear, exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add, rotatePages }}>
+    return <DocumentContext.Provider value={{ clear, exportDocument, pdfDoc, downloadProject, addPageBy, output, numPages, deletePages, updating, add, rotatePages, setOutput }}>
         {props.children}
     </DocumentContext.Provider>
 }

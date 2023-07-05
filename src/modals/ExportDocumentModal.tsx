@@ -3,7 +3,7 @@ import Modal, { ModalTitle, ModalType } from "../components/Modal";
 import { useAuth } from "../context/AuthContext";
 import { useDocument } from "../context/DocumentContext";
 import { downloadBase64, downloadData } from "../services/download";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
 import PDFMeta from '../services/pdf-metadata'
@@ -26,13 +26,18 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
 
     const startDate = new Date()
     const totalPages = documentEdit.numPages
+
+    useEffect(() => {
+        documentEdit.setOutput(null)
+    }, [])
     
     async function handleExport()
     {
-        if (!documentEdit.output || !documentEdit.pdfDoc) return
-
+        if (!documentEdit.pdfDoc) return
+        
         const name = inputRef.current.value
         if (!name || !name.length) return toast.error('Preencha um nome para o arquivo.')
+        documentEdit.setOutput(null)
         
         var documentId = uuid()
 
