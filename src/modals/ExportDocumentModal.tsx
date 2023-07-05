@@ -6,7 +6,7 @@ import { downloadBase64, downloadData } from "../services/download";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
-import jszip from 'jszip'
+import PDFMeta from '../services/pdf-metadata'
 
 function Card({label, value}: {label: string, value: any})
 {
@@ -35,12 +35,7 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
         if (!name || !name.length) return toast.error('Preencha um nome para o arquivo.')
         
         var documentId = uuid()
-        const zip = new jszip()
 
-        // add pdf to zip
-        const blob = new Blob([documentEdit.output])
-        zip.file('data', blob)
-            
         // add meta data
         const meta = {
             name,
@@ -49,11 +44,9 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
             data,
             pages: documentEdit.pdfDoc.getPageIndices()
         }
-        zip.file('meta', JSON.stringify(meta))
+        const output = await PDFMeta.setGEDMetaData(documentEdit.pdfDoc, meta)
 
-        // export
-        const zipOutput = await zip.generateAsync({ type: 'uint8array' })
-        downloadData(zipOutput, `${name}.ged-project`)
+        downloadData(output, `${name}.ged-project.pdf`)
         downloadBase64('data:application/txt;base64, ' + Buffer.from(`Nome do documento: ${name};\nID do documento: ${documentId};\nNavegador: ${navigator.userAgent};\nPlataforma: ${navigator.platform};\nTotal de páginas: ${documentEdit.numPages}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(data)}`).toString('base64'), `${name}-log.txt`)
         documentEdit.clear()
         props.setShow(false)

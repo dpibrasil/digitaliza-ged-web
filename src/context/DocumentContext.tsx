@@ -66,7 +66,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const add = async (data: any, position: number = 0) => {
-        const PAGE_LIMIT = Number(process.env.REACT_APP_PAGES_LIMIT)
+        const PAGE_LIMIT = 100000
         const basePdf = pdfDoc ? pdfDoc : await PDFDocument.create()
 
         data = Array.isArray(data) ? data : [data]
@@ -161,7 +161,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
         pages.forEach(page => page.setRotation(degrees(page.getRotation().angle + rotation)))
         setPdfDoc(pdf)
     }
-    
+
     // const importFromDocument = async (id: number|string) => {
     //     startUpdate()
     //     const { data } = await api.get(`/documents/${id}/file`, {responseType: 'arraybuffer'})
