@@ -103,7 +103,7 @@ function Search()
             </div>
             {directory ? <>
                 <h1 className="text-lg font-semibold mt-6">Índices</h1>
-                <div className="bg-neutral-100 rounded-lg p-4 w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-start gap-4 overflow-x-auto">
+                <div className="bg-neutral-100 rounded-lg p-4 w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-start gap-4">
                     {directory.indexes.map((index: DirectoryIndexType) => <SearchIndexInput key={index.id} index={index} />)}
                 </div>
                 <div className="flex w-full justify-end">

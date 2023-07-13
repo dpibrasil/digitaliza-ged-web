@@ -21,7 +21,7 @@ export default function Page({data, index}: any)
 
     return <div className="flex flex-row items-center justify-center gap-x-1">
         <div className="flex w-[200px] flex-col items-center justify-center">
-            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className={`bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600 ${fullScreen && 'z-50'}`}>
+            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className={`bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600 ${fullScreen && 'z-50 fixed'}`}>
                 <RenderPage width={fullScreen ? 300 : 800} scale={fullScreen ? 1.5 : 0.2} pageIndex={index} loading="Carregando página..." />
             </div>
             <div className="grid grid-flow-col items-center justify-center gap-1">

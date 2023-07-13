@@ -10,8 +10,8 @@ import { IndexSchema } from "../validators/IndexesValidators";
 import ExportDocumentModal from "./ExportDocumentModal";
 
 type EditIndexesModalProps = {
-    directoryId: number,
-    values: ({id: number, value: any})[],
+    directoryId?: number,
+    values?: ({id: number, value: any})[],
     handleSubmit: (data: any) => void,
     editingDocument?: boolean
 }
@@ -25,7 +25,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
     const [indexes, setIndexes] = useState<DirectoryType[]|undefined>()
 
     const [organizationId, setOrganizationId] = useState(0)
-    const [directoryId, setDirectoryId] = useState<number>(defaultDirectoryId)
+    const [directoryId, setDirectoryId] = useState<number|undefined>(defaultDirectoryId)
 
     const organizations = useLiveQuery(() => db.organizations.toArray())
     const directories = useLiveQuery(() => db.directories.where({organizationId}).toArray(), [organizationId])
@@ -55,8 +55,11 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
             if (!defaultDirectoryId) {
                 await IndexSchema.validate(data, {abortEarly: false})
             }
-            handleSubmit(data)
-            props.setShow(false)
+            if (editingDocument) setShowExportModal(true)
+            if (handleSubmit) {
+                handleSubmit(data)
+                props.setShow(false)
+            }
         } catch (err) {
             if (err instanceof ValidationError) {
                 formRef.current.setErrors(Object.fromEntries(err.inner.map(error => [error.path, error.message])))
@@ -88,9 +91,11 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                         {directories?.map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
                     </SelectInput>
                 </>}
-                {indexes && indexes.map((index: any) => <IndexInput key={index.id} background="neutral-100" index={index} indexName={'index-' + index.id} />)}
+                <div className="max-h-96 overflow-y-auto">
+                    {indexes && indexes.map((index: any) => <IndexInput key={index.id} background="neutral-100" index={index} indexName={'index-' + index.id} />)}
+                </div>
                 <div className="grid grid-flow-col gap-x-2">
-                    <div onClick={() => setShowExportModal(true)} className="bg-green-500 rounded text-white px-3 py-2 text-sm flex items-center justify-center">Salvar</div>
+                    <div onClick={() => validate({})} className="bg-green-500 rounded text-white px-3 py-2 text-sm flex items-center justify-center">Salvar</div>
                 </div>
             </Form>
         </Modal>

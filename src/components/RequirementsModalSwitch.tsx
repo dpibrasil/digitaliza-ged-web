@@ -13,7 +13,7 @@ function RequirementsModalSwitch()
         if (defaultShowModal) setShow(true)
     }, [defaultShowModal])
 
-    const ToggleComponent = <button onClick={() => setShow(true)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1">
+    const ToggleComponent = <button onClick={() => setShow(true)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1 h-full">
         <IoInformation size={18} />
     </button>
 

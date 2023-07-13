@@ -21,6 +21,7 @@ interface Props {
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
+const PAGE_LIMIT = Number(process.env.REACT_APP_PAGES_LIMIT)
 
 export const DocumentContextProvider: React.FC<any> = (props) => {
 
@@ -41,6 +42,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
             })
         } else {
             setOutput(null)
+            setNumPages(0)
         }
     }, [pdfDoc])
 
@@ -55,6 +57,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     const clear = () => {
         startUpdate()
         setPdfDoc(undefined)
+        setNumPages(0)
     }
 
     const downloadProject = async () => {
@@ -67,7 +70,6 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const add = async (data: any, position: number = 0) => {
-        const PAGE_LIMIT = 100000
         const basePdf = pdfDoc ? pdfDoc : await PDFDocument.create()
 
         data = Array.isArray(data) ? data : [data]

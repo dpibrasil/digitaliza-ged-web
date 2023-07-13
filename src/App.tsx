@@ -10,6 +10,7 @@ import Routes from "./routes/Routes";
 import Database from "./services/database";
 import { syncDocumentFromQueue } from "./services/synchronization";
 import { catchApiErrorMessage } from "./services/api";
+import { LongDocumentContextProvider } from "./context/LongDocumentContext";
 
 const queryClient = new QueryClient()
 
@@ -42,10 +43,12 @@ function App()
 
     return <QueryClientProvider client={queryClient}>
         <DocumentContextProvider>
-            <BrowserRouter>
-                <Routes />
-            </BrowserRouter>
-            <ScanModal />
+            <LongDocumentContextProvider>
+                <BrowserRouter>
+                    <Routes />
+                </BrowserRouter>
+                <ScanModal />
+            </LongDocumentContextProvider>
         </DocumentContextProvider>
         <Toaster position="top-right" />
     </QueryClientProvider>
