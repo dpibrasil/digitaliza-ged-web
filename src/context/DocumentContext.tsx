@@ -98,15 +98,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     
                 for (var d of data) {
                     // import PDF Document
-                    const isGedProject = d.file.name.includes('.ged-project')
-                    if (i === position && (d.file.type === 'application/pdf' || isGedProject)) {
-
-                        if (isGedProject) {
-                            const jszip = require('jszip')
-                            const zip = await jszip.loadAsync(d.data)
-                            d.data = await zip.file('data').async('uint8array')
-                        }
-
+                    if (i === position && (d.file.type === 'application/pdf') || d.file.name.includes('.ged-project')) {
                         const importPdf = await PDFDocument.load(d.data)
                         const indices = importPdf.getPageIndices()
                         if (basePdfIndices.length + indices.length >= PAGE_LIMIT) {
