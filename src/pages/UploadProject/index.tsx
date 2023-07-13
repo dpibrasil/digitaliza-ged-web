@@ -4,25 +4,42 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import api, { catchApiErrorMessage } from "../../services/api";
 import MissingPackagesModal from "../../modals/MissingPackagesModal";
+import PDFMetadata from "../../services/pdf-metadata";
+import { PDFDocument } from "pdf-lib";
+import { readFile } from "../../services/document-edit/readPage";
 
-function Project({meta, data}: any)
+function Project({meta, data, process, parts}: any)
 {
     const [progress, setProgress] = useState<number|string>('Pendente')
     const [missingPackages, setMissingPackages] = useState<number[]>([])
     const [error, setError] = useState<string|undefined>()
     const [documentId, setDocumentId] = useState<number|undefined>()
     
-    function upload()
+    async function upload()
     {
         if (!document) return toast.error('Faça upload dos arquivos.')
-        
+
+        if (process) {
+            setProgress('Mesclando páginas...')
+            const pdfDoc = await PDFDocument.create()
+            for (const part of parts.sort((x: any, y: any) => x.meta.part - y.meta.part)) {
+                const pdf = await PDFDocument.load(part.data.data)
+                const pages = await pdfDoc.copyPages(pdf, pdf.getPageIndices())
+                pages.forEach(page => pdfDoc.addPage(page))
+            }
+            data = await pdfDoc.save()
+        } else {
+            data = data.data
+        }
+
         // create document
         const form = new FormData()
         form.append('documentId', meta.documentId)
         for (const key in meta.data) {
             form.append(key, meta.data[key])
         }
-        form.append('file', new Blob([data]))
+        const file = new Blob([data])
+        form.append('file', file)
         setProgress(0)
         setError(undefined)
 
@@ -47,7 +64,7 @@ function Project({meta, data}: any)
                     <h1 className="font-semibold">{meta.name}</h1>
                 </div>
             </td>
-            <td>{meta.documentPagesCount}</td>
+            <td>{meta.documentPagesCount} {process && ` (${parts.length} partes)`}</td>
             <td>
                 <div className="grid grid-flow-col gap-x-2">
                     {error ? <div className="text-red-500 text-xs">{error}</div> : <>
@@ -59,7 +76,7 @@ function Project({meta, data}: any)
                 </div>
             </td>
             <td>
-                {!!document && progress === 'Pendente' && <button onClick={upload} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">Upload</button>}
+                {!!document && progress === 'Pendente' && <button onClick={() => upload()} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">Upload</button>}
             </td>
         </tr>
     </>
@@ -71,16 +88,25 @@ function UploadProject()
 
     async function handleChangeInput(event: any)
     {
-        const jszip = require('jszip')
         var documentsEntries: any = {}
 
         for (const file of event.target.files) {
-            if (file && file.name.includes('.ged-project')) {
-                const zip = await jszip.loadAsync(file)
-                const meta = JSON.parse(await zip.file('meta').async('string'))
-                const doc = await zip.file('data').async('uint8array')
+            const isProcess = file && file.name.includes('.ged-pp')
+            if (file && file.name.includes('.ged-project') || isProcess) {
+                const doc: any = await readFile(file, 'readAsArrayBuffer')
+                const pdf = await PDFDocument.load(doc.data)
+                const meta = await PDFMetadata.readGEDMetaData(pdf)
+                const entry = { documentId: meta.documentId, meta, data: doc }
 
-                documentsEntries[meta.documentId] = { documentId: meta.documentId, meta, data: doc }
+                if (isProcess) {
+                    if (!Object.keys(documentsEntries).includes(meta.documentId)) {
+                        documentsEntries[meta.documentId] = { process: true, documentId: meta.documentId, meta: {name: meta.name, documentPagesCount: 0, data: meta.data}, parts: [] }
+                    }
+                    documentsEntries[meta.documentId].parts.push(entry)
+                    documentsEntries[meta.documentId].meta.documentPagesCount += Number(entry.meta.documentPagesCount)
+                } else {
+                    documentsEntries[meta.documentId] = entry
+                }
             }
         }
         setDocuments(documentsEntries)
@@ -89,7 +115,7 @@ function UploadProject()
     return <Layout title="Arquivos off-line">
         <input
             type="file"
-            accept=".ged-project"
+            accept=".ged-project,.ged-pp"
             multiple={true}
             className="hidden"
             id="offline-files-input"
@@ -104,7 +130,7 @@ function UploadProject()
                 <tr>
                     <th>Arquivo</th>
                     <th>Páginas</th>
-                    <th>Processo</th>
+                    <th>Status</th>
                     <th>Ação</th>
                 </tr>
             </thead>

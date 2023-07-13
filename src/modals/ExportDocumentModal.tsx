@@ -51,7 +51,7 @@ function ExportDocumentModal({form, organization, directory, ...props}: ModalTyp
         }
         const output = await PDFMeta.setGEDMetaData(documentEdit.pdfDoc, meta)
 
-        downloadData(output, `${name}.ged-project.pdf`)
+        downloadData(output, `${name}.ged-project`)
         downloadBase64('data:application/txt;base64, ' + Buffer.from(`Nome do documento: ${name};\nID do documento: ${documentId};\nNavegador: ${navigator.userAgent};\nPlataforma: ${navigator.platform};\nTotal de páginas: ${documentEdit.numPages}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(data)}`).toString('base64'), `${name}-log.txt`)
         documentEdit.clear()
         props.setShow(false)

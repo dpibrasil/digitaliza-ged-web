@@ -52,8 +52,8 @@ export const LongDocumentContextProvider: React.FC<any> = (props) => {
                 part: currentPart
             }
             const output = await PDFMeta.setGEDMetaData(documentEdit.pdfDoc, meta)
-            downloadData(output, `${name}-part-${currentPart}.ged-process-project`)
-            downloadBase64('data:application/txt;base64, ' + Buffer.from(`Nome do documento: ${name};\nID do documento: ${documentId};\nNavegador: ${navigator.userAgent};\nPlataforma: ${navigator.platform};\nTotal de páginas: ${documentEdit.numPages}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(meta)}`).toString('base64'), `${name}-part-${currentPart}-log.txt`)
+            downloadData(output, `${name}-part-${currentPart}.ged-pp`)
+            downloadBase64('data:application/txt;base64, ' + Buffer.from(`Nome do documento: ${name};\nProcesso: Sim\nParte: ${currentPart}\nID do documento: ${documentId};\nNavegador: ${navigator.userAgent};\nPlataforma: ${navigator.platform};\nTotal de páginas: ${documentEdit.numPages}\nUsuário: ${auth.userData?.name} (${auth.userData?.id});\nData de início da exportação: ${startDate.toLocaleString()};\nData de finalização da exportação: ${new Date().toLocaleString()};\nDados de indexação: ${JSON.stringify(meta)}`).toString('base64'), `${name}-part-${currentPart}-log.txt`)
             setTotalPages(totalPages + documentEdit.numPages)
             setPart(currentPart + 1)
             documentEdit.clear()

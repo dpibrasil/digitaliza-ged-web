@@ -17,7 +17,7 @@ async function readGEDMetaData(pdfDoc: PDFDocument)
     const metaData = pdfDoc.getInfoDict()
     const gedMeta = metaData.lookup(key).decodeText()
 
-    return gedMeta
+    return JSON.parse(gedMeta)
 }
 
 export default { setGEDMetaData, readGEDMetaData }

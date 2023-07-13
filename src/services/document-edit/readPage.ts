@@ -1,4 +1,4 @@
-const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsArrayBuffer') => new Promise((resolve, reject) => {
+export const readFile = (file: any, type: 'readAsArrayBuffer'|'readAsDataURL'|'readAsText'|'readAsBinaryString' = 'readAsArrayBuffer') => new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader[type](file)
     reader.onload = async () => {

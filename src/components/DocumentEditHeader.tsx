@@ -107,7 +107,7 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
                     <IoArrowForward />
                 </button>}
                 modal={EditIndexesModal}
-                modalProps={{handleSubmit: handleSave, editingDocument: true}}
+                modalProps={{ editingDocument: true }}
             />}
             <LongDocumentButton />
             <RequirementsModalSwitch />
