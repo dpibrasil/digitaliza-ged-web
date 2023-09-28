@@ -39,18 +39,24 @@ function Project({meta, data, process, parts}: any)
             form.append(key, meta.data[key])
         }
         const file = new Blob([data])
-        form.append('file', file)
         setProgress(0)
         setError(undefined)
 
-        api.post('/documents', form, {
-            headers: {'Content-Type': 'multipart/form-data'},
-            onUploadProgress: (event) => {
-                setProgress(Math.round( (event.loaded * 100) / event.total ))
-            }
-        })
-        .catch(e => setError(catchApiErrorMessage(e)))
-        .then(({data}: any) => setDocumentId(data.id))
+        // Validate indexes
+        api.post('/documents-indexes/validate', form)
+            .catch(e => setError(catchApiErrorMessage(e)))
+            .then(() => {
+                // Upload
+                form.append('file', file)
+                api.post('/documents', form, {
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    onUploadProgress: (event) => {
+                        setProgress(Math.round( (event.loaded * 100) / event.total ))
+                    }
+                })
+                    .catch(e => setError(catchApiErrorMessage(e)))
+                    .then(({data}: any) => setDocumentId(data.id))
+            })
     }
 
     return <>
