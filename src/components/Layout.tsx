@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconType } from "react-icons";
-import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload, IoCloudOffline } from "react-icons/io5";
+import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload, IoCloudOffline, IoArchive } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserTypeName } from "../pages/Users";
@@ -62,6 +62,7 @@ function Layout(props: LayoutType)
                 <RequireUserType type="super-admin">
                     <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
                     <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
+                    <MenuItem name="Backups" to="/backups" icon={IoArchive} />
                 </RequireUserType>
             </div>
             <div className="w-full pb-6 flex flex-col items-center">

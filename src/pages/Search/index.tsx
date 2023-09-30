@@ -64,6 +64,7 @@ function Search()
         setSearchQuery(data)
     }
 
+
     return <Layout title="Pesquisa">
         <Form onSubmit={handleSubmit}>
             <h1 className="text-lg font-semibold mb-4">Pesquisa de documentos</h1>

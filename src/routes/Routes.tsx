@@ -13,6 +13,7 @@ import ReactGA from 'react-ga4';
 import Mantainers from '../pages/Mantainers';
 import Storages from '../pages/Storages';
 import UploadProject from '../pages/UploadProject';
+import Backups from '../pages/Backups';
 
 function Routes()
 {
@@ -40,6 +41,7 @@ function Routes()
                 <Route path="mantainers" element={<Mantainers />} />
                 <Route path="storages" element={<Storages />} />
                 <Route path="upload-project" element={<UploadProject />} />
+                <Route path="backups" element={<Backups />} />
             </> : <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />}
         </RouterRoutes>
 }
