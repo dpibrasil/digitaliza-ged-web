@@ -79,7 +79,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                         label="Empresa"
                     >
                         <option value={0}>---</option>
-                        {organizations?.map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                        {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
                     </SelectInput>
                     <SelectInput
                         name="directoryId"
@@ -88,7 +88,7 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                         label="Diretório"
                     >
                         <option value={0}>---</option>
-                        {directories?.map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
+                        {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
                     </SelectInput>
                 </>}
                 <div className="max-h-96 overflow-y-auto">
