@@ -71,7 +71,7 @@ function Organization()
                     <IoAdd size={81} />
                     <h1 className="font-semibold mt-2">Criar diretório</h1>
                 </div>} />}
-                {organization.directories.map((directory: any) => <ModalSwitch modalProps={{directory, organization}} modal={EditDirectoryModal} button={(props: any) => <div {...props} key={directory.id} className="bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-slate-400 rounded-xl p-8 flex items-center justify-center flex-col">
+                {organization.directories.map((directory: any) => <ModalSwitch modalProps={{directory, organization}} modal={EditDirectoryModal} button={(props: any) => <div {...props} key={directory.id} className="bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-slate-400 rounded-xl p-8 flex items-center justify-center flex-col text-center">
                     <IoFolder size={81} />
                     <h1 className="font-semibold text-black mt-2">{directory.name}</h1>
                     <h2 className="text-sm ">{Number(directory.documentsCount).toLocaleString()} documento{directory.documentsCount != 1 && 's'}</h2>

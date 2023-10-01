@@ -81,7 +81,7 @@ function Search()
                     label="Usuário"
                     placeholder="---"
                 >
-                    {users?.map(user => <option key={user.id}>{user.name}</option>)}
+                    {users?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(user => <option key={user.id}>{user.name}</option>)}
                 </SelectInput>
                 <SelectInput
                     background="white"
@@ -90,7 +90,7 @@ function Search()
                     label="Empresa"
                     onChange={(event) => setOrganizationId(Number(event.target.value))}
                 >
-                    {organizations?.map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                    {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
                 </SelectInput>
                 <SelectInput
                     background="white"
@@ -99,7 +99,7 @@ function Search()
                     label="Diretório"
                     onChange={(event) => setDirectoryId(Number(event.target.value))}
                 >
-                    {directories?.map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
+                    {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
                 </SelectInput>
             </div>
             {directory ? <>

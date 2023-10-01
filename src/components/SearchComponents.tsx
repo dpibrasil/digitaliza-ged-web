@@ -26,6 +26,8 @@ export function ResultsTable({searchResult}: {searchResult: any})
         downloadData(response.data, `${id}.pdf`)
     }
 
+    const indexes = searchResult.indexes.sort((x: any, y: any) => (x.id - y.id))
+
     return <table id="search-results" className="w-full text-sm">
         <thead>
             <tr>
@@ -33,7 +35,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                     <input type="checkbox" onChange={handleChangeAllCheckboxes} />
                 </th>
                 <th>ID</th>
-                {searchResult.indexes.map((index: DirectoryIndexType) => <th key={index.id}>{index.name}</th>)}
+                {indexes.map((index: DirectoryIndexType) => <th key={index.id}>{index.name}</th>)}
                 <th>Ações</th>
             </tr>
         </thead>
@@ -43,7 +45,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                     <input type="checkbox" name="search-documents" value={result.documentId} />
                 </th>
                 <th>{result.documentId}</th>
-                {searchResult.indexes.map((index: DirectoryIndexType) => <td key={index.id}>{displayIndex(index, result[index.id])}</td>)}
+                {indexes.map((index: DirectoryIndexType) => <td key={index.id}>{displayIndex(index, result[index.id])}</td>)}
                 <td className="grid auto-col-max grid-flow-col justify-start gap-x-1">
                     <div onClick={() => handleDownload(result.documentId)} className="w-min bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-blue-500 p-1 rounded">
                         <IoDownloadOutline />

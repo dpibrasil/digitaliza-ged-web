@@ -146,7 +146,11 @@ export function IndexInputBase({indexName, index, background = 'white'}: IndexIn
         return <ReactSelectInput
             background={background}
             name={indexName}
-            options={index.listValues.map((value: any) => ({label: value.value, value: value.id}))}
+            options={
+                index.listValues
+                .sort((x: any, y: any) => x.value.localeCompare(y.value), {value: ''})
+                .map((value: any) => ({label: value.value, value: value.id}))
+            }
         />
     } else {
         return <></>
