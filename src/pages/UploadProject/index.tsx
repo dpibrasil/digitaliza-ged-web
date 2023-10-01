@@ -82,7 +82,12 @@ function Project({meta, data, process, parts}: any)
                 </div>
             </td>
             <td>
-                {!!document && progress === 'Pendente' && <button onClick={() => upload()} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1">Upload</button>}
+                {!!document && progress === 'Pendente' && <button
+                    onClick={() => upload()}
+                    className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 upload-button"
+                >
+                        Upload
+                    </button>}
             </td>
         </tr>
     </>
@@ -118,6 +123,14 @@ function UploadProject()
         setDocuments(documentsEntries)
     }
 
+    function handleUploadAll()
+    {
+        const elements: any = Array.from(document.getElementsByClassName('upload-button'))
+        for (const element of elements) {
+            element.click()
+        }
+    }
+
     return <Layout title="Arquivos off-line">
         <input
             type="file"
@@ -129,7 +142,15 @@ function UploadProject()
         />
         <div className="flex flex-row justify-between items-center">
             <h1 className="text-lg font-semibold">Arquivos off-line</h1>
-            <label htmlFor="offline-files-input" className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 text-sm cursor-pointer">Subir arquivos</label>
+            <div className="flex flex-row gap-2">
+                <label htmlFor="offline-files-input" className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 text-sm cursor-pointer">Subir arquivos</label>
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 text-sm cursor-pointer"
+                    onClick={handleUploadAll}
+                >
+                    Confirmar todos uploads
+                </button>
+            </div>
         </div>
         <table className="w-full mt-4">
             <thead>
