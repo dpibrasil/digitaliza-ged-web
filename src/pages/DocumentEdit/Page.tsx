@@ -21,8 +21,14 @@ export default function Page({data, index}: any)
 
     return <div className="flex flex-row items-center justify-center gap-x-1">
         <div className="flex w-[200px] flex-col items-center justify-center">
-            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className={`bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600 ${fullScreen && 'z-50 fixed'}`}>
-                <RenderPage width={fullScreen ? 300 : 800} scale={fullScreen ? 1.5 : 0.2} pageIndex={index} loading="Carregando página..." />
+            <div onClick={handleClick} onDoubleClick={() => setFullScreen(!fullScreen)} className={`bg-blue-500 p-1 flex rounded-lg items-center justify-center cursor-pointer hover:bg-blue-600 ${fullScreen && (`z-[1000] fixed top-1 left-[14rem]`)}`}>
+                <RenderPage
+                    width={fullScreen ? undefined : 800}
+                    height={fullScreen ? window.innerHeight - 16 : undefined}
+                    scale={fullScreen ? 1 : 0.2}
+                    pageIndex={index}
+                    loading="Carregando página..."
+                />
             </div>
             <div className="grid grid-flow-col items-center justify-center gap-1">
                 <input type="checkbox" name="page" value={index} />
