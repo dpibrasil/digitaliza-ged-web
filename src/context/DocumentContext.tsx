@@ -51,7 +51,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
             throw Error('O PDF não está carregado.')
         }
         const output = type === 'base64' ? pdfDoc.saveAsBase64({dataUri: true}) : pdfDoc.save()
-            return output
+        return output
     }
 
     const clear = () => {
@@ -61,7 +61,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const downloadProject = async () => {
-        if (output) downloadData(output, 'draft.pdf')
+        if (output) downloadData(output, 'rascunho.pdf')
     }
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
@@ -152,7 +152,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
         startUpdate()
         if (!output || !pdfDoc) return toast.error('Aguarde o PDF iniciar.')
         const pdf = await PDFDocument.load(output)
-        const pages = pdf.getPages().filter((v, i) => indices.includes(i))
+        const pages = pdf.getPages().filter((_, i) => indices.includes(i))
         pages.forEach(page => page.setRotation(degrees(page.getRotation().angle + rotation)))
         setPdfDoc(pdf)
     }
