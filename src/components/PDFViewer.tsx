@@ -28,6 +28,11 @@ function PDFViewer({url, document}: PDFViewerType)
         downloadData(response.data, `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.pdf`)
     }
 
+    async function handleDownloadProject() {
+        const response = await api.get(url.replace('/file', '/project'), { responseType: 'blob' })
+        downloadData(response.data, `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.ged-project`)
+    }
+
     return <div className="col-span-5">
         <div className="bg-blue-500 px-6 py-4 rounded-t-lg text-menu grid items-center grid-flow-col justify-start gap-x-4 overflow-x-auto">
             <IoReload />
@@ -46,6 +51,10 @@ function PDFViewer({url, document}: PDFViewerType)
             <div className="w-[1px] h-full bg-white mx-2"></div>
             <button onClick={handleDownload} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
                 <h1 className="text-[12px] mr-2">Exportar</h1>
+                <IoDownload size={16} />
+            </button>
+            <button onClick={handleDownloadProject} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
+                <h1 className="text-[12px] mr-2">Baixar projeto</h1>
                 <IoDownload size={16} />
             </button>
             <Link to={`/documents/${document.id}/edit`} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
