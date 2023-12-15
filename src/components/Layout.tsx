@@ -87,7 +87,7 @@ function Layout(props: LayoutType)
                         <div onClick={dbSync}>
                             <IoReload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
                         </div>
-                        <a href={'/assets/digitaliza-setup.zip'} download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
+                        <a href="https://github.com/tonimoreiraa/digitaliza-agent/releases/download/v0.0.1-stable/digitaliza-setup.zip" download={'digitaliza-setup.zip'} title="Baixar instalador do serviço Digitaliza">
                             <IoDownload size={24} className="text-blue-800 hover:text-blue-900 cursor-pointer" />
                         </a>
                         <div onClick={() => setShowSyncQueue(!showSyncQueue)} className="text-blue-800 hover:text-blue-900 cursor-pointer">
