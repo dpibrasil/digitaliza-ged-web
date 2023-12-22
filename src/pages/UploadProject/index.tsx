@@ -34,6 +34,7 @@ function Project({meta, data, process, parts}: any)
 
         // create document
         const form = new FormData()
+        console.log(meta)
         form.append('documentId', meta.documentId)
         for (const key in meta.data) {
             form.append(key, meta.data[key])
@@ -111,7 +112,17 @@ function UploadProject()
 
                 if (isProcess) {
                     if (!Object.keys(documentsEntries).includes(meta.documentId)) {
-                        documentsEntries[meta.documentId] = { process: true, documentId: meta.documentId, meta: {name: meta.name, documentPagesCount: 0, data: meta.data}, parts: [] }
+                        documentsEntries[meta.documentId] = {
+                            process: true,
+                            documentId: meta.documentId,
+                            meta: {
+                                name: meta.name,
+                                documentPagesCount: 0,
+                                data: meta.data,
+                                documentId: meta.documentId
+                            },
+                            parts: []
+                        }
                     }
                     documentsEntries[meta.documentId].parts.push(entry)
                     documentsEntries[meta.documentId].meta.documentPagesCount += Number(entry.meta.documentPagesCount)
