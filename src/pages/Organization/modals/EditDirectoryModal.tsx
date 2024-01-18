@@ -27,7 +27,11 @@ function IndexPreview({index, setEditingIndex, indexActions}: {index: DirectoryI
             </div>
             <div className="flex flex-col ml-2">
                 <h1 className="font-medium text-sm">{index.name}</h1>
-                <h2 className="text-slate-500 text-[11px]">{index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}{index.type === 'list' && ` • ${index.listValues ? index.listValues.length : 0} ${index.listValues && index.listValues.length === 1 ? 'opção' : 'opções'}`}</h2>
+                <h2 className="text-slate-500 text-[11px]">
+                    {index.type} • índice {index.notNullable ? 'obrigatório' : 'opcional'}
+                    {index.type === 'list' && ` • ${index.listValues ? index.listValues.length : 0} ${index.listValues && index.listValues.length === 1 ? 'opção' : 'opções'}`}
+                    {index.type === 'list' && index.listOptions && ` • ${index.listOptions ? index.listOptions.length : 0} ${index.listOptions && index.listOptions.length === 1 ? 'nova opção' : 'novas opções'}`}
+                </h2>
             </div>
         </div>
         <div className="grid grid-flow-col gap-x-1">
@@ -71,7 +75,7 @@ function EditDirectoryModal({organization, directory, ...rest}: ModalType & {org
                 const {data: index} = await (indexData.id ? api.put('/directory-indexes/' + indexData.id, indexData) : api.post('/directory-indexes', indexData))
 
                 for (const option of (indexData.listOptions ?? [])) {
-                    if (option && option.value) {
+                    if (option && option.value && !option.id) {
                         await api.post(`/directory-indexes/${index.id}/list-values`, {value: option.value})
                         .catch(e => toast.error(catchApiErrorMessage(e)))
                     }
@@ -90,6 +94,8 @@ function EditDirectoryModal({organization, directory, ...rest}: ModalType & {org
             loading: 'Salvando diretório...'
         })
     }
+
+    console.log('Pre salvar: ', indexes[248])
 
     return <Modal {...rest}>
         <ModalTitle title={directory?.id ? 'Editando diretório' : 'Criando diretório'} subtitle="Preencha os campos corretamente abaixo" />

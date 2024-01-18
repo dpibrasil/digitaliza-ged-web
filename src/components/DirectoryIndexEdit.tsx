@@ -27,6 +27,8 @@ function DirectoryIndexEdit({indexActions, index, setEditingIndex}: DirectoryInd
             formRef.current.setErrors({})
             
             const payload: any = await DirectoryIndexSchema.validate(data, {abortEarly: false})
+            /* @ts-ignore */
+            payload.index.listValues = index?.listValues
             payload.index.key = index ? index.key : uuid()
             payload.index.id = index && index.id
             indexActions.set(payload.index.key, payload.index)
