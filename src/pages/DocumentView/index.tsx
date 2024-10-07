@@ -85,10 +85,14 @@ function DocumentView()
                     <div className="overflow-x-auto">
                         <table className="indexes-table mt-2">
                             <tbody>
-                                {document.indexes.map(index => <tr key={index.id}>
-                                    <th>{index.name}</th>
-                                    <td>{displayIndex(index, index.value)}</td>
-                                </tr>)}
+                                {document.indexes
+                                    .sort((a, b) => a.id - b.id)
+                                    .map(index => (
+                                        <tr key={index.id}>
+                                            <th>{index.name}</th>
+                                            <td>{displayIndex(index, index.value)}</td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
