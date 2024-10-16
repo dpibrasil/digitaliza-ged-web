@@ -12,9 +12,11 @@ import Database from "../../services/database";
 import { DirectoryIndexType, DirectoryType } from "../../types/OrganizationTypes";
 import { UserType } from "../../types/UserTypes";
 import ExportSelectedDocumentsModal from "./modals/ExportSelectedDocumentsModal";
+import { useAuth } from "../../context/AuthContext";
 
 function Search()
 {
+    const auth = useAuth()
     const [organizationId, setOrganizationId] = useState(0)
     const [directoryId, setDirectoryId] = useState(0)
     const [searchResult, setSearchResult] = useState<any>()
@@ -22,9 +24,11 @@ function Search()
     const [users, setUsers] = useState<UserType[]|null>(null)
 
     useEffect(() => {
-        api.get('/users')
-        .then(({data}) => setUsers(data))
-        .catch(e => toast.error(catchApiErrorMessage(e)))
+        if (auth.userData?.type != 'client') {
+            api.get('/users')
+                .then(({data}) => setUsers(data))
+                .catch(e => toast.error(catchApiErrorMessage(e)))
+        }
     }, [])
 
     const db = new Database()
@@ -75,14 +79,14 @@ function Search()
                     type="datetime-local"
                     label="Intervalo de data de criação"
                 />
-                <SelectInput
+                {auth.userData?.type != 'client' && <SelectInput
                     background="white"
                     name="userId"
                     label="Usuário"
                     placeholder="---"
                 >
                     {users?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(user => <option key={user.id}>{user.name}</option>)}
-                </SelectInput>
+                </SelectInput>}
                 <SelectInput
                     background="white"
                     placeholder="Selecione uma empresa"
