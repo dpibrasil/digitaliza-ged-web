@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import {useLocalStorage} from 'react-use'
 import { UserType } from "../types/UserTypes";
 import { v4 as uuid } from 'uuid'
@@ -16,6 +16,7 @@ export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export function AuthProvider(props: any) {
 
+    const [authenticating, setAuthenticating] = useState<boolean>(false)
     const [k] = useLocalStorage<string>('@a-k', uuid())
 
     // @ts-ignore
@@ -30,6 +31,7 @@ export function AuthProvider(props: any) {
     const [userData, setUserData] = useLocalStorage<UserType|undefined>('@auth-user-data', undefined, {raw: false, serializer, deserializer})
 
     function signIn(user: UserType|any, t: string) {
+        setAuthenticating(true)
         setToken(t)
         setUserData(user)
         window.location.href = '/'
@@ -41,7 +43,7 @@ export function AuthProvider(props: any) {
         window.location.href = '/'
     }
 
-    const authenticated = Boolean(token)
+    const authenticated = Boolean(token) && !authenticating
 
     return <AuthContext.Provider value={{token, userData, authenticated, signIn, signOut}}>
         {props.children}
