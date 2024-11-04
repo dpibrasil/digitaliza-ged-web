@@ -33,10 +33,12 @@ function PDFViewer({url, document}: PDFViewerType)
         downloadData(response.data, `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.ged-project`)
     }
 
+    const handleRotate = (rotation: number) => setRotation(r => r + rotation)
+
     return <div className="col-span-5">
         <div className="bg-blue-500 px-6 py-4 rounded-t-lg text-menu grid items-center grid-flow-col justify-start gap-x-4 overflow-x-auto">
-            <IoReload />
-            <IoReload />
+            <IoReload onClick={() => handleRotate(90)} className='cursor-pointer' />
+            <IoReload onClick={() => handleRotate(-90)} className="transform scale-x-[-1] cursor-pointer" />
             <IoSearch />
             <div className="flex flex-row items-center">
                 <div className="bg-white grid grid-flow-col gap-x-2 p-2 rounded items-center">
