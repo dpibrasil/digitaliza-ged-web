@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { IconType } from "react-icons";
 import { IoSearch, IoDocument, IoBusiness, IoFileTray, IoPeople, IoAlbums, IoFileTrayStacked, IoDownload, IoLogOutOutline, IoReload, IoCloudOffline, IoArchive } from "react-icons/io5";
 import { NavLink, useMatch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -10,7 +9,7 @@ import Database from "../services/database";
 import { toast } from "react-hot-toast";
 import { catchApiErrorMessage } from "../services/api";
 
-function MenuItem({name, icon: Icon, to}: {name: string, icon: IconType, to: string}) {
+function MenuItem({ name, icon: Icon, to }: { name: string, icon: any, to: string }) {
 
     const active = !!useMatch(to)
 
@@ -27,8 +26,7 @@ type LayoutType = {
     title?: string
 }
 
-function Layout(props: LayoutType)
-{
+function Layout(props: LayoutType) {
     const auth = useAuth()
     const db = new Database()
     const [showSyncQueue, setShowSyncQueue] = useState(false)
@@ -47,9 +45,9 @@ function Layout(props: LayoutType)
         <div id="menu" className="bg-menu p-0 w-64 h-screen flex flex-col justify-between">
             <div>
                 <div className="bg-menu-active text-white px-6 py-4 mb-10">
-                    <h1 className="text-sm">DIGITALIZA</h1>
+                    <img src="/static/digitaliza-icon.svg" alt="" />
                 </div>
-                <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">Sistema</h1>
+                <h1 className="text-xs m-2 ml-6 text-menu-text font-semibold">DIGITALIZA</h1>
                 <MenuItem name="Pesquisa" to="/" icon={IoSearch} />
                 <RequireUserType type="operator">
                     <MenuItem name="Criar documento" to="/documents/create" icon={IoDocument} />
@@ -57,18 +55,18 @@ function Layout(props: LayoutType)
                 </RequireUserType>
                 <RequireUserType type="admin">
                     <MenuItem name="Empresas" to="/organizations" icon={IoBusiness} />
-                    <MenuItem name="Usuários" to="/users" icon={IoPeople} />        
-                </RequireUserType>        
+                    <MenuItem name="Usuários" to="/users" icon={IoPeople} />
+                </RequireUserType>
                 <RequireUserType type="super-admin">
                     <MenuItem name="Storages" to="/storages" icon={IoFileTray} />
                     <MenuItem name="Mantedores" to="/mantainers" icon={IoAlbums} />
                     <MenuItem name="Backups" to="/backups" icon={IoArchive} />
                 </RequireUserType>
             </div>
-            <div className="w-full pb-6 flex flex-col items-center">
-                <img className="h-4 mb-2" src={process.env.PUBLIC_URL + '/static/dpi.png'} />
+            <a target="_blank" href="//dpibrasil.com" className="w-full pb-6 flex flex-col items-center">
+                <img className="h-4 mb-2" src={process.env.PUBLIC_URL + '/static/dpi.svg'} />
                 <h1 className="text-white text-center text-xs">Criado por DPI Brasil</h1>
-            </div>
+            </a>
         </div>
         <div className="w-full h-full h-max-screen overflow-auto">
             <div className="header w-full">
@@ -108,7 +106,7 @@ function Layout(props: LayoutType)
                             <div className="flex flex-row items-center justify-start cursor-pointer" onClick={() => auth.signOut()}>
                                 <IoLogOutOutline className="text-blue-500" size={20} />
                                 <h1 className="font-light text-sm ml-1">Desconectar</h1>
-                            </div> 
+                            </div>
                         </div>}
                     </div>
                 </div>
