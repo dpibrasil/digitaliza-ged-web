@@ -2,21 +2,32 @@ import { Form } from "@unform/web";
 import { Input, ReactSelectInput } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
 import { OrganizationType } from "../../../types/OrganizationTypes";
-import api from "../../../services/api";
-import { useState } from "react";
+import api, { catchApiErrorMessage } from "../../../services/api";
+import toast from "react-hot-toast";
+
+const downloadPDFReport = async (payload: any, organization: OrganizationType) => {
+    const { data } = await api.get(`/organizations/${organization.id}/report`, {
+        params: payload
+    })
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `report-${organization.name}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
 
 function GenerateReportModal({ organization, ...rest }: ModalType & { organization: OrganizationType }) {
-    const [directories, setDirectories] = useState()
-
-    console.log(directories)
-    async function handleSubmit(payload: any) {
-        const { data } = await api.get(`/organizations/${organization.id}/report`, {
-            params: payload
+    function handleSubmit(payload: any) {
+        const promise = downloadPDFReport(payload, organization)
+        toast.promise(promise, {
+            loading: 'Gerando relatório...',
+            success: 'Relatório criado com sucesso.',
+            error: catchApiErrorMessage,
         })
-
-        console.log(data)
-
-        return
     }
 
     return <Modal {...rest}>
