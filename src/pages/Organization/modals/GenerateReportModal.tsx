@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 
 const downloadPDFReport = async (payload: any, organization: OrganizationType) => {
     const { data } = await api.get(`/organizations/${organization.id}/report`, {
-        params: payload
+        params: payload,
+        responseType: 'blob',
     })
     const blob = new Blob([data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
