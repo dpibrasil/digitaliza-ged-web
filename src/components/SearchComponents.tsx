@@ -36,6 +36,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                 </th>
                 <th>ID</th>
                 {indexes.map((index: DirectoryIndexType) => <th key={index.id}>{index.name}</th>)}
+                <th>Páginas</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -46,6 +47,7 @@ export function ResultsTable({searchResult}: {searchResult: any})
                 </th>
                 <th>{result.documentId}</th>
                 {indexes.map((index: DirectoryIndexType) => <td key={index.id}>{displayIndex(index, result[index.id])}</td>)}
+                <td>{result.pages ?? 1}</td>
                 <td className="grid auto-col-max grid-flow-col justify-start gap-x-1">
                     <div onClick={() => handleDownload(result.documentId)} className="w-min bg-neutral-100 hover:bg-neutral-200 cursor-pointer text-blue-500 p-1 rounded">
                         <IoDownloadOutline />
@@ -82,7 +84,7 @@ export function Pagination({searchResult, changePagination}: {searchResult: any,
                 <option>2000</option>
                 <option>100000</option>
             </SelectInput>
-            <h1 className="w-auto text-sm text-neutral-400">Mostrando página {searchResult.currentPage}/{searchResult.lastPage} de {searchResult.total} resultado{searchResult.total !== 1 && 's'}</h1>
+            <h1 className="w-auto text-sm text-neutral-400">Mostrando página {searchResult.currentPage}/{searchResult.lastPage} de {searchResult.total} documento{searchResult.total !== 1 && 's'} · {searchResult.totalPages ?? 0} página{(searchResult.totalPages ?? 0) !== 1 && 's'} no total</h1>
         </div>
         <div className="grid auto-col-max grid-flow-col gap-x-1 items-center text-neutral-500">
             <IoChevronBack onClick={() => changePage(searchResult.currentPage - 1)} />
