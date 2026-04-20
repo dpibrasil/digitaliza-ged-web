@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { IoArrowBack, IoArrowDown, IoArrowForward, IoArrowUp, IoCreate, IoDownload, IoReload, IoSearch } from 'react-icons/io5';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { downloadData } from '../services/download';
 import { DocumentType } from '../types/DocumentTypes';
+import { Button } from './ui/button';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 type PDFViewerType = {
     url: string,
@@ -19,7 +24,7 @@ function PDFViewer({url, document}: PDFViewerType)
 
     const onDocumentLoadSuccess = ({ numPages }: any) => setNumPages(numPages)
 
-    const setPage = (i: number) => i <= numPages && i >= 1  ? setPageNumber(i) : undefined
+    const setPage = (i: number) => i <= numPages && i >= 1 ? setPageNumber(i) : undefined
     const nextPage = () => setPage(pageNumber + 1)
     const backPage = () => setPage(pageNumber - 1)
 
@@ -33,49 +38,55 @@ function PDFViewer({url, document}: PDFViewerType)
         downloadData(response.data, `${document.organization.name.slice(0, 5)}-${document.directory.name.slice(0, 5)}-${document.id}.ged-project`)
     }
 
-    const handleRotate = (rotation: number) => setRotation(r => r + rotation)
+    const handleRotate = (r: number) => setRotation(prev => prev + r)
 
     return <div className="col-span-5">
-        <div className="bg-blue-500 px-6 py-4 rounded-t-lg text-menu grid items-center grid-flow-col justify-start gap-x-4 overflow-x-auto">
-            <IoReload onClick={() => handleRotate(90)} className='cursor-pointer' />
-            <IoReload onClick={() => handleRotate(-90)} className="transform scale-x-[-1] cursor-pointer" />
-            <IoSearch />
+        <div className="bg-primary px-6 py-4 rounded-t-lg text-menu grid items-center grid-flow-col justify-start gap-x-4 overflow-x-auto">
+            <button type="button" onClick={() => handleRotate(90)} className="text-white hover:text-blue-200 transition-colors">
+                <IoReload />
+            </button>
+            <button type="button" onClick={() => handleRotate(-90)} className="text-white hover:text-blue-200 transition-colors">
+                <IoReload className="transform scale-x-[-1]" />
+            </button>
+            <IoSearch className="text-white" />
             <div className="flex flex-row items-center">
                 <div className="bg-white grid grid-flow-col gap-x-2 p-2 rounded items-center">
-                    <IoArrowUp className="cursor-pointer" onClick={backPage} />
-                    <IoArrowDown className="cursor-pointer" onClick={nextPage} />
-                    <select value={pageNumber} className="text-sm text-menu">
+                    <button type="button" onClick={backPage}><IoArrowUp className="cursor-pointer" /></button>
+                    <button type="button" onClick={nextPage}><IoArrowDown className="cursor-pointer" /></button>
+                    <select value={pageNumber} className="text-sm text-menu" onChange={e => setPage(Number(e.target.value))}>
                         {Array.from(Array(numPages).keys()).map(i => <option key={i + 1}>{i + 1}</option>)}
                     </select>
                 </div>
-                <h1 className="text-sm text-white font-normal ml-1">de {numPages}</h1>
+                <span className="text-sm text-white font-normal ml-1">de {numPages}</span>
             </div>
-            <div className="w-[1px] h-full bg-white mx-2"></div>
-            <button onClick={handleDownload} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
-                <h1 className="text-[12px] mr-2">Exportar</h1>
-                <IoDownload size={16} />
-            </button>
-            <button onClick={handleDownloadProject} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
-                <h1 className="text-[12px] mr-2">Baixar projeto</h1>
-                <IoDownload size={16} />
-            </button>
-            <Link to={`/documents/${document.id}/edit`} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
-                <h1 className="text-[12px] mr-2">Editar documento</h1>
-                <IoCreate size={16} />
+            <div className="w-[1px] h-full bg-white/30 mx-2"></div>
+            <Button type="button" variant="outline" size="sm" onClick={handleDownload} className="gap-1.5">
+                Exportar
+                <IoDownload size={14} />
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={handleDownloadProject} className="gap-1.5">
+                Baixar projeto
+                <IoDownload size={14} />
+            </Button>
+            <Link to={`/documents/${document.id}/edit`}>
+                <Button type="button" variant="outline" size="sm" className="gap-1.5">
+                    Editar documento
+                    <IoCreate size={14} />
+                </Button>
             </Link>
         </div>
         <div className="bg-menu mb-8 text-white p-6 rounded-b-lg flex items-center justify-center flex-col">
-            <Document file={{url: url, httpHeaders: api.defaults.headers}} onLoadSuccess={onDocumentLoadSuccess}>
+            <Document file={{url: url, httpHeaders: api.defaults.headers} as any} onLoadSuccess={onDocumentLoadSuccess}>
                 <Page width={500} pageNumber={pageNumber} rotate={rotation} />
             </Document>
-            <div className="grid grid-flow-col mt-4 items-center">
-                <button onClick={backPage} className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
-                    <IoArrowBack size={18} />
-                </button>
-                <h1 className="text-white mx-4">{pageNumber} de {numPages}</h1>
-                <button onClick={nextPage} className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">
-                    <IoArrowForward size={18} />
-                </button>
+            <div className="grid grid-flow-col mt-4 items-center gap-4">
+                <Button type="button" variant="success" size="sm" onClick={backPage}>
+                    <IoArrowBack size={16} />
+                </Button>
+                <span className="text-white text-sm">{pageNumber} de {numPages}</span>
+                <Button type="button" variant="success" size="sm" onClick={nextPage}>
+                    <IoArrowForward size={16} />
+                </Button>
             </div>
         </div>
     </div>
