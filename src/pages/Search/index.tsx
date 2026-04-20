@@ -21,6 +21,7 @@ function Search()
     const [directoryId, setDirectoryId] = useState(0)
     const [searchResult, setSearchResult] = useState<any>()
     const [searchQuery, setSearchQuery] = useState<any>()
+    const [isLoading, setIsLoading] = useState(false)
     const [users, setUsers] = useState<UserType[]|null>(null)
 
     useEffect(() => {
@@ -37,14 +38,20 @@ function Search()
     const directory: DirectoryType|undefined = directories?.find(d => d.id === directoryId)
 
     async function changePagination(page: number = 1, limit: number) {
-        const {data: results} = await api.post('/documents/search', {...searchQuery, pageLimit: limit ?? searchQuery.pageLimit, page})
-        setSearchResult(results)
+        setIsLoading(true)
+        try {
+            const {data: results} = await api.post('/documents/search', {...searchQuery, pageLimit: limit ?? searchQuery.pageLimit, page})
+            setSearchResult(results)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     async function handleSubmit(data: any)
     {
         setSearchResult(undefined)
         if (!directory) return
+        setIsLoading(true)
         for (const index of directory.indexes) {
             const key = 'index' + index.id
             const {value, operator} = data['indexes'][key]
@@ -63,9 +70,13 @@ function Search()
         }
         if (data.userId === '---') delete data.userId
 
-        const {data: results} = await api.post('/documents/search', data)
-        setSearchResult(results)
-        setSearchQuery(data)
+        try {
+            const {data: results} = await api.post('/documents/search', data)
+            setSearchResult(results)
+            setSearchQuery(data)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
 
@@ -120,7 +131,16 @@ function Search()
             </> : <div className="flex items-center justify-center mt-8">
                 <img alt="Pesquisa" style={{height: '50vh'}} src={process.env.PUBLIC_URL + '/static/search.svg'} />
             </div>}
-            {searchResult && <div className="mt-4">
+            {isLoading && (
+                <div className="flex flex-col items-center justify-center py-16 mt-4">
+                    <svg className="animate-spin w-8 h-8 text-blue-500 mb-3" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    <p className="text-sm text-neutral-500">Pesquisando documentos...</p>
+                </div>
+            )}
+            {!isLoading && searchResult && <div className="mt-4">
                 <div className="flex flex-row justify-between items-center">
                     <h1 className="text-lg font-semibold my-6">Listagem de documentos</h1>
                     <ModalSwitch modal={ExportSelectedDocumentsModal} modalProps={{directory}} button={(props: any) => <button {...props} className="bg-blue-500 py-2 px-3 text-white rounded flex flex-row align-center justify-center mt-2">
