@@ -1,9 +1,10 @@
-import { IoArrowBack, IoArrowForward, IoCaretForward, IoCloudUpload, IoDocumentAttach, IoPlay, IoPrint, IoReload, IoStop, IoTrash } from "react-icons/io5";
+import { IoArrowBack, IoArrowForward, IoCloudUpload, IoDocumentAttach, IoPrint, IoReload, IoTrash } from "react-icons/io5";
 import { useDocument } from "../context/DocumentContext";
 import { toast } from "react-hot-toast";
 import EditIndexesModal from "../modals/EditIndexesModal";
 import api, { catchApiErrorMessage } from "../services/api";
 import { ModalSwitch } from "./Modal";
+import { Button } from "./ui/button";
 import RequirementsModalSwitch from "./RequirementsModalSwitch";
 import LongDocumentHeader from "./LongDocumentHeader";
 import LongDocumentButton from "./LongDocumentButton";
@@ -33,9 +34,7 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
     {
         const selectedPages = getSelectedPages()
         if (!selectedPages) return
-
         if (!window.confirm(`Você tem certeza que quer deletar ${selectedPages.length === 1 ? 'a página selecionada?' : `as ${selectedPages.length} páginas selecionadas?`}`)) return false
-
         documentEdit.deletePages(selectedPages)
     }
 
@@ -43,7 +42,6 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
     {
         const selectedPages = getSelectedPages()
         if (!selectedPages) return
-
         documentEdit.rotatePages(selectedPages, rotation)
     }
 
@@ -55,7 +53,6 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
     async function handleSave(data: any)
     {
         if (!documentEdit.output) return
-        // create document
         const form = new FormData()
         for (const key in data) {
             form.append(key, data[key])
@@ -73,42 +70,58 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
     }
 
     return <>
-        <div className="grid grid-flow-col gap-x-2 text-slate-500 text-sm items-center justify-start mb-3 border-slate-200 border-b pb-3 overflow-x-auto">
-            <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200">
+        <div className="flex flex-wrap gap-2 text-slate-500 text-sm items-center justify-start mb-3 border-slate-200 border-b pb-3 overflow-x-auto">
+            <div className="flex items-center gap-2 border-r pr-3 mr-1 border-slate-200">
                 <input type="checkbox" onChange={handleCheckboxAllChanges} />
-                <IoReload className="-scale-x-100 cursor-pointer" onClick={() => rotatePages(-90)} size={20} />
-                <IoReload className="cursor-pointer" onClick={() => rotatePages(-90)} size={20} />
-                <IoTrash className="cursor-pointer" onClick={deletePages} size={20} />
+                <button type="button" onClick={() => rotatePages(-90)} title="Girar anti-horário" className="hover:text-primary transition-colors">
+                    <IoReload className="-scale-x-100" size={18} />
+                </button>
+                <button type="button" onClick={() => rotatePages(90)} title="Girar horário" className="hover:text-primary transition-colors">
+                    <IoReload size={18} />
+                </button>
+                <button type="button" onClick={deletePages} title="Excluir páginas" className="hover:text-danger transition-colors">
+                    <IoTrash size={18} />
+                </button>
             </div>
-            <div className="grid grid-flow-col gap-x-2 border-r pr-3 mr-1 border-slate-200 items-center text-center">
-                <IoArrowBack className="cursor-pointer" onClick={backPage} />
-                {page + 1}/{Math.ceil(documentEdit.numPages/itemsPerPage)}
-                <IoArrowForward className="cursor-pointer" onClick={nextPage} />
+            <div className="flex items-center gap-2 border-r pr-3 mr-1 border-slate-200">
+                <button type="button" onClick={backPage} className="hover:text-primary transition-colors">
+                    <IoArrowBack size={18} />
+                </button>
+                <span className="text-xs tabular-nums">{page + 1}/{Math.ceil(documentEdit.numPages/itemsPerPage)}</span>
+                <button type="button" onClick={nextPage} className="hover:text-primary transition-colors">
+                    <IoArrowForward size={18} />
+                </button>
             </div>
-            <div className="border-r pr-3 mr-1 border-slate-200 text-center">{documentEdit.numPages} páginas.</div>
-            <button onClick={exportPdf} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1 h-full text-xs xl:text-sm">
+            <span className="border-r pr-3 mr-1 border-slate-200 text-xs text-neutral-500">{documentEdit.numPages} páginas</span>
+            <Button type="button" variant="ghost" size="sm" onClick={exportPdf} className="gap-1.5">
                 Exportar
-                <IoCloudUpload />
-            </button>
-            <button onClick={() => documentEdit.addPageBy('file', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1 h-full text-xs xl:text-sm">
+                <IoCloudUpload size={14} />
+            </Button>
+            <Button type="button" variant="ghost" size="sm" onClick={() => documentEdit.addPageBy('file', 0)} className="gap-1.5">
                 Inserir página
-                <IoDocumentAttach />
-            </button>
-            <button onClick={() => documentEdit.addPageBy('scanner', 0)} className="bg-slate-100 p-2 hover:bg-slate-200 rounded flex items-center justify-center gap-x-1 h-full text-xs xl:text-sm">
+                <IoDocumentAttach size={14} />
+            </Button>
+            <Button type="button" variant="ghost" size="sm" onClick={() => documentEdit.addPageBy('scanner', 0)} className="gap-1.5">
                 Escanear arquivo
-                <IoPrint />
-            </button>
-            {document ? <button onClick={() => handleSave({})} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 h-full text-xs xl:text-sm">
-                Atualizar documento
-                <IoArrowForward />
-            </button> : <ModalSwitch
-                button={(props: any) => <button {...props} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 h-full text-xs xl:text-sm">
-                    Continuar
-                    <IoArrowForward />
-                </button>}
-                modal={EditIndexesModal}
-                modalProps={{ editingDocument: true }}
-            />}
+                <IoPrint size={14} />
+            </Button>
+            {document ? (
+                <Button type="button" variant="default" size="sm" onClick={() => handleSave({})} className="gap-1.5">
+                    Atualizar documento
+                    <IoArrowForward size={14} />
+                </Button>
+            ) : (
+                <ModalSwitch
+                    button={(props: any) => (
+                        <Button type="button" variant="default" size="sm" className="gap-1.5" {...props}>
+                            Continuar
+                            <IoArrowForward size={14} />
+                        </Button>
+                    )}
+                    modal={EditIndexesModal}
+                    modalProps={{ editingDocument: true }}
+                />
+            )}
             <LongDocumentButton />
             <RequirementsModalSwitch />
         </div>

@@ -2,11 +2,13 @@ import { Form } from "@unform/web";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import {  IoDownloadOutline, IoSearch } from "react-icons/io5";
+import { IoDownloadOutline, IoSearch } from "react-icons/io5";
 import { SearchIndexInput, Input, SelectInput } from "../../components/Input";
 import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
 import { Pagination, ResultsTable } from "../../components/SearchComponents";
+import { Button } from "../../components/ui/button";
+import Loading from "../../components/Loading";
 import api, { catchApiErrorMessage } from "../../services/api";
 import Database from "../../services/database";
 import { DirectoryIndexType, DirectoryType } from "../../types/OrganizationTypes";
@@ -25,7 +27,7 @@ function Search()
     const [users, setUsers] = useState<UserType[]|null>(null)
 
     useEffect(() => {
-        if (auth.userData?.type != 'client') {
+        if (auth.userData?.type !== 'client') {
             api.get('/users')
                 .then(({data}) => setUsers(data))
                 .catch(e => toast.error(catchApiErrorMessage(e)))
@@ -79,7 +81,6 @@ function Search()
         }
     }
 
-
     return <Layout title="Pesquisa">
         <Form onSubmit={handleSubmit}>
             <h1 className="text-lg font-semibold mb-4">Pesquisa de documentos</h1>
@@ -90,7 +91,7 @@ function Search()
                     type="datetime-local"
                     label="Intervalo de data de criação"
                 />
-                {auth.userData?.type != 'client' && <SelectInput
+                {auth.userData?.type !== 'client' && <SelectInput
                     background="white"
                     name="userId"
                     label="Usuário"
@@ -122,31 +123,29 @@ function Search()
                 <div className="bg-neutral-100 rounded-lg p-4 w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-start gap-4">
                     {directory.indexes.map((index: DirectoryIndexType) => <SearchIndexInput key={index.id} index={index} />)}
                 </div>
-                <div className="flex w-full justify-end">
-                    <button className="bg-green-500 py-2 px-3 text-white rounded flex flex-row align-center justify-center mt-2">
-                        <IoSearch size={18} />
-                        <h1 className="text-sm ml-1">Pesquisar</h1>
-                    </button>
+                <div className="flex w-full justify-end mt-2">
+                    <Button type="submit" variant="success" size="sm" className="gap-1.5">
+                        <IoSearch size={15} />
+                        Pesquisar
+                    </Button>
                 </div>
             </> : <div className="flex items-center justify-center mt-8">
                 <img alt="Pesquisa" style={{height: '50vh'}} src={process.env.PUBLIC_URL + '/static/search.svg'} />
             </div>}
-            {isLoading && (
-                <div className="flex flex-col items-center justify-center py-16 mt-4">
-                    <svg className="animate-spin w-8 h-8 text-blue-500 mb-3" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    <p className="text-sm text-neutral-500">Pesquisando documentos...</p>
-                </div>
-            )}
+            {isLoading && <Loading text="Pesquisando documentos..." />}
             {!isLoading && searchResult && <div className="mt-4">
                 <div className="flex flex-row justify-between items-center">
                     <h1 className="text-lg font-semibold my-6">Listagem de documentos</h1>
-                    <ModalSwitch modal={ExportSelectedDocumentsModal} modalProps={{directory}} button={(props: any) => <button {...props} className="bg-blue-500 py-2 px-3 text-white rounded flex flex-row align-center justify-center mt-2">
-                        <IoDownloadOutline size={18} />
-                        <h1 className="text-sm ml-1">Exportar selecionados</h1>
-                    </button>} />
+                    <ModalSwitch
+                        modal={ExportSelectedDocumentsModal}
+                        modalProps={{directory}}
+                        button={(props: any) => (
+                            <Button type="button" variant="default" size="sm" className="gap-1.5" {...props}>
+                                <IoDownloadOutline size={15} />
+                                Exportar selecionados
+                            </Button>
+                        )}
+                    />
                 </div>
                 <ResultsTable searchResult={searchResult} />
                 <Pagination searchResult={searchResult} changePagination={changePagination} />

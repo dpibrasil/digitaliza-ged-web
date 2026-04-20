@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
 import PDFViewer from "../../components/PDFViewer";
+import Loading from "../../components/Loading";
+import { Button } from "../../components/ui/button";
 import EditIndexesModal from "../../modals/EditIndexesModal";
 import api, { catchApiErrorMessage } from "../../services/api";
 import { displayIndex } from "../../services/helpers";
@@ -36,15 +38,15 @@ function DocumentView()
     }
 
     return <Layout title="Documento">
-        {document ? <>
+        {!document ? <Loading /> : <>
             <h1 className="text-lg font-semibold mb-4">Visualização do documento</h1>
             <div className="grid grid-cols-5 gap-x-8 gap-y-6">
                 <div className="bg-menu rounded-lg p-6 col-span-5 md:col-span-2">
                     <div className="flex items-center justify-start">
                         <img alt="Cliente" className="w-10 h-10 rounded-lg bg-white" />
                         <div className="flex flex-col ml-3">
-                            <h1 className="text-slate-400 text-sm">Cliente:</h1>
-                            <h2 className="text-slate-400 text-sm">{document.organization.name}</h2>
+                            <span className="text-slate-400 text-xs font-medium uppercase tracking-wide">Cliente</span>
+                            <span className="text-white text-sm mt-0.5">{document.organization.name}</span>
                         </div>
                     </div>
                     <div className="overflow-x-auto">
@@ -71,15 +73,17 @@ function DocumentView()
                     </div>
                 </div>
                 <div className="bg-menu col-span-5 md:col-span-3 rounded-lg p-6">
-                    <div className="flex flex-row justify-between w-full items-center">
-                        <h1 className="text-white font-medium">Índices</h1>
+                    <div className="flex flex-row justify-between w-full items-center mb-2">
+                        <p className="text-white font-medium">Índices</p>
                         <ModalSwitch
                             modal={EditIndexesModal}
                             modalProps={{directoryId: document.directoryId, values: document.indexes, handleSubmit: handleEditIndexes}}
-                            button={(props: any) => <button {...props} className="bg-white hover:bg-neutral-100 py-2 px-3 text-slate-600 rounded flex flex-row align-center justify-center">
-                                <h1 className="text-[12px] mr-2">Editar índices</h1>
-                                <IoCreate size={16} />
-                            </button>}
+                            button={(props: any) => (
+                                <Button type="button" variant="outline" size="sm" className="gap-1.5" {...props}>
+                                    Editar índices
+                                    <IoCreate size={14} />
+                                </Button>
+                            )}
                         />
                     </div>
                     <div className="overflow-x-auto">
@@ -99,7 +103,7 @@ function DocumentView()
                 </div>
                 <PDFViewer document={document} url={`${api.defaults.baseURL}/documents/${document.id}/file`} />
             </div>
-        </> : <>Carregando...</>}
+        </>}
     </Layout>
 }
 

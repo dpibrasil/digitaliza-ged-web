@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import ReactGA from 'react-ga4';
+import { Button } from "./ui/button";
 
-export function ModalSwitch({modal: ModalComponent, button: Button, modalProps = {}}: {modal: any, button: any, modalProps?: any})
+export function ModalSwitch({modal: ModalComponent, button: ButtonTrigger, modalProps = {}}: {modal: any, button: any, modalProps?: any})
 {
-    const ToggleComponent = <Button onClick={() => setShow(true)} />
+    const ToggleComponent = <ButtonTrigger onClick={() => setShow(true)} />
     const [show, setShow] = useState(false)
 
     return show ? <>
@@ -28,11 +29,19 @@ function Modal({mode = 'dark', onClose, ...props}: ModalType)
     }
 
     return <div className="fixed top-0 left-0 bg-black/25 w-screen h-screen flex items-center justify-center z-50">
-        <div className={`modal ${mode} drop-shadow-xl ${mode == 'dark' ? 'bg-menu text-white' : 'bg-white'} p-4 rounded-lg `}>
-            <button onClick={handleClose} className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer p-1 rounded float-right">
-                <IoClose />
-            </button>
-            <div className="py-4 px-8 w-full h-full min-w-[450px]">{props.children}</div>
+        <div className={`modal ${mode} drop-shadow-xl ${mode === 'dark' ? 'bg-menu text-white' : 'bg-white'} p-4 rounded-lg w-full max-w-lg mx-4`}>
+            <div className="flex justify-end mb-1">
+                <Button
+                    type="button"
+                    variant="ghost-blue"
+                    size="icon-sm"
+                    onClick={handleClose}
+                    aria-label="Fechar"
+                >
+                    <IoClose size={16} />
+                </Button>
+            </div>
+            <div className="py-2 px-4 w-full h-full">{props.children}</div>
         </div>
     </div>
 }
@@ -43,8 +52,8 @@ export function ModalTitle({title, subtitle}: {title: string, subtitle?: string}
         ReactGA.send({hitType: 'modalview', modal: title})
     }, [title])
     return <div className="mb-4">
-        {!!title && <h1 className="font-semibold text-lg text-blue-500">{title}</h1>}
-        {!!subtitle && <h2 className="font-normal text-sm text-neutral-200">{subtitle}</h2>}
+        {!!title && <p className="font-semibold text-lg text-primary">{title}</p>}
+        {!!subtitle && <p className="font-normal text-sm text-neutral-400 mt-0.5">{subtitle}</p>}
     </div>
 }
 

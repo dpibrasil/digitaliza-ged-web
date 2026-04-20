@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --color-primary: rgb(59 130 246);
+}
+
 * {
     font-family: Inter, system-ui, -apple-system, sans-serif;
     box-sizing: border-box;
@@ -9,31 +13,6 @@
 
 select {
     -webkit-appearance: none;
-}
-
-table * {
-    font-size: 13px;
-}
-
-table thead th {
-    color: #aaa;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-table td, table th {
-    border-bottom: 1px solid #e6e6e6;
-    text-align: left;
-    font-weight: 400;
-    padding: 8px 0;
-}
-
-table td {
-    color: #000;
-}
-
-table th {
-    font-weight: 600;
 }
 
 table.indexes-table {
@@ -68,7 +47,7 @@ table.indexes-table td {
     height: 1em;
     width: 1em;
     border-top-left-radius: 0.5em;
-    box-shadow: 0 -0.5em 0 0 rgb(59 130 246);
+    box-shadow: 0 -0.5em 0 0 var(--color-primary);
 }
 
 #header-title::after {
@@ -80,7 +59,7 @@ table.indexes-table td {
     height: 1em;
     width: 1em;
     border-top-right-radius: 0.5em;
-    box-shadow: 0 -0.5em 0 0 rgb(59 130 246);
+    box-shadow: 0 -0.5em 0 0 var(--color-primary);
 }
 
 .modal.dark label {
@@ -111,7 +90,7 @@ label.checkbox:after {
 }
 
 input:checked + label.checkbox {
-    background-color: rgb(59 130 246);
+    background-color: var(--color-primary);
 }
 
 input:checked + label.checkbox:after {
@@ -125,7 +104,7 @@ label.checkbox:active:after {
 
 * {
     scrollbar-width: auto;
-    scrollbar-color: rgb(59 130 246) #e3e3e3;
+    scrollbar-color: var(--color-primary) #e3e3e3;
 }
 
 /* Chrome, Edge, and Safari */
@@ -138,7 +117,7 @@ label.checkbox:active:after {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: rgb(59 130 246);
+    background-color: var(--color-primary);
     border-radius: 10px;
     border: 3px solid #ffffff;
 }

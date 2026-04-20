@@ -6,6 +6,8 @@ import { downloadData } from "../services/download";
 import { displayIndex } from "../services/helpers";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
 import { SelectInput } from "./Input";
+import { Button } from "./ui/button";
+import { cn } from "../lib/utils";
 
 export function ResultsTable({searchResult}: {searchResult: any})
 {
@@ -46,12 +48,12 @@ export function ResultsTable({searchResult}: {searchResult: any})
                         <th className="py-3 px-4 text-left w-10">
                             <input type="checkbox" onChange={handleChangeAllCheckboxes} className="rounded" />
                         </th>
-                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap">ID</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap uppercase text-xs">ID</th>
                         {indexes.map((index: DirectoryIndexType) => (
-                            <th key={index.id} className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap">{index.name}</th>
+                            <th key={index.id} className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap uppercase text-xs">{index.name}</th>
                         ))}
-                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap">Páginas</th>
-                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap">Ações</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap uppercase text-xs">Páginas</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 whitespace-nowrap uppercase text-xs">Ações</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-100">
@@ -67,22 +69,24 @@ export function ResultsTable({searchResult}: {searchResult: any})
                             <td className="py-3 px-4 text-neutral-600">{result.pages ?? 1}</td>
                             <td className="py-3 px-4">
                                 <div className="flex items-center gap-1">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost-blue"
+                                        size="icon"
                                         onClick={() => handleDownload(result.documentId)}
-                                        className="p-1.5 bg-neutral-100 hover:bg-blue-100 hover:text-blue-600 text-neutral-500 rounded transition-colors"
                                         title="Baixar PDF"
                                     >
                                         <IoDownloadOutline size={15} />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="ghost-blue"
+                                        size="icon"
                                         onClick={() => navigate('/documents/' + result.documentId)}
-                                        className="p-1.5 bg-neutral-100 hover:bg-blue-100 hover:text-blue-600 text-neutral-500 rounded transition-colors"
-                                        title="Editar documento"
+                                        title="Ver documento"
                                     >
                                         <IoCreateOutline size={15} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </td>
                         </tr>
@@ -103,7 +107,7 @@ export function Pagination({searchResult, changePagination}: {searchResult: any,
     }
 
     return <div className="w-full mt-3 flex flex-row justify-between items-center">
-        <div className="grid grid-flow-col auto-col-max items-center">
+        <div className="grid grid-flow-col auto-col-max items-center gap-2">
             <SelectInput name="pageLimit">
                 <option>25</option>
                 <option>50</option>
@@ -116,17 +120,55 @@ export function Pagination({searchResult, changePagination}: {searchResult: any,
                 <option>2000</option>
                 <option>100000</option>
             </SelectInput>
-            <h1 className="w-auto text-sm text-neutral-400">Mostrando página {searchResult.currentPage}/{searchResult.lastPage} de {searchResult.total} documento{searchResult.total !== 1 && 's'} · {searchResult.totalPages ?? 0} página{(searchResult.totalPages ?? 0) !== 1 && 's'} no total</h1>
+            <p className="w-auto text-sm text-neutral-400">
+                Mostrando página {searchResult.currentPage}/{searchResult.lastPage} de {searchResult.total} documento{searchResult.total !== 1 && 's'} · {searchResult.totalPages ?? 0} página{(searchResult.totalPages ?? 0) !== 1 && 's'} no total
+            </p>
         </div>
         <div className="grid auto-col-max grid-flow-col gap-x-1 items-center text-neutral-500">
-            <IoChevronBack onClick={() => changePage(searchResult.currentPage - 1)} />
-                {searchResult.currentPage !== 2 && <div className={`w-min ${1 === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(1)}>1</div>}
-                {Array.from(Array(searchResult.lastPage - searchResult.currentPage > 2 ? 3 : searchResult.lastPage + 1 - searchResult.currentPage).keys()).map(i => {
-                    const pageNumber = i + searchResult.currentPage - (searchResult.currentPage === 1 ? -1 : 1)
-                    return <div key={i} className={`w-min ${pageNumber === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(pageNumber)}>{pageNumber}</div>
-                })}
-                <div className={`w-min ${searchResult.lastPage === searchResult.currentPage ? 'bg-blue-500 text-white' : 'bg-neutral-100'} p-1 rounded text-[11px] font-semibold h-7 w-5 flex items-center justify-center cursor-pointer`} onClick={() => changePage(searchResult.lastPage)}>{searchResult.lastPage}</div>
-            <IoChevronForward onClick={() => changePage(searchResult.currentPage + 1)} />
+            <button type="button" onClick={() => changePage(searchResult.currentPage - 1)} className="p-1 hover:text-primary transition-colors">
+                <IoChevronBack />
+            </button>
+            {searchResult.currentPage !== 2 && (
+                <button
+                    type="button"
+                    className={cn(
+                        'p-1 rounded text-xs font-semibold h-7 w-7 flex items-center justify-center transition-colors',
+                        1 === searchResult.currentPage ? 'bg-primary text-white' : 'bg-neutral-100 hover:bg-neutral-200'
+                    )}
+                    onClick={() => changePage(1)}
+                >
+                    1
+                </button>
+            )}
+            {Array.from(Array(searchResult.lastPage - searchResult.currentPage > 2 ? 3 : searchResult.lastPage + 1 - searchResult.currentPage).keys()).map(i => {
+                const pageNumber = i + searchResult.currentPage - (searchResult.currentPage === 1 ? -1 : 1)
+                return (
+                    <button
+                        key={i}
+                        type="button"
+                        className={cn(
+                            'p-1 rounded text-xs font-semibold h-7 w-7 flex items-center justify-center transition-colors',
+                            pageNumber === searchResult.currentPage ? 'bg-primary text-white' : 'bg-neutral-100 hover:bg-neutral-200'
+                        )}
+                        onClick={() => changePage(pageNumber)}
+                    >
+                        {pageNumber}
+                    </button>
+                )
+            })}
+            <button
+                type="button"
+                className={cn(
+                    'p-1 rounded text-xs font-semibold h-7 w-7 flex items-center justify-center transition-colors',
+                    searchResult.lastPage === searchResult.currentPage ? 'bg-primary text-white' : 'bg-neutral-100 hover:bg-neutral-200'
+                )}
+                onClick={() => changePage(searchResult.lastPage)}
+            >
+                {searchResult.lastPage}
+            </button>
+            <button type="button" onClick={() => changePage(searchResult.currentPage + 1)} className="p-1 hover:text-primary transition-colors">
+                <IoChevronForward />
+            </button>
         </div>
     </div>
 }
