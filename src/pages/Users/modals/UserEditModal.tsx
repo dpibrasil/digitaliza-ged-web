@@ -80,7 +80,7 @@ function UserEditModal(props: ModalType & {userId?: number})
     return <Modal {...props}>
         <ModalTitle title={editing ? 'Editando usuário' : 'Criar usuário'} subtitle="Preencha os campos coretamente abaixo." />
         <Form ref={formRef} onSubmit={() => {}}>
-            <StepByStep.Container validate={handleSubmit} elementClassName="min-w-[400px] max-w-[600px] min-h-[300px]">
+            <StepByStep.Container validate={handleSubmit} elementClassName="min-h-[300px]">
                 <StepByStep.Step name="Criação de usuário" subtitle="Informações de usuário">
                     <Input
                         label="E-mail"

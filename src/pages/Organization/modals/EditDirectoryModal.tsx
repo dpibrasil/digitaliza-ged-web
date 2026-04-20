@@ -100,7 +100,7 @@ function EditDirectoryModal({organization, directory, ...rest}: ModalType & {org
     return <Modal {...rest}>
         <ModalTitle title={directory?.id ? 'Editando diretório' : 'Criando diretório'} subtitle="Preencha os campos corretamente abaixo" />
         <div className="mt-10">
-            <StepByStep.Container elementClassName="min-w-[400px] min-h-[300px]">
+            <StepByStep.Container elementClassName="min-h-[300px]">
                 <StepByStep.Step name="Criação de diretório" subtitle="Configurações do diretório">
                     <Form onSubmit={() => {}}>
                         <Input
