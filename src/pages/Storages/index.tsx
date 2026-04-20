@@ -31,16 +31,16 @@ function Storages()
             <table className="w-full mt-4">
                 <thead>
                     <tr>
-                        <th>Nome ID</th>
-                        <th>Armazenamento utilizado</th>
-                        <th>Tempo de atividade</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Nome ID</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Armazenamento utilizado</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Tempo de atividade</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Status</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-neutral-100">
                     {filteredStorages.map((storage) => <tr key={storage.id}>
-                        <th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-700">
                             <div className="flex items-center justify-start">
                                 <div className="w-5 h-5 mr-1 flex items-center justify-center rounded bg-slate-900 text-blue-500">
                                     <IoFileTrayOutline />
@@ -48,20 +48,20 @@ function Storages()
                                 <h1 className="font-semibold text-xs text-slate-900">{storage.name}</h1>
                             </div>
                         </th>
-                        <td>
+                        <td className="py-3 px-4 text-neutral-600">
                             <h1 className="font-semibold text-xs text-slate-900">1,2TB</h1>
                             <h1 className="font-light text-xs text-neutral-400 mt-1">{Number(storage.documentsCount).toLocaleString()} docs</h1>
                         </td>
-                        <td>
+                        <td className="py-3 px-4 text-neutral-600">
                             <h1 className="font-semibold text-xs text-slate-900">6 horas e dois minutos</h1>
                             <h1 className="font-light text-xs text-neutral-400 mt-1">10/12/22 às 16h47</h1>
                         </td>
-                        <td>
+                        <td className="py-3 px-4">
                             <div className="flex">
                                 <h1 className={`bg-green-100 text-xs text-green-500 rounded px-2 py-1`}>Ativo</h1>
                             </div>
                         </td>
-                        <td>
+                        <td className="py-3 px-4">
                             <div className="grid grid-flow-col gap-x-1 justify-start">
                                 <ModalSwitch
                                     modal={StorageMigrationModal}

@@ -62,7 +62,7 @@ function Project({meta, data, process, parts}: any)
     return <>
         {!!missingPackages.length && <MissingPackagesModal document={document} setShow={(v: boolean) => setMissingPackages(v ? missingPackages : [])} />}
         <tr>
-            <td>
+            <td className="py-3 px-4 font-medium text-neutral-700">
                 <div className="flex flex-row gap-x-2 items-center">
                     <div className="bg-blue-500 rounded-full w-12 h-12 flex items-center justify-center text-white">
                         <IoCloudOfflineOutline size={24} />
@@ -70,8 +70,8 @@ function Project({meta, data, process, parts}: any)
                     <h1 className="font-semibold">{meta.name}</h1>
                 </div>
             </td>
-            <td>{meta.documentPagesCount} {process && ` (${parts.length} partes)`}</td>
-            <td>
+            <td className="py-3 px-4 text-neutral-600">{meta.documentPagesCount} {process && ` (${parts.length} partes)`}</td>
+            <td className="py-3 px-4 text-neutral-600">
                 <div className="grid grid-flow-col gap-x-2">
                     {error ? <div className="text-red-500 text-xs">{error}</div> : <>
                         {documentId ? <a href={'/documents/' + documentId} target="_blank" className="text-green-500 text-sm">Concluído</a> : typeof progress == 'number' && <div className="rounded-full w-100 bg-neutral-200 h-4">
@@ -81,7 +81,7 @@ function Project({meta, data, process, parts}: any)
                     </>}
                 </div>
             </td>
-            <td>
+            <td className="py-3 px-4">
                 {!!document && progress === 'Pendente' && <button
                     onClick={() => upload()}
                     className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-x-1 upload-button"
@@ -165,13 +165,13 @@ function UploadProject()
         <table className="w-full mt-4">
             <thead>
                 <tr>
-                    <th>Arquivo</th>
-                    <th>Páginas</th>
-                    <th>Status</th>
-                    <th>Ação</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Arquivo</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Páginas</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Status</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Ação</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-neutral-100">
                 {Object.values(documents).map((project: any) => <Project {...project} documents={documents} key={project.documentId} />)}
             </tbody>
         </table>

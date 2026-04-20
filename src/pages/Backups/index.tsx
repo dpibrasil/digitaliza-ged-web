@@ -33,19 +33,19 @@ export default function Backups()
         {!!data && <table className="w-full mt-4">
             <thead>
                 <tr>
-                    <th>Empresa</th>
-                    <th>Último backup</th>
-                    <th>Ações</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Empresa</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Último backup</th>
+                    <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Ações</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-neutral-100">
                 {data.map((organization: any) => <tr key={organization.id}>
-                    <th>{organization.name}</th>
-                    <td>
-                        {!organization.backups.length && <h1 className="text-red-500">Sem backups recentes</h1>}
+                    <th className="py-3 px-4 text-left font-medium text-neutral-700">{organization.name}</th>
+                    <td className="py-3 px-4 text-neutral-600">
+                        {!organization.backups.length && <h1 className="text-red-500 text-sm">Sem backups recentes</h1>}
                         {!!organization.backups.length && new Date(organization.backups.sort((x: any, y: any) => new Date(x.created_at).getTime() - new Date(y.created_at).getTime()).reverse()[0].created_at).toLocaleString()}
                     </td>
-                    <td>
+                    <td className="py-3 px-4">
                         <div className="grid auto-col-max grid-flow-col justify-start gap-x-1 cursor-pointer">
                             <div
                                 onClick={() => downloadBackup(organization.backups[0].id)}

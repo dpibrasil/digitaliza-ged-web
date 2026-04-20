@@ -30,30 +30,30 @@ function Mantainers()
             <table className="w-full mt-4">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Domínios</th>
-                        <th>Data de abertura</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Nome</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Domínios</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Data de abertura</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Status</th>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-500 uppercase text-xs">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-neutral-100">
                     {filteredMantainers.map((mantainer: any) => <tr key={mantainer.id}>
-                        <th>{mantainer.name}</th>
-                        <td>
+                        <th className="py-3 px-4 text-left font-medium text-neutral-700">{mantainer.name}</th>
+                        <td className="py-3 px-4 text-neutral-600">
                             <h1 className="text-xs font-semibold">{mantainer.authorizedDomains[0]}</h1>
                             {mantainer.authorizedDomains.length == 1 ? <h2 className="text-xs font-normal text-neutral-400">domínio único</h2> : <h2 className="text-xs font-normal text-blue-500">mostrar mais</h2>}
                         </td>
-                        <td>
+                        <td className="py-3 px-4 text-neutral-600">
                             <h1 className="text-xs font-semibold">{new Date(mantainer.createdAt).getFullYear()}</h1>
                             <h2 className="text-xs font-normal text-neutral-400">{new Date(mantainer.createdAt).getDate()} de {months[new Date(mantainer.createdAt).getMonth()]}</h2>
                         </td>
-                        <td>
+                        <td className="py-3 px-4">
                             <div className="flex">
-                                <h1 className={`bg-green-100 text-green-500 rounded p-2`}>Ativo</h1>
+                                <h1 className={`bg-green-100 text-xs text-green-500 rounded px-2 py-1`}>Ativo</h1>
                             </div>
                         </td>
-                        <td>
+                        <td className="py-3 px-4">
                             <div className="grid auto-col-max grid-flow-col justify-start gap-x-1 cursor-pointer">
                                 <div className="w-min bg-neutral-100 text-blue-500 p-1 rounded">
                                     <IoCreateOutline />
