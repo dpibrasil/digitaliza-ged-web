@@ -2,7 +2,7 @@ import { Form } from "@unform/web";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useRef, useState } from "react";
 import { UserTypeName } from "..";
-import { Input, ReactSelectInput, SelectInput } from "../../../components/Input";
+import { Input, ReactSelectInput, SelectInput, SelectItem } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
 import StepByStep from "../../../components/StepByStep";
 import Database from "../../../services/database";
@@ -103,10 +103,10 @@ function UserEditModal(props: ModalType & {userId?: number})
                 <StepByStep.Step name="Acesso" subtitle="Indique os acessos">
                     <div className="grid grid-flow-col gap-1">
                         <SelectInput name="type" label="Cargo/Função" placeholder="---">
-                            {Object.entries(UserTypeName).map((i: any) => <option key={i[0]} value={i[0]}>{i[1]}</option>)}
+                            {Object.entries(UserTypeName).map((i: any) => <SelectItem key={i[0]} value={String(i[0])}>{i[1]}</SelectItem>)}
                         </SelectInput>
                         <SelectInput name="organizationId" label="Empresa principal" placeholder="---">
-                            {organizations?.map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                            {organizations?.map(organization => <SelectItem key={organization.id} value={String(organization.id)}>{organization.name}</SelectItem>)}
                         </SelectInput>
                     </div>
                     <ReactSelectInput

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
-import { Input, SelectInput } from "../../../components/Input";
+import { Input, SelectInput, SelectItem } from "../../../components/Input";
 import Modal, { ModalTitle, ModalType } from "../../../components/Modal";
 import api, { catchApiErrorMessage } from "../../../services/api";
 import toast from "react-hot-toast";
@@ -57,8 +57,8 @@ function EditOrganizationModal({organization, ...props}: ModalType & Organizatio
         <Form ref={formRef} onSubmit={handleSubmit}>
             <ModalTitle title="Dados da empresa" subtitle="Preencha com os dados da empresa" />
             <Input label="Nome da empresa" name="name" placeholder="Ex.: Digitaliza" />
-            <SelectInput label="Storage" name="storageId">
-                {storages.map(storage => <option key={storage.id} value={storage.id}>{storage.name}</option>)}
+            <SelectInput label="Storage" name="storageId" placeholder="Selecionar">
+                {storages.map(storage => <SelectItem key={storage.id} value={String(storage.id)}>{storage.name}</SelectItem>)}
             </SelectInput>
             <button className="bg-blue-500 rounded text-white px-3 py-2 text-sm">Salvar</button>
         </Form>

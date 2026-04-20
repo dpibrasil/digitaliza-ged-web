@@ -5,7 +5,7 @@ import api from "../services/api";
 import { downloadData } from "../services/download";
 import { displayIndex } from "../services/helpers";
 import { DirectoryIndexType } from "../types/OrganizationTypes";
-import { SelectInput } from "./Input";
+import { SelectInput, SelectItem } from "./Input";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 
@@ -108,17 +108,17 @@ export function Pagination({searchResult, changePagination}: {searchResult: any,
 
     return <div className="w-full mt-3 flex flex-row justify-between items-center">
         <div className="grid grid-flow-col auto-col-max items-center gap-2">
-            <SelectInput name="pageLimit">
-                <option>25</option>
-                <option>50</option>
-                <option>75</option>
-                <option>100</option>
-                <option>200</option>
-                <option>250</option>
-                <option>500</option>
-                <option>1000</option>
-                <option>2000</option>
-                <option>100000</option>
+            <SelectInput name="pageLimit" placeholder="25">
+                <SelectItem value="25">25</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="75">75</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+                <SelectItem value="200">200</SelectItem>
+                <SelectItem value="250">250</SelectItem>
+                <SelectItem value="500">500</SelectItem>
+                <SelectItem value="1000">1000</SelectItem>
+                <SelectItem value="2000">2000</SelectItem>
+                <SelectItem value="100000">100000</SelectItem>
             </SelectInput>
             <p className="w-auto text-sm text-neutral-400">
                 Mostrando página {searchResult.currentPage}/{searchResult.lastPage} de {searchResult.total} documento{searchResult.total !== 1 && 's'} · {searchResult.totalPages ?? 0} página{(searchResult.totalPages ?? 0) !== 1 && 's'} no total

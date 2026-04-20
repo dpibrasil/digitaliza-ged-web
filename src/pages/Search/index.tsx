@@ -3,7 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoDownloadOutline, IoSearch } from "react-icons/io5";
-import { SearchIndexInput, Input, SelectInput } from "../../components/Input";
+import { SearchIndexInput, Input, SelectInput, SelectItem } from "../../components/Input";
 import Layout from "../../components/Layout";
 import { ModalSwitch } from "../../components/Modal";
 import { Pagination, ResultsTable } from "../../components/SearchComponents";
@@ -97,25 +97,25 @@ function Search()
                     label="Usuário"
                     placeholder="---"
                 >
-                    {users?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(user => <option key={user.id}>{user.name}</option>)}
+                    {users?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(user => <SelectItem key={user.id} value={String(user.id)}>{user.name}</SelectItem>)}
                 </SelectInput>}
                 <SelectInput
                     background="white"
                     placeholder="Selecione uma empresa"
                     name="organizationId"
                     label="Empresa"
-                    onChange={(event) => setOrganizationId(Number(event.target.value))}
+                    onValueChange={(v) => setOrganizationId(Number(v))}
                 >
-                    {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                    {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <SelectItem key={organization.id} value={String(organization.id)}>{organization.name}</SelectItem>)}
                 </SelectInput>
                 <SelectInput
                     background="white"
                     placeholder="Selecione um diretório"
                     name="directoryId"
                     label="Diretório"
-                    onChange={(event) => setDirectoryId(Number(event.target.value))}
+                    onValueChange={(v) => setDirectoryId(Number(v))}
                 >
-                    {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
+                    {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <SelectItem key={directory.id} value={String(directory.id)}>{directory.name}</SelectItem>)}
                 </SelectInput>
             </div>
             {directory ? <>

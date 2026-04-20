@@ -1,6 +1,6 @@
 import { Form } from "@unform/web";
 import { useEffect, useRef, useState } from "react";
-import { IndexInput, SelectInput } from "../components/Input";
+import { IndexInput, SelectInput, SelectItem } from "../components/Input";
 import Modal, { ModalTitle, ModalType } from "../components/Modal";
 import { DirectoryType } from "../types/OrganizationTypes";
 import Database from "../services/database";
@@ -74,21 +74,21 @@ function EditIndexesModal({directoryId: defaultDirectoryId, values, handleSubmit
                 {!defaultDirectoryId && <>
                     <SelectInput
                         name="organizationId"
-                        value={organizationId}
-                        onChange={(event) => setOrganizationId(Number(event.target.value))}
+                        value={String(organizationId)}
+                        onValueChange={(v) => setOrganizationId(Number(v))}
                         label="Empresa"
                     >
-                        <option value={0}>---</option>
-                        {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <option key={organization.id} value={organization.id}>{organization.name}</option>)}
+                        <SelectItem value="0">---</SelectItem>
+                        {organizations?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(organization => <SelectItem key={organization.id} value={String(organization.id)}>{organization.name}</SelectItem>)}
                     </SelectInput>
                     <SelectInput
                         name="directoryId"
-                        value={directoryId}
-                        onChange={(event) => setDirectoryId(Number(event.target.value))}
+                        value={String(directoryId ?? '')}
+                        onValueChange={(v) => setDirectoryId(Number(v))}
                         label="Diretório"
                     >
-                        <option value={0}>---</option>
-                        {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <option key={directory.id} value={directory.id}>{directory.name}</option>)}
+                        <SelectItem value="0">---</SelectItem>
+                        {directories?.sort((x: any, y: any) => x.name.localeCompare(y.name)).map(directory => <SelectItem key={directory.id} value={String(directory.id)}>{directory.name}</SelectItem>)}
                     </SelectInput>
                 </>}
                 <div className="max-h-96 overflow-y-auto">

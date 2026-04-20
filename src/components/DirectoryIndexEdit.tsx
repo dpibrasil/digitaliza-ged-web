@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Input, SelectInput } from "./Input";
+import { Input, SelectInput, SelectItem } from "./Input";
 import { ValidationError } from "yup";
 import { Form } from "@unform/web";
 import { SubmitHandler } from "@unform/core";
@@ -57,13 +57,13 @@ function DirectoryIndexEdit({indexActions, index, setEditingIndex}: DirectoryInd
             <SelectInput
                 name="index.type"
                 label="Tipo de índice"
-                onChange={(event: any) => setIndexType(event.target.value)}
+                onValueChange={(v) => setIndexType(v)}
             >
-                <option value="string">Texto</option>
-                <option value="number">Númerico</option>
-                <option value="boolean">Boolean (Sim/Não)</option>
-                <option value="list">Selecionar (lista)</option>
-                <option value="datetime">Data e hora</option>
+                <SelectItem value="string">Texto</SelectItem>
+                <SelectItem value="number">Numérico</SelectItem>
+                <SelectItem value="boolean">Boolean (Sim/Não)</SelectItem>
+                <SelectItem value="list">Selecionar (lista)</SelectItem>
+                <SelectItem value="datetime">Data e hora</SelectItem>
             </SelectInput>
             <SelectInput
                 name="index.displayAs"
@@ -71,17 +71,17 @@ function DirectoryIndexEdit({indexActions, index, setEditingIndex}: DirectoryInd
                 placeholder="Padrão"
             >
                 {indexType === 'number' && <>
-                    <option value="integer">Número inteiro</option>
-                    <option value="float">Número decimal</option>
-                    <option value="brl-money">Valor em reais (R$ 00,00)</option>
-                    <option value="cpf-cnpj">CPF/CNPJ</option>
-                    <option value="rg">RG</option>
+                    <SelectItem value="integer">Número inteiro</SelectItem>
+                    <SelectItem value="float">Número decimal</SelectItem>
+                    <SelectItem value="brl-money">Valor em reais (R$ 00,00)</SelectItem>
+                    <SelectItem value="cpf-cnpj">CPF/CNPJ</SelectItem>
+                    <SelectItem value="rg">RG</SelectItem>
                 </>}
                 {indexType === 'datetime' && <>
-                    <option value="date">Data</option>
-                    <option value="datetime">Data e hora</option>
+                    <SelectItem value="date">Data</SelectItem>
+                    <SelectItem value="datetime">Data e hora</SelectItem>
                 </>}
-                {indexType === 'string' && <option value="url">URL</option>}
+                {indexType === 'string' && <SelectItem value="url">URL</SelectItem>}
             </SelectInput>
             {indexType === 'number' && <>
                 <Input

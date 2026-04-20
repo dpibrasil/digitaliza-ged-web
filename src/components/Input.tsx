@@ -4,6 +4,15 @@ import { DirectoryIndexType } from '../types/OrganizationTypes';
 import { IoSearch } from 'react-icons/io5';
 import Select from 'react-select'
 import { cn } from '../lib/utils';
+import {
+    Select as ShadSelect,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from './ui/select';
+
+export { SelectItem } from './ui/select';
 
 type InputType = {
     label?: string,
@@ -131,33 +140,47 @@ export function ReactSelectInput({label, width, name, background = 'neutral-100'
     </div>
 }
 
-export function SelectInput({label, placeholder, children, width, name, background = 'neutral-100', ...rest}: InputType & React.InputHTMLAttributes<HTMLSelectElement>)
+type SelectInputProps = InputType & {
+    placeholder?: string,
+    children?: React.ReactNode,
+    value?: string,
+    onValueChange?: (value: string) => void,
+    disabled?: boolean,
+}
+
+export function SelectInput({ label, placeholder, children, width, name, background = 'neutral-100', value: valueProp, onValueChange, disabled }: SelectInputProps)
 {
-    const inputRef = useRef(null)
     const { fieldName, defaultValue, registerField, error } = useField(name)
+    const isControlled = valueProp !== undefined
+    const [internalValue, setInternalValue] = useState<string>(String(defaultValue ?? ''))
+
+    const valueRef = useRef<string>('')
+    const currentValue = isControlled ? (valueProp ?? '') : internalValue
+    valueRef.current = currentValue
 
     useEffect(() => {
         registerField({
             name: fieldName,
-            ref: inputRef.current,
-            path: 'value'
+            getValue: () => valueRef.current,
+            setValue: (_: any, v: any) => setInternalValue(String(v ?? ''))
         })
     }, [fieldName, registerField])
 
+    const handleValueChange = (v: string) => {
+        if (!isControlled) setInternalValue(v)
+        onValueChange?.(v)
+    }
+
     return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
         {!!label && <FieldLabel>{label}</FieldLabel>}
-        <select
-            defaultValue={defaultValue}
-            {...rest}
-            ref={inputRef}
-            className={cn(
-                'rounded py-1 px-3 min-h-[35px] text-xs text-black border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary/30',
-                bgMap[background] ?? 'bg-neutral-100'
-            )}
-        >
-            {!!placeholder && <option>{placeholder}</option>}
-            {children}
-        </select>
+        <ShadSelect value={currentValue} onValueChange={handleValueChange} disabled={disabled}>
+            <SelectTrigger className={cn(bgMap[background] ?? 'bg-neutral-100')}>
+                <SelectValue placeholder={placeholder ?? 'Selecionar'} />
+            </SelectTrigger>
+            <SelectContent>
+                {children}
+            </SelectContent>
+        </ShadSelect>
         {!!error && <FieldError>{error}</FieldError>}
     </div>
 }
@@ -180,10 +203,9 @@ export function IndexInputBase({indexName, index, background = 'white'}: IndexIn
         return <Input background={background} type={index.displayAs === 'date' ? 'date' : 'datetime-local'} name={indexName} />
     }
     else if (index.type === 'boolean') {
-        return <SelectInput background={background} name={indexName}>
-            <option>---</option>
-            <option value={'true'}>Sim</option>
-            <option value={'false'}>Não</option>
+        return <SelectInput background={background} name={indexName} placeholder="---">
+            <SelectItem value="true">Sim</SelectItem>
+            <SelectItem value="false">Não</SelectItem>
         </SelectInput>
     }
     else if (index.type === 'list') {
@@ -213,24 +235,30 @@ export function IndexInput({indexName, index, background}: IndexInputBaseType) {
 export function SearchIndexInput({index}: {index: DirectoryIndexType})
 {
     const [isInterval, setIsInterval] = useState(false)
+    const [operator, setOperator] = useState('==')
     const indexName = 'indexes.index' + index.id
 
-    const changeOperator = (event: any) => (event.target.value === 'interval') !== isInterval ? setIsInterval(!isInterval) : undefined
+    const changeOperator = (v: string) => {
+        setOperator(v)
+        if ((v === 'interval') !== isInterval) setIsInterval(!isInterval)
+    }
 
     return <div className="flex flex-col w-full">
         <FieldLabel>{index.name}</FieldLabel>
-        <div className="flex flex-row">
-            <SelectInput width="auto" background="white" onChange={changeOperator} name={indexName + '.operator'}>
-                <option value="==">=</option>
-                <option>!=</option>
-                <option value="interval">{'<>'}</option>
-                <option>{'>'}</option>
-                <option>{'<'}</option>
-                <option>{'>='}</option>
-                <option>{'<='}</option>
-            </SelectInput>
-            <div className="pl-1 w-full">
-                {isInterval ? <div className="grid w-full auto-col-max grid-flow-col gap-x-1">
+        <div className="flex flex-row gap-1 items-start">
+            <div className="shrink-0 w-16">
+                <SelectInput background="white" value={operator} onValueChange={changeOperator} name={indexName + '.operator'}>
+                    <SelectItem value="==">{"="}</SelectItem>
+                    <SelectItem value="!=">{"!="}</SelectItem>
+                    <SelectItem value="interval">{"<>"}</SelectItem>
+                    <SelectItem value=">">{">"}</SelectItem>
+                    <SelectItem value="<">{"<"}</SelectItem>
+                    <SelectItem value=">=">{">="}</SelectItem>
+                    <SelectItem value="<=">{"<="}</SelectItem>
+                </SelectInput>
+            </div>
+            <div className="flex-1 min-w-0">
+                {isInterval ? <div className="grid grid-cols-2 gap-1">
                     <IndexInputBase indexName={indexName + '.value[0]'} index={index} />
                     <IndexInputBase indexName={indexName + '.value[1]'} index={index} />
                 </div>: <IndexInputBase indexName={indexName + '.value'} index={index} />}
