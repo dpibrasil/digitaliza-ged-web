@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useField } from '@unform/core'
 import { DirectoryIndexType } from '../types/OrganizationTypes';
 import { IoSearch } from 'react-icons/io5';
-import Select from 'react-select'
 import { cn } from '../lib/utils';
 import {
     Select as ShadSelect,
@@ -105,39 +104,151 @@ export function Input({label, width, name, background = 'neutral-100', ...rest}:
     </div>
 }
 
-export function ReactSelectInput({label, width, name, background = 'neutral-100', ...rest}: InputType & any)
-{
-    const inputRef = useRef(null)
+type RSOption = { label: string; value: any }
+
+type ReactSelectInputProps = InputType & {
+    options?: RSOption[]
+    isMulti?: boolean
+    placeholder?: string
+}
+
+export function ReactSelectInput({ label, width, name, background = 'neutral-100', options = [], isMulti = false, placeholder = 'Pesquisar' }: ReactSelectInputProps) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [open, setOpen] = useState(false)
+    const [search, setSearch] = useState('')
+    const [selected, setSelected] = useState<RSOption[]>([])
+
+    const selectedRef = useRef<RSOption[]>([])
+    const optionsRef = useRef<RSOption[]>(options)
+    selectedRef.current = selected
+    optionsRef.current = options
+
+    const imperativeRef = useRef({
+        getValue: () => {
+            const vals = selectedRef.current.map(o => o.value)
+            return isMulti ? vals : vals[0]
+        },
+        clearValue: () => setSelected([]),
+        setValue: (value: any) => {
+            const opts = optionsRef.current
+            if (isMulti) {
+                const vals = Array.isArray(value) ? value : [value]
+                setSelected(opts.filter(o => vals.some((v: any) => (v?.value ?? v) === o.value)))
+            } else {
+                const v = value?.value ?? value
+                const opt = opts.find(o => o.value === v)
+                setSelected(opt ? [opt] : [])
+            }
+        }
+    })
+
     const { fieldName, defaultValue, registerField, error } = useField(name)
 
     useEffect(() => {
         registerField({
             name: fieldName,
-            ref: inputRef.current,
-            getValue: (ref) => {
-                const d = ref.getValue().map((v: any) => v.value)
-                return rest.isMulti ? d : d[0]
-            },
+            ref: imperativeRef.current,
+            getValue: (ref) => ref.getValue(),
             clearValue: (ref) => ref.clearValue(),
             setValue: (ref, value) => ref.setValue(value)
         })
     }, [fieldName, registerField])
 
-    return <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
-        {!!label && <FieldLabel>{label}</FieldLabel>}
-        <Select
-            {...rest}
-            ref={inputRef}
-            defaultValue={defaultValue}
-            classNamePrefix={cn(
-                'rounded text-black text-xs',
-                bgMap[background] ?? 'bg-neutral-100',
-                !rest.isMulti && 'react-select-mono'
-            )}
-            placeholder="Pesquisar"
-        />
-        {!!error && <FieldError>{error}</FieldError>}
-    </div>
+    useEffect(() => {
+        if (defaultValue != null) imperativeRef.current.setValue(defaultValue)
+    }, [])
+
+    const filtered = options.filter(o => o.label.toLowerCase().includes(search.toLowerCase()))
+
+    const toggle = (opt: RSOption) => {
+        if (isMulti) {
+            setSelected(prev =>
+                prev.find(o => o.value === opt.value)
+                    ? prev.filter(o => o.value !== opt.value)
+                    : [...prev, opt]
+            )
+        } else {
+            setSelected([opt])
+            setOpen(false)
+            setSearch('')
+        }
+    }
+
+    useEffect(() => {
+        if (!open) return
+        const handler = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+                setOpen(false)
+                setSearch('')
+            }
+        }
+        document.addEventListener('mousedown', handler)
+        return () => document.removeEventListener('mousedown', handler)
+    }, [open])
+
+    return (
+        <div className={`flex flex-col w-${width ?? 'full'} mb-2`}>
+            {!!label && <FieldLabel>{label}</FieldLabel>}
+            <div ref={containerRef} className="relative">
+                <button
+                    type="button"
+                    onClick={() => setOpen(v => !v)}
+                    className={cn(
+                        'w-full rounded min-h-[35px] px-3 py-1 text-xs text-left border border-neutral-200 flex flex-wrap gap-1 items-center',
+                        bgMap[background] ?? 'bg-neutral-100'
+                    )}
+                >
+                    {selected.length === 0 && <span className="text-neutral-400">{placeholder}</span>}
+                    {isMulti
+                        ? selected.map(o => (
+                            <span key={o.value} className="bg-primary/10 text-primary rounded px-1.5 py-0.5 flex items-center gap-1">
+                                {o.label}
+                                <button type="button" onClick={e => { e.stopPropagation(); toggle(o) }} className="hover:text-red-500 leading-none">×</button>
+                            </span>
+                        ))
+                        : selected[0] && <span className="text-black">{selected[0].label}</span>
+                    }
+                    <IoSearch className="ml-auto text-neutral-400 flex-shrink-0" />
+                </button>
+                {open && (
+                    <div className="absolute z-50 top-full left-0 mt-1 w-full bg-white border border-neutral-200 rounded shadow-lg">
+                        <div className="p-2 border-b border-neutral-100">
+                            <input
+                                autoFocus
+                                type="text"
+                                className="w-full text-xs px-2 py-1 bg-neutral-100 rounded focus:outline-none"
+                                placeholder="Pesquisar..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                            {filtered.length === 0
+                                ? <div className="px-3 py-2 text-xs text-neutral-400">Nenhuma opção encontrada</div>
+                                : filtered.map(opt => {
+                                    const isSel = !!selected.find(o => o.value === opt.value)
+                                    return (
+                                        <button
+                                            key={opt.value}
+                                            type="button"
+                                            onClick={() => toggle(opt)}
+                                            className={cn(
+                                                'w-full text-left px-3 py-2 text-xs text-black hover:bg-neutral-50 transition-colors',
+                                                isSel && 'bg-primary/5 text-primary font-medium'
+                                            )}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                )}
+            </div>
+            {!!error && <FieldError>{error}</FieldError>}
+        </div>
+    )
 }
 
 type SelectInputProps = InputType & {
