@@ -61,7 +61,11 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const downloadProject = async () => {
-        if (output) downloadData(output, 'rascunho.pdf')
+        if (!pdfDoc) {
+            toast.error('Nenhuma página para exportar.')
+            return
+        }
+        downloadData(await pdfDoc.save(), 'rascunho.pdf')
     }
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
