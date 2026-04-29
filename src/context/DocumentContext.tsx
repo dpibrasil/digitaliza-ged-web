@@ -11,13 +11,13 @@ interface Props {
     downloadProject: () => Promise<void>,
     addPageBy: (by: 'file'|'scanner', position: number) => Promise<void>,
     pdfDoc: PDFDocument | null | undefined,
-    output: Uint8Array|null,
+    output: string|null,
     deletePages: (indices: number[]) => Promise<string | undefined>,
     updating: boolean,
     add: (data: any, position: number) => Promise<void>,
     clear: () => void,
     rotatePages: (indices: number[], rotation: number) => void,
-    setOutput: (output: Uint8Array|null) => void
+    setOutput: (output: string|null) => void
 }
 
 const DocumentContext = React.createContext<Props>({} as Props)
@@ -27,7 +27,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     const [numPages, setNumPages] = useState<number>(0)
     const [pdfDoc, setPdfDoc] = useState<PDFDocument | null | undefined>()
-    const [output, setOutput] = useState<Uint8Array|null>(null)
+    const [output, setOutput] = useState<string|null>(null)
     const [updating, setUpdating] = useState<boolean>(false)
 
     const startUpdate = () => setUpdating(true)
@@ -35,7 +35,7 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     useEffect(() => {
         if (pdfDoc) {
-            pdfDoc.save().then(output => {
+            pdfDoc.saveAsBase64({ dataUri: true }).then(output => {
                 setOutput(output)
                 setNumPages(pdfDoc.getPageCount())
                 endUpdate()

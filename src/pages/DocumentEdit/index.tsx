@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { DocumentType } from "../../types/DocumentTypes";
 import { useParams } from "react-router-dom";
@@ -19,7 +19,7 @@ function DocumentEdit()
 
     const params = useParams()
     const documentEdit = useDocument()
-    const file = useMemo(() => documentEdit.output ? { data: documentEdit.output } : null, [documentEdit.output])
+    const file = documentEdit.output
 
     // Caso esteja atualizando documento, leia o documento
     useEffect(() => {

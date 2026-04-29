@@ -60,7 +60,7 @@ function DocumentEditHeader({page, setPage, pageIndex, itemsPerPage, document}: 
         for (const key in data) {
             form.append(key, data[key])
         }
-        form.append('file', new Blob([documentEdit.output]))
+        form.append('file', await fetch(documentEdit.output).then(r => r.blob()))
 
         const promise = api.post(document ? `/documents/${document.id}/versions` : '/documents', form, {
             headers: {'Content-Type': 'multipart/form-data'}
