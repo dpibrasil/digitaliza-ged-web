@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IoArrowBack, IoArrowDown, IoArrowForward, IoArrowUp, IoCreate, IoDownload, IoReload, IoSearch } from 'react-icons/io5';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { downloadData } from '../services/download';
 import { DocumentType } from '../types/DocumentTypes';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 type PDFViewerType = {
     url: string,
@@ -16,10 +20,23 @@ function PDFViewer({url, document}: PDFViewerType)
     const [numPages, setNumPages] = useState(0)
     const [pageNumber, setPageNumber] = useState(1)
     const [rotation, setRotation] = useState(0)
+    const [blobUrl, setBlobUrl] = useState<string | null>(null)
+    const file = useMemo(() => blobUrl ? { url: blobUrl } : null, [blobUrl])
+
+    useEffect(() => {
+        let objectUrl: string
+        api.get(url, { responseType: 'blob' }).then(res => {
+            objectUrl = URL.createObjectURL(res.data)
+            setBlobUrl(objectUrl)
+        })
+        return () => {
+            if (objectUrl) URL.revokeObjectURL(objectUrl)
+        }
+    }, [url])
 
     const onDocumentLoadSuccess = ({ numPages }: any) => setNumPages(numPages)
 
-    const setPage = (i: number) => i <= numPages && i >= 1  ? setPageNumber(i) : undefined
+    const setPage = (i: number) => i <= numPages && i >= 1 ? setPageNumber(i) : undefined
     const nextPage = () => setPage(pageNumber + 1)
     const backPage = () => setPage(pageNumber - 1)
 
@@ -65,8 +82,8 @@ function PDFViewer({url, document}: PDFViewerType)
             </Link>
         </div>
         <div className="bg-menu mb-8 text-white p-6 rounded-b-lg flex items-center justify-center flex-col">
-            <Document file={{url: url, httpHeaders: api.defaults.headers}} onLoadSuccess={onDocumentLoadSuccess}>
-                <Page width={500} pageNumber={pageNumber} rotate={rotation} />
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                <Page key={pageNumber} width={500} pageNumber={pageNumber} rotate={rotation} />
             </Document>
             <div className="grid grid-flow-col mt-4 items-center">
                 <button onClick={backPage} className="bg-green-500 hover:bg-green-600 py-2 px-3 text-white rounded flex flex-row align-center justify-center">

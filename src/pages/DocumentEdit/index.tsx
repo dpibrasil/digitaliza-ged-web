@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Layout from "../../components/Layout";
 import { DocumentType } from "../../types/DocumentTypes";
 import { useParams } from "react-router-dom";
@@ -19,6 +19,7 @@ function DocumentEdit()
 
     const params = useParams()
     const documentEdit = useDocument()
+    const file = useMemo(() => documentEdit.output ? { data: documentEdit.output } : null, [documentEdit.output])
 
     // Caso esteja atualizando documento, leia o documento
     useEffect(() => {
@@ -36,7 +37,7 @@ function DocumentEdit()
         <h1 className="text-lg font-semibold mb-3">{document ? `Editando documento de ${document.organization.name} com ID ${document.id}` : 'Editando novo arquivo'}</h1>
         <DocumentEditHeader {...{page, setPage, pageIndex, itemsPerPage, document}} />
         {documentEdit.output ? (
-            documentEdit.updating ? <div className="font-semibold text-sm text-center">Atualizando...</div> : <RenderDocument className="h-full" file={{ data: documentEdit.output }}>
+            documentEdit.updating ? <div className="font-semibold text-sm text-center">Atualizando...</div> : <RenderDocument className="h-full" file={file}>
             <div className="grid lg:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-5 h-full overflow-y-auto items-start pb-24" id="pdf-preview-grid">
                 {Array.from({length: pageIndex + itemsPerPage > documentEdit.numPages ? documentEdit.numPages - pageIndex : itemsPerPage}, (x, i) => i).map(i => <Page key={i} index={pageIndex + i} />)}
             </div>
