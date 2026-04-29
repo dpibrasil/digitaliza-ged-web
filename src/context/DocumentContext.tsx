@@ -61,7 +61,9 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
     }
 
     const downloadProject = async () => {
-        if (output) downloadData(output, 'rascunho.pdf')
+        if (!pdfDoc) return
+        const bytes = await pdfDoc.save()
+        downloadData(bytes, 'rascunho.pdf')
     }
 
     const addPageBy = async (by: 'file'|'scanner', position: number = 0) => {
@@ -150,11 +152,17 @@ export const DocumentContextProvider: React.FC<any> = (props) => {
 
     const rotatePages = async (indices: number[], rotation: number) => {
         startUpdate()
-        if (!output || !pdfDoc) return toast.error('Aguarde o PDF iniciar.')
-        const pdf = await PDFDocument.load(output)
-        const pages = pdf.getPages().filter((_, i) => indices.includes(i))
-        pages.forEach(page => page.setRotation(degrees(page.getRotation().angle + rotation)))
-        setPdfDoc(pdf)
+        if (!pdfDoc) return toast.error('Aguarde o PDF iniciar.')
+        const newPdf = await PDFDocument.create()
+        const allIndices = pdfDoc.getPageIndices()
+        const copiedPages = await newPdf.copyPages(pdfDoc, allIndices)
+        copiedPages.forEach((page, i) => {
+            if (indices.includes(i)) {
+                page.setRotation(degrees(page.getRotation().angle + rotation))
+            }
+            newPdf.addPage(page)
+        })
+        setPdfDoc(newPdf)
     }
 
     // const importFromDocument = async (id: number|string) => {
